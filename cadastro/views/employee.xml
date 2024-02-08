@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_employee_form" model="ir.ui.view">
+        <field name="name">employee.form</field>
+        <field name="model">employee</field>
+        <field name="arch" type="xml">
+            <form class="myform" string="Cadastramento de Funcionários">
+
+            <div class="container_form">
+                <h1>Cadastramento de Funcionários</h1>
+                    <article class="container_form_contents">
+                        <section class="group">
+                            <div  class="container_field">
+                                <span>Nome:</span>
+                                <field class="field" name="name"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Email:</span>
+                                <field class="field" name="email"/>
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>telefone:</span>
+                                    <field class="field" name="tel"/>
+                                </div>
+
+
+                                <div class="container_field">
+                                    <span>CPF:</span>
+                                    <field class="field" name="cpf"/>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="group">
+                             <div class="container_field">
+                                <span>Endereço:</span>
+                                <field class="field" name="address"/>
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>CEP:</span>
+                                    <field class="field" name="cep"/>
+                                </div>
+
+                                
+                                <div class="container_field">
+                                    <span>Selecione o status:</span>
+                                    <field class="field" name="status"/>
+                                </div>
+
+
+                            </div>
+
+                            <div class="container_button">
+                            
+                                <button class="btnSecondary mybutton" name="createEmployee" type="object"> Cadastrar </button>
+                    
+                            </div>
+                        </section>
+                    </article>
+            </div>
+            </form>
+
+
+        </field>
+
+    </record>
+
+    <record id="view_employee_tree" model="ir.ui.view">
+        <field name="name">employee.tree</field>
+        <field name="model">employee</field>
+        <field name="arch" type="xml">
+            <tree>
+            <field class="test" name="name"/>
+            <field class="test" name="cpf"/>
+            <field class="test" name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_register_employee" model="ir.actions.act_window">
+        <field name="name">Listagem de Funcionários</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">employee</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem  id="menu_employees_register"
+            parent="menu_register"
+            action="action_register_employee"
+            name="Listagem de Funcionários"
+            sequence="10"/>
+</odoo>

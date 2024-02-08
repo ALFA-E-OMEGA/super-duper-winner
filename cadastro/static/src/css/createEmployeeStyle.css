@@ -1,0 +1,91 @@
+
+:root{
+    --border-radius: 8px;
+    --background-inactive: rgb(238, 238, 238);
+}
+
+.field input, select{
+    background-color: var(--background-inactive);
+    padding: .85rem !important;
+    border: 1px solid rgb(219, 219, 219) !important;
+    border-radius: var(--border-radius);
+    transition: 500ms;
+}
+
+.field input:focus{
+    background-color: white !important;
+    border-radius: 2px;
+}
+
+
+.o_wrap_label{
+    display: none !important;
+}
+
+.container_field{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: .85rem;
+}
+
+.container_field span{
+    text-transform: capitalize;
+    font-weight: bold;
+    margin-bottom: .85rem;
+}
+
+/* .container_field select{
+    paddin
+} */
+
+.container_form{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.subgroup{
+    display: flex;
+    gap: .8rem;
+}
+
+.container_form_contents{
+    display: flex;
+    gap: .85rem;
+}
+
+.group{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.o_form_renderer{
+    height: 100% !important;
+}
+
+
+.o_cell:has(> .container_field){
+    width: 100% !important;
+}
+
+.container_button{
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-bottom: 1rem;
+}
+
+.mybutton{
+    padding: .85rem;
+    background: var(--background-inactive);
+    color: black;
+    border-radius: var(--border-radius);
+    transition: 500ms;
+}
+
+.mybutton:hover{
+    transform: translateY(-10px);
+    border: 1px solid black;
+}
