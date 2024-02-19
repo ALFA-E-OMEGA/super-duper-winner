@@ -1,11 +1,11 @@
 
 :root{
     --border-radius: 8px;
-    --background-inactive: rgb(238, 238, 238);
+    --background-inactive: rgb(220, 219, 219);
 }
 
 .field input, select{
-    background-color: var(--background-inactive);
+    background-color: var(--background-inactive) !important;
     padding: .85rem !important;
     border: 1px solid rgb(219, 219, 219) !important;
     border-radius: var(--border-radius);
@@ -27,6 +27,20 @@
     flex-direction: column;
     width: 100%;
     margin-bottom: .85rem;
+    opacity: 0;
+    animation: show 500ms forwards;
+    transform: translateX(-10px);
+}
+
+@keyframes show{
+    100%{
+        opacity: 1;
+        transform: translateX(0px);
+    }
+} 
+
+option[value='"Heavies"']{
+    display: none;
 }
 
 .container_field span{

@@ -3,8 +3,8 @@
     <!-- Load css File -->
     <template id="assets_backend" name="my_custom_css assets" inherit_id="web.assets_backend">
       <xpath expr="." position="inside">
-        <link rel="stylesheet" type="text/css" href="/cadastro/static/src/css/createEmployeeStyle.css"/>
-        <link  type="text/css" href="/cadastro/static/src/css/createEmployeeStyle.css"/>
+        <link rel="stylesheet" type="text/css" href="/registers/static/src/css/createEmployeeStyle.css"/>
+        <link  type="text/css" href="/registers/static/src/css/createEmployeeStyle.css"/>
       </xpath>
     </template>
     

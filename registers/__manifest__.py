@@ -9,10 +9,12 @@
     'category': 'JP',
     'depends' : ['base', 'web', 'sale', 'board'],
     'data': [
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'views/menu.xml',
         'views/employee.xml',
         'views/client.xml',
+        'views/patrimony.xml',
+
     ],
     'demo': [
     ],
@@ -20,8 +22,8 @@
     'application': True,
     'assets': {
          'web.assets_backend':[
-             'cadastro/static/src/css/createEmployeeStyle.css',
-             'cadastro/static/src/js/createEmployee.js',
+             'registers/static/src/css/createEmployeeStyle.css',
+             'registers/static/src/js/createEmployee.js',
          ]
     },
 }
