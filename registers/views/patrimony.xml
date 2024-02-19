@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_patrimony_form" model="ir.ui.view">
+        <field name="name">patrimony.form</field>
+        <field name="model">patrimony</field>
+        <field name="arch" type="xml">
+            <form class="myform" string="Cadastramento de Patrimônio">
+
+            <div class="container_form patrimony_form">
+                <h1>Cadastramento de Patrimônio</h1>
+                    <article class="container_form_contents">
+                        <section class="group">
+                            <div  class="container_field">
+                                <span>Nome:</span>
+                                <field class="field" name="name"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Descrição:</span>
+                                <field class="field" name="description"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Classificação do Patrimônio:</span>
+                                <field class="field" name="classification"/>
+                            </div>
+                        </section>
+                        <section class="group">
+
+                            <div class="container_field"  invisible="classification != 'vehicles'">
+                                <span>Digite o Renavan:</span>
+                                <field class="field" name="renavan" />  
+                            </div>
+
+                            <div class="container_field" invisible="classification != 'vehicles'">
+                                <span >Digite a Placa do Veículo:</span>
+                                <field class="field" name="vehicle_plate"/>  
+                            </div>
+
+                            
+                            <div class="container_field" invisible="classification != 'heavies'">
+                                <span >Selecione o Tipo de Veículo:</span>
+                                <field class="field" name="heavy_type"/>  
+                            </div>
+
+                            
+                            <div class="container_field" invisible="classification != 'heavies'">
+                                <span >Selecione o número do equipamento:</span>
+                                <field class="field" name="heavy_number"/>  
+                            </div>
+
+                            <!-- 
+                            <div class="container_button">
+                            
+                                <button class="btnSecondary mybutton" name="createPatrimony" type="object"> Cadastrar </button> 
+                    
+                            </div> -->
+                        </section>
+                    </article>
+            </div>
+            </form>
+
+
+        </field>
+
+    </record>
+
+    <record id="view_patrimony_tree" model="ir.ui.view">
+        <field name="name">patrimony.tree</field>
+        <field name="model">patrimony</field>
+        <field name="arch" type="xml">
+            <tree>
+            <field class="test" name="name"/>
+            <field class="test" name="description"/>
+            <field class="test" name="classification"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_register_patrimony" model="ir.actions.act_window">
+        <field name="name">Listagem de Patrimônio</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">patrimony</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem  id="menu_patrimony_register"
+            parent="menu_register"
+            action="action_register_patrimony"
+            name="Listagem de Patrimônio"
+            sequence="11"/>
+</odoo>
