@@ -9,7 +9,7 @@
     'category': 'JP',
     'depends' : ['base', 'web', 'sale', 'board'],
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/menu.xml',
         'views/employee.xml',
         'views/client.xml',

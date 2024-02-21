@@ -85,7 +85,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem  id="menu_patrimony_register"
+    <menuitem id="menu_patrimony_register"
             parent="menu_register"
             action="action_register_patrimony"
             name="Listagem de Patrimônio"
