@@ -30,32 +30,32 @@
 
                             <div class="container_field"  invisible="classification != 'vehicles'">
                                 <span>Digite o Renavan:</span>
-                                <field class="field" name="renavan" />  
+                                <field class="field" name="renavan" />
                             </div>
 
                             <div class="container_field" invisible="classification != 'vehicles'">
                                 <span >Digite a Placa do Veículo:</span>
-                                <field class="field" name="vehicle_plate"/>  
+                                <field class="field" name="vehicle_plate"/>
                             </div>
 
-                            
+
                             <div class="container_field" invisible="classification != 'heavies'">
                                 <span >Selecione o Tipo de Veículo:</span>
-                                <field class="field" name="heavy_type"/>  
+                                <field class="field" name="heavy_type"/>
                             </div>
 
-                            
+
                             <div class="container_field" invisible="classification != 'heavies'">
                                 <span >Selecione o número do equipamento:</span>
-                                <field class="field" name="heavy_number"/>  
+                                <field class="field" name="heavy_number"/>
                             </div>
 
-                            <!-- 
                             <div class="container_button">
-                            
-                                <button class="btnSecondary mybutton" name="createPatrimony" type="object"> Cadastrar </button> 
-                    
-                            </div> -->
+
+                                <button name="save" class="btnSecondary mybutton" type="object" string="Cadastro"/>
+
+                            </div>
+
                         </section>
                     </article>
             </div>
