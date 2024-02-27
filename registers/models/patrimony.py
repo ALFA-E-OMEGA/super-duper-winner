@@ -1,6 +1,7 @@
 from odoo import models, fields
-
+"""This is the patrimony model and it's associated functions"""
 class Patrimony(models.Model):
+    """Fields and functions for the patrimony model"""
     _name = "patrimony"
     _description = "Registro de patrimônio."
 
@@ -38,7 +39,12 @@ class Patrimony(models.Model):
                                     ], string="pesado_num")
 
     def save(self):
+        """Custom saving of a record.
 
+        vals -- dictionary of values present in a model
+        self.env -- model being used
+        .write() -- custom odoo write function
+        """
         vals = {
             'name': self.name,
             'description': self.description,
