@@ -1,3 +1,4 @@
+"""This is the employee template and it's associated functions"""
 from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
 import re
@@ -25,8 +26,3 @@ class Employee(models.Model):
         for rec in self:
             if len(rec.cpf) != 17:
                 raise ValidationError(_("O campo CPF está errado. Precisa de 17 dígitos"))
-    
-
-
-
-
