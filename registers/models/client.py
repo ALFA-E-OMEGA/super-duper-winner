@@ -1,3 +1,4 @@
+"""This is the client template and it's associated functions"""
 from odoo import models, fields
 
 class Client(models.Model):

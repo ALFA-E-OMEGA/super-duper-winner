@@ -1,7 +1,8 @@
+"""This is the patrimony template and it's associated functions"""
 from odoo import models, fields
-"""This is the patrimony model and it's associated functions"""
+
 class Patrimony(models.Model):
-    """Fields and functions for the patrimony model"""
+    """Fields and functions for the patrimony object"""
     _name = "patrimony"
     _description = "Registro de patrimônio."
 
@@ -17,7 +18,7 @@ class Patrimony(models.Model):
 
     vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
 
-    renavan = fields.Char(string='Renavan', required=False)
+    renavan = fields.Integer(string='Renavan', required=False)
 
     heavy_type = fields.Selection([('escavadeira', 'Escavadeira'),
                                    ('retro_escavadeira', 'Retro Escavadeira'),
