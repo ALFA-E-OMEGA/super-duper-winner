@@ -2,6 +2,7 @@
 from odoo import models, fields
 
 class Client(models.Model):
+    """Fields and functions for the client object"""
     _name = "client"
     _description = "Registro de Clientes."
 

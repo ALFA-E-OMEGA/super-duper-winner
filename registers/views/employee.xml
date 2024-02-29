@@ -46,7 +46,7 @@
                                     <field class="field" name="cep"/>
                                 </div>
 
-                                
+
                                 <div class="container_field">
                                     <span>Selecione o status:</span>
                                     <field class="field" name="status"/>
@@ -56,9 +56,9 @@
                             </div>
 
                             <div class="container_button">
-                            
-                                <button class="btnSecondary mybutton" name="createEmployee" type="object"> Cadastrar </button>
-                    
+
+                                <button class="btnSecondary mybutton" name="create_employee" type="object"> Cadastrar </button>
+
                             </div>
                         </section>
                     </article>

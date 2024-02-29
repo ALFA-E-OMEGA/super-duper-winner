@@ -1,9 +1,10 @@
 """This is the employee template and it's associated functions"""
+import re
 from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
-import re
 
 class Employee(models.Model):
+    """Fields and functions for the employee object"""
     _name = "employee"
     _description = "Registro de funcionários."
 
@@ -18,11 +19,12 @@ class Employee(models.Model):
     # company = fields.Char(string='Empresa', required=True)
     status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')])
 
-    def createEmployee(self):
+    def create_employee(self):
         self.status = "ativo"
 
     @api.constrains('cpf')
     def _check_cpf_size(self):
+        """Checks size of the CPF variable to limit different lengths"""
         for rec in self:
             if len(rec.cpf) != 17:
-                raise ValidationError(_("O campo CPF está errado. Precisa de 17 dígitos"))
+                raise ValidationError(_("O campo CPF está errado. Precisa de 11 dígitos"))
