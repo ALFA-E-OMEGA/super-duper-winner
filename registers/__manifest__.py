@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Module's data, dependencies and imports"""
 {
     'name' : 'Cadastro',
     'author': 'Alfa e Omega',

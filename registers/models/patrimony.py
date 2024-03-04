@@ -1,8 +1,8 @@
-"""This is the patrimony template and it's associated functions"""
+"""This is the file for the 'patrimony' object"""
 from odoo import models, fields
 
 class Patrimony(models.Model):
-    """Fields and functions for the patrimony object"""
+    """This is the fields and functions for the 'patrimony' object"""
     _name = "patrimony"
     _description = "Registro de patrimônio."
 
@@ -18,7 +18,7 @@ class Patrimony(models.Model):
 
     vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
 
-    renavan = fields.Integer(string='Renavan', required=False)
+    renavan = fields.Char(string='Renavan', required=False)
 
     heavy_type = fields.Selection([('escavadeira', 'Escavadeira'),
                                    ('retro_escavadeira', 'Retro Escavadeira'),
@@ -40,12 +40,7 @@ class Patrimony(models.Model):
                                     ], string="pesado_num")
 
     def save(self):
-        """Custom saving of a record.
-
-        vals -- dictionary of values present in a model
-        self.env -- model being used
-        .write() -- custom odoo write function
-        """
+        """This is the custom function for saving an object"""
         vals = {
             'name': self.name,
             'description': self.description,
