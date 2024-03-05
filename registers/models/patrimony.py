@@ -1,5 +1,6 @@
 """This is the file for the 'patrimony' object"""
-from odoo import models, fields
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 class Patrimony(models.Model):
     """This is the fields and functions for the 'patrimony' object"""
@@ -16,7 +17,7 @@ class Patrimony(models.Model):
                                         ('others', 'Outros')
                                         ], string = 'Classificação')
 
-    vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
+    vehicle_plate = fields.Char(required=False)
 
     renavan = fields.Char(string='Renavan', required=False)
 
@@ -39,8 +40,8 @@ class Patrimony(models.Model):
                                      ('10', 'Número 10'),
                                     ], string="pesado_num")
 
-    def save(self):
-        """This is the custom function for saving an object"""
+    def create_patrimony(self):
+        """This is the custom function for saving an 'patrimony' object"""
         vals = {
             'name': self.name,
             'description': self.description,
@@ -52,4 +53,10 @@ class Patrimony(models.Model):
         }
 
         self.env['patrimony'].write(vals)
-        return {'type': 'ir.actions.act_window_close'}
+
+    @api.constrains('renavan')
+    def _check_cpf_size(self):
+        """Checks size of the Renavan variable to limit different lengths"""
+        for rec in self:
+            if len(rec.renavan) != 9:
+                raise ValidationError(_("O campo Renavan está errado. Precisa de 9 dígitos"))

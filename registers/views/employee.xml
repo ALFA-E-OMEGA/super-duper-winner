@@ -57,7 +57,7 @@
 
                             <div class="container_button">
 
-                                <button class="btnSecondary mybutton" name="create_employee" type="object"> Cadastrar </button>
+                                <button class="btnSecondary mybutton" name="create_employee" type="object" string="Cadastro"/>
 
                             </div>
                         </section>

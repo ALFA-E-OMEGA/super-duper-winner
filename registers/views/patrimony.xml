@@ -52,7 +52,7 @@
 
                             <div class="container_button">
 
-                                <button name="save" class="btnSecondary mybutton" type="object" string="Cadastro"/>
+                                <button name="create_patrimony" class="btnSecondary mybutton" type="object" string="Cadastro"/>
 
                             </div>
 
