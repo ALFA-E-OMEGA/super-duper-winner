@@ -1,4 +1,4 @@
-"""This is the employee template and it's associated functions"""
+"""This are the employee template and it's associated functions"""
 from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
 
@@ -33,15 +33,19 @@ class Employee(models.Model):
         self.env['employee'].write(vals)
 
     @api.constrains('cpf')
-    def _check_cpf_size(self):
+    def _validate_cpf(self):
         """Checks size of the CPF variable to limit different lengths"""
         for rec in self:
             if len(rec.cpf) != 11:
-                raise ValidationError(_("O campo CPF está errado. Precisa de 11 dígitos"))
+                raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. Precisa de 11 dígitos"))
+            if (rec.cpf).isnumeric() != True:
+                raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. O campo deve conter apenas números"))
 
     @api.constrains('cep')
-    def _check_cep_size(self):
+    def _validate_cep(self):
         """Checks size of the CEP variable to limit different lengths"""
         for rec in self:
             if len(rec.cep) != 8:
-                raise ValidationError(_("O campo CEP está errado. Precisa de 8 dígitos"))
+                raise ValidationError(_("O campo 'CEP' está está com o tamanho incorreto. Precisa de 8 dígitos"))
+            if (rec.cep).isnumeric() != True:
+                raise ValidationError(_("O campo 'CEP' contém carácteres inválidos. O campo deve conter apenas números"))
