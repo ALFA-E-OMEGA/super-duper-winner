@@ -13,8 +13,8 @@ class Employee(models.Model):
     tel = fields.Char(string='Telefone', required=False)
     cpf = fields.Char(string='CPF', required=True)
     # id = fields.Integer(string='ID', required=True)
-    address = fields.Char(string='Endereço', required=True)
-    cep = fields.Char(string='CEP', required=True)
+    address = fields.Char(string='Endereço', required=False)
+    cep = fields.Char(string='CEP', required=False)
     # company = fields.Char(string='Empresa', required=True)
     status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')], required=True)
 
