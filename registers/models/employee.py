@@ -37,15 +37,19 @@ class Employee(models.Model):
         """Checks size of the CPF variable to limit different lengths"""
         for rec in self:
             if len(rec.cpf) != 11:
-                raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. Precisa de 11 dígitos"))
-            if (rec.cpf).isnumeric() != True:
-                raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. O campo deve conter apenas números"))
+                raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
+                                        "Precisa de 11 dígitos"))
+            if not (rec.cpf).isnumeric():
+                raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
+                                        "O campo deve conter apenas números"))
 
     @api.constrains('cep')
     def _validate_cep(self):
         """Checks size of the CEP variable to limit different lengths"""
         for rec in self:
             if len(rec.cep) != 8:
-                raise ValidationError(_("O campo 'CEP' está está com o tamanho incorreto. Precisa de 8 dígitos"))
-            if (rec.cep).isnumeric() != True:
-                raise ValidationError(_("O campo 'CEP' contém carácteres inválidos. O campo deve conter apenas números"))
+                raise ValidationError(_("O campo 'CEP' está está com o tamanho incorreto. "
+                                        "Precisa de 8 dígitos"))
+            if not (rec.cep).isnumeric():
+                raise ValidationError(_("O campo 'CEP' contém carácteres inválidos. "
+                                        "O campo deve conter apenas números"))
