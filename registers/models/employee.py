@@ -32,6 +32,17 @@ class Employee(models.Model):
 
         self.env['employee'].write(vals)
 
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Sucesso"),
+                'type': 'success',
+                'message': 'Funcionario cadastrado com sucesso!',
+                'sticky': False,
+            },
+        }
+
     @api.constrains('cpf')
     def _validate_cpf(self):
         """Checks size of the CPF variable to limit different lengths"""

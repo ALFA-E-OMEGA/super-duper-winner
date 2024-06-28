@@ -54,6 +54,17 @@ class Patrimony(models.Model):
 
         self.env['patrimony'].write(vals)
 
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Sucesso"),
+                'type': 'success',
+                'message': 'Patrimonio cadastrado com sucesso!',
+                'sticky': False,
+            },
+        }
+
     @api.constrains('renavan')
     def _validate_renavan(self):
         """Checks size of the Renavan variable to limit different lengths"""

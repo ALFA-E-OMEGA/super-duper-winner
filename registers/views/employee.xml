@@ -8,7 +8,7 @@
             <form class="myform" string="Cadastramento de Funcionários">
 
             <div class="container_form">
-                <h1>Cadastramento de Funcionários</h1>
+                <h1>Cadastro de Funcionários</h1>
                     <article class="container_form_contents">
                         <section class="group">
                             <div  class="container_field">
@@ -57,7 +57,7 @@
 
                             <div class="container_button">
 
-                                <button class="btnSecondary mybutton" name="create_employee" type="object" string="Cadastro"/>
+                                <button class="btnSecondary mybutton" name="create_employee" type="object" string="Cadastro" confirm="Confimar criação de funcionário?"/>
 
                             </div>
                         </section>
@@ -83,7 +83,7 @@
     </record>
 
     <record id="action_register_employee" model="ir.actions.act_window">
-        <field name="name">Listagem de Funcionários</field>
+        <field name="name">Funcionários</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">employee</field>
         <field name="view_mode">tree,form</field>
@@ -92,6 +92,6 @@
     <menuitem  id="menu_employees_register"
             parent="menu_register"
             action="action_register_employee"
-            name="Listagem de Funcionários"
+            name="Funcionários"
             sequence="10"/>
 </odoo>
