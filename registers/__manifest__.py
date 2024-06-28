@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Module's data, dependencies and imports"""
+# pylint: disable=pointless-statement
 {
     'name' : 'Cadastro',
     'author': 'Alfa e Omega',
@@ -15,6 +15,7 @@
         'views/employee.xml',
         'views/client.xml',
         'views/patrimony.xml',
+        'views/bill.xml',
 
     ],
     'demo': [

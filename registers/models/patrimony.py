@@ -1,8 +1,9 @@
-"""This is the patrimony template and it's associated functions"""
-from odoo import models, fields
+"""This is the file for the 'patrimony' object"""
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 class Patrimony(models.Model):
-    """Fields and functions for the patrimony object"""
+    """This are the fields and functions for the 'patrimony' object"""
     _name = "patrimony"
     _description = "Registro de patrimônio."
 
@@ -18,7 +19,7 @@ class Patrimony(models.Model):
 
     vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
 
-    renavan = fields.Integer(string='Renavan', required=False)
+    renavan = fields.Char(string='Renavan', required=False)
 
     heavy_type = fields.Selection([('escavadeira', 'Escavadeira'),
                                    ('retro_escavadeira', 'Retro Escavadeira'),
@@ -39,13 +40,8 @@ class Patrimony(models.Model):
                                      ('10', 'Número 10'),
                                     ], string="pesado_num")
 
-    def save(self):
-        """Custom saving of a record.
-
-        vals -- dictionary of values present in a model
-        self.env -- model being used
-        .write() -- custom odoo write function
-        """
+    def create_patrimony(self):
+        """This is the custom function for saving an 'patrimony' object"""
         vals = {
             'name': self.name,
             'description': self.description,
@@ -57,4 +53,25 @@ class Patrimony(models.Model):
         }
 
         self.env['patrimony'].write(vals)
-        return {'type': 'ir.actions.act_window_close'}
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Sucesso"),
+                'type': 'success',
+                'message': 'Patrimonio cadastrado com sucesso!',
+                'sticky': False,
+            },
+        }
+
+    @api.constrains('renavan')
+    def _validate_renavan(self):
+        """Checks size of the Renavan variable to limit different lengths"""
+        for rec in self:
+            if len(rec.renavan) != 9:
+                raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto. "
+                                        "Precisa de 9 dígitos"))
+            if not (rec.renavan).isnumeric():
+                raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos. "
+                                        "O campo deve conter apenas números."))

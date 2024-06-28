@@ -1,9 +1,9 @@
-"""This is the employee template and it's associated functions"""
+"""This are the employee template and it's associated functions"""
 from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
-import re
 
 class Employee(models.Model):
+    """Fields and functions for the employee object"""
     _name = "employee"
     _description = "Registro de funcionários."
 
@@ -13,16 +13,54 @@ class Employee(models.Model):
     tel = fields.Char(string='Telefone', required=False)
     cpf = fields.Char(string='CPF', required=True)
     # id = fields.Integer(string='ID', required=True)
-    address = fields.Char(string='Endereço', required=True)
-    cep = fields.Char(string='CEP', required=True)
+    address = fields.Char(string='Endereço', required=False)
+    cep = fields.Char(string='CEP', required=False)
     # company = fields.Char(string='Empresa', required=True)
-    status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')])
+    status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')], required=True)
 
-    def createEmployee(self):
-        self.status = "ativo"
+    def create_employee(self):
+        """This is the custom function for saving an 'employee' object"""
+        vals = {
+            'name': self.name,
+            'email': self.email,
+            'tel': self.tel,
+            'cpf': self.cpf,
+            'address': self.address,
+            'cep': self.cep,
+            'status': self.status,
+        }
+
+        self.env['employee'].write(vals)
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Sucesso"),
+                'type': 'success',
+                'message': 'Funcionario cadastrado com sucesso!',
+                'sticky': False,
+            },
+        }
 
     @api.constrains('cpf')
-    def _check_cpf_size(self):
+    def _validate_cpf(self):
+        """Checks size of the CPF variable to limit different lengths"""
         for rec in self:
-            if len(rec.cpf) != 17:
-                raise ValidationError(_("O campo CPF está errado. Precisa de 17 dígitos"))
+            if len(rec.cpf) != 11:
+                raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
+                                        "Precisa de 11 dígitos"))
+            if not (rec.cpf).isnumeric():
+                raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
+                                        "O campo deve conter apenas números"))
+
+    @api.constrains('cep')
+    def _validate_cep(self):
+        """Checks size of the CEP variable to limit different lengths"""
+        for rec in self:
+            if len(rec.cep) != 8:
+                raise ValidationError(_("O campo 'CEP' está está com o tamanho incorreto. "
+                                        "Precisa de 8 dígitos"))
+            if not (rec.cep).isnumeric():
+                raise ValidationError(_("O campo 'CEP' contém carácteres inválidos. "
+                                        "O campo deve conter apenas números"))
