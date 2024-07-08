@@ -69,9 +69,10 @@ class Patrimony(models.Model):
     def _validate_renavan(self):
         """Checks size of the Renavan variable to limit different lengths"""
         for rec in self:
-            if len(rec.renavan) != 9:
-                raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto. "
-                                        "Precisa de 9 dígitos"))
-            if not (rec.renavan).isnumeric():
-                raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos. "
-                                        "O campo deve conter apenas números."))
+            if rec.renavan:
+                if len(rec.renavan) != 9:
+                    raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto. "
+                                            "Precisa de 9 dígitos"))
+                if not (rec.renavan).isnumeric():
+                    raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números."))

@@ -52,7 +52,7 @@
 
                             <div class="container_button">
 
-                                <button name="create_patrimony" class="btnSecondary mybutton" type="object" string="Cadastro" confirm="Confimar criação de patrimônio?"/>
+                                <button name="create_patrimony" class="btnSecondary mybutton" type="object" string="Salvar" confirm="Confimar dados de patrimônio?"/>
 
                             </div>
 

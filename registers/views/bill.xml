@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bill_form" model="ir.ui.view">
+        <field name="name">bill.form</field>
+        <field name="model">bill</field>
+        <field name="arch" type="xml">
+            <form class="myform" string="Cadastro de Conta">
+
+            <div class="container_form bill_form">
+                <h1>Cadastro de Conta</h1>
+                    <article class="container_form_contents">
+                        <section class="group">
+
+                            <div class="container_field">
+                                <span>ID:</span>
+                                <field class="field" name="bill_id" readonly='1'/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Valor da conta:</span>
+                                <field class="field" name="value"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Origem:</span>
+                                <field class="field" name="origin"/>
+                            </div>
+
+                              <div class="subgroup">
+                                <div class="container_field" invisible="not origin">
+                                    <span>Nome:</span>
+                                    <field class="field" name="name"/>
+                                </div>
+
+                                <div class="container_field" invisible="origin != 'is_cpf'">
+                                    <span>CPF:</span>
+                                    <field class="field" name="cpf"/>
+                                </div>
+
+                                <div class="container_field" invisible="origin != 'is_cnpj'">
+                                    <span>CNPJ:</span>
+                                    <field class="field" name="cnpj"/>
+                                </div>
+
+                            </div>
+
+                            <div class="container_field">
+                                <span>Arquivo PDF:</span>
+                                <field class="field" name="bill_file" filename="filename"/>
+                                <field name="filename" invisible="1"/>
+                            </div>
+
+                        </section>
+
+                        <section class="group">
+
+                            <div class="container_field">
+                                <span>Data de Registro:</span>
+                                <field class="field" name="register_date" readonly='1'/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Data de Vencimento:</span>
+                                <field class="field" name="validation_date"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Descrição:</span>
+                                <field class="field" name ="description"/>
+                            </div>
+
+
+
+                            <div class="container_button">
+                                <button name="create_bill" class="btnSecondary mybutton" type="object" string="Salvar" confirm="Confimar dados de conta?"/>
+                            </div>
+
+                        </section>
+
+                    </article>
+            </div>
+            </form>
+
+
+        </field>
+
+    </record>
+
+    <record id="view_bill_tree" model="ir.ui.view">
+        <field name="name">bill.tree</field>
+        <field name="model">bill</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field class="test" name="bill_id"/>
+                <field class="test" name="validation_date"/>
+                <field class="test" name="value"/>
+                <field class="test" name="origin"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_register_bill" model="ir.actions.act_window">
+        <field name="name">Contas</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">bill</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_bill_register"
+            parent="menu_register"
+            action="action_register_bill"
+            name="Contas"
+            sequence="12"/>
+</odoo>

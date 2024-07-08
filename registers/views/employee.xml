@@ -57,7 +57,7 @@
 
                             <div class="container_button">
 
-                                <button class="btnSecondary mybutton" name="create_employee" type="object" string="Cadastro" confirm="Confimar criação de funcionário?"/>
+                                <button class="btnSecondary mybutton" name="create_employee" type="object" string="Salvar" confirm="Confimar dados de funcionário?"/>
 
                             </div>
                         </section>

@@ -58,9 +58,10 @@ class Employee(models.Model):
     def _validate_cep(self):
         """Checks size of the CEP variable to limit different lengths"""
         for rec in self:
-            if len(rec.cep) != 8:
-                raise ValidationError(_("O campo 'CEP' está está com o tamanho incorreto. "
-                                        "Precisa de 8 dígitos"))
-            if not (rec.cep).isnumeric():
-                raise ValidationError(_("O campo 'CEP' contém carácteres inválidos. "
-                                        "O campo deve conter apenas números"))
+            if rec.cep:
+                if len(rec.cep) != 8:
+                    raise ValidationError(_("O campo 'CEP' está está com o tamanho incorreto. "
+                                            "Precisa de 8 dígitos"))
+                if not (rec.cep).isnumeric():
+                    raise ValidationError(_("O campo 'CEP' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números"))
