@@ -19,36 +19,30 @@
 
                             <div class="container_field">
                                 <span>Valor da conta:</span>
-                                <field class="field" name="value"/>
+                                <field class="field" name="value" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                             <div class="container_field">
                                 <span>Origem:</span>
-                                <field class="field" name="origin"/>
+                                <field class="field" name="origin" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                               <div class="subgroup">
                                 <div class="container_field" invisible="not origin">
                                     <span>Nome:</span>
-                                    <field class="field" name="name"/>
+                                    <field class="field" name="name" readonly="bill_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'is_cpf'">
                                     <span>CPF:</span>
-                                    <field class="field" name="cpf"/>
+                                    <field class="field" name="cpf" readonly="bill_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'is_cnpj'">
                                     <span>CNPJ:</span>
-                                    <field class="field" name="cnpj"/>
+                                    <field class="field" name="cnpj" readonly="bill_status != 'Provisória'"/>
                                 </div>
 
-                            </div>
-
-                            <div class="container_field">
-                                <span>Arquivo PDF:</span>
-                                <field class="field" name="bill_file" filename="filename"/>
-                                <field name="filename" invisible="1"/>
                             </div>
 
                         </section>
@@ -62,18 +56,36 @@
 
                             <div class="container_field">
                                 <span>Data de Vencimento:</span>
-                                <field class="field" name="validation_date"/>
+                                <field class="field" name="validation_date" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                             <div class="container_field">
                                 <span>Descrição:</span>
-                                <field class="field" name ="description"/>
+                                <field class="field" name="description" readonly="bill_status != 'Provisória'"/>
                             </div>
 
+                            <div class="container_field">
+                                <span>Arquivo PDF:</span>
+                                <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'"/>
+                                <field class="field" name="filename" invisible="1" readonly="bill_status != 'Provisória'"/>
+                            </div>
 
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Status:</span>
+                                    <field class="field" name="bill_status" readonly='1'/>
+                                </div>
 
-                            <div class="container_button">
-                                <button name="create_bill" class="btnSecondary mybutton" type="object" string="Salvar" confirm="Confimar dados de conta?"/>
+                                <div class="container_button">
+                                    <button name="create_bill" class="btnSecondary mybutton" type="object" string="Salvar"
+                                    confirm="Confimar dados de conta?" invisible="bill_status != 'Provisória'"/>
+                                </div>
+
+                                <div class="container_button">
+                                    <button name="update_bill_status" class="btnSecondary mybutton" type="object" string="Atualizar"
+                                    onfirm="Autalizar o status da conta?" invisible="bill_status == 'Paga'"/>
+                                </div>
+
                             </div>
 
                         </section>
@@ -94,7 +106,7 @@
             <tree>
                 <field class="test" name="bill_id"/>
                 <field class="test" name="validation_date"/>
-                <field class="test" name="value"/>
+                <field class="test" name="bill_status"/>
                 <field class="test" name="origin"/>
             </tree>
         </field>
