@@ -75,9 +75,10 @@
         <field name="model">employee</field>
         <field name="arch" type="xml">
             <tree>
-            <field class="test" name="name"/>
-            <field class="test" name="cpf"/>
-            <field class="test" name="status"/>
+                <field class="test" name="name"/>
+                <field class="test" name="cpf"/>
+                <field class="test" name="status" decoration-success="status == 'ativo'"
+                decoration-danger="status == 'desligado'"/>
             </tree>
         </field>
     </record>

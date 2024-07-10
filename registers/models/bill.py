@@ -8,6 +8,7 @@ import pytz
 class Bill(models.Model):
     """Fields and functions for the bill object"""
 
+
     def _generate_bill_id(self):
         """Function to generate an ID for the bill object"""
         return uuid4().node
@@ -30,6 +31,7 @@ class Bill(models.Model):
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor')],
                                                     string='Fonte', required=False)
     bill_status = fields.Char(string='Status da Conta', default='Provisória')
+    signature = fields.Binary(string='Assinatura', required=True)
     name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -68,8 +70,11 @@ class Bill(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': 'Contra cadastrado com sucesso!',
+                'message': _('Dados salvos com sucesso!'),
                 'sticky': False,
+                'next': {
+                    'type': 'ir.actions.act_window_close',
+                }
             },
         }
 
@@ -85,10 +90,14 @@ class Bill(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': f'O status foi atualizado para {self.bill_status}!',
+                'message': _('Status atualizado para ' + self.bill_status + '!'),
                 'sticky': False,
+                'next': {
+                    'type': 'ir.actions.act_window_close',
+                }
             },
         }
+
 
     @api.constrains('value')
     def _validate_value(self):

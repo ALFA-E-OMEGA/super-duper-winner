@@ -8,7 +8,7 @@
             <form class="myform" string="Cadastro de Conta">
 
             <div class="container_form bill_form">
-                <h1>Cadastro de Conta</h1>
+                <h1>Conta a Pagar</h1>
                     <article class="container_form_contents">
                         <section class="group">
 
@@ -43,6 +43,11 @@
                                     <field class="field" name="cnpj" readonly="bill_status != 'Provisória'"/>
                                 </div>
 
+                            </div>
+
+                            <div class="container_field">
+                                <span>Assinatura:</span>
+                                <field class="field" name="signature" widget="signature" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                         </section>
@@ -106,7 +111,8 @@
             <tree>
                 <field class="test" name="bill_id"/>
                 <field class="test" name="validation_date"/>
-                <field class="test" name="bill_status"/>
+                <field class="test" name="bill_status" decoration-info="bill_status == 'Provisória'"
+                decoration-success="bill_status == 'Autorizada'" decoration-primary = "bill_status == 'Paga'"/>
                 <field class="test" name="origin"/>
             </tree>
         </field>

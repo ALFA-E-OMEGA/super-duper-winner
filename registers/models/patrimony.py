@@ -15,7 +15,7 @@ class Patrimony(models.Model):
     classification = fields.Selection([('vehicles', 'Veículos'),
                                         ('heavies', 'Equipamento Pesado'),
                                         ('others', 'Outros')
-                                        ], string = 'Classificação')
+                                        ], string = 'Classificação', required=True)
 
     vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
 
@@ -42,6 +42,20 @@ class Patrimony(models.Model):
 
     def create_patrimony(self):
         """This is the custom function for saving an 'patrimony' object"""
+
+        """This 'if-else' eliminates fields that might have been otherwise filled but don't match the current 'classification'"""
+        if self.classification == 'others':
+            self.renavan = ''
+            self.heavy_number = ''
+            self.heavy_type = ''
+            self.vehicle_plate = ''
+        elif self.classification == 'vehciles':
+            self.heavy_number = ''
+            self.heavy_type = ''
+        elif self.classification == 'heavies':
+            self.renavan = ''
+            self.vehicle_plate = ''
+
         vals = {
             'name': self.name,
             'description': self.description,
@@ -60,16 +74,19 @@ class Patrimony(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': 'Patrimonio cadastrado com sucesso!',
+                'message': _('Dados salvos com sucesso!'),
                 'sticky': False,
+                'next': {
+                    'type': 'ir.actions.act_window_close',
+                }
             },
         }
 
     @api.constrains('renavan')
     def _validate_renavan(self):
-        """Checks size of the Renavan variable to limit different lengths"""
+        """Checks size of the Renavan variable to limit different lengths and checks for non-numeric characters"""
         for rec in self:
-            if rec.renavan:
+            if rec.renavan and self.classification == 'vehicles':
                 if len(rec.renavan) != 9:
                     raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto. "
                                             "Precisa de 9 dígitos"))
