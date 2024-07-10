@@ -28,8 +28,9 @@ class Bill(models.Model):
     validation_date = fields.Date(string='Data de Vencimento', required=True)
     description = fields.Char(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
-    origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor')],
-                                                    string='Fonte', required=False)
+    origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
+                               ('other', 'Outro')], string='Fonte', required=True,
+                               default='other')
     bill_status = fields.Char(string='Status da Conta', default='Provisória')
     signature = fields.Binary(string='Assinatura', required=True)
     name = fields.Char(string='Nome', required=False)
