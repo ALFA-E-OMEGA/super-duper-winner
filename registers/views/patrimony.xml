@@ -22,37 +22,37 @@
                             </div>
 
                             <div class="container_field">
-                                <span>Classificação do Patrimônio:</span>
+                                <span>Classificação:</span>
                                 <field class="field" name="classification"/>
                             </div>
                         </section>
                         <section class="group">
 
                             <div class="container_field"  invisible="classification != 'vehicles'">
-                                <span>Digite o Renavan:</span>
+                                <span>Renavan:</span>
                                 <field class="field" name="renavan" />
                             </div>
 
                             <div class="container_field" invisible="classification != 'vehicles'">
-                                <span >Digite a Placa do Veículo:</span>
+                                <span >Placa do Veículo:</span>
                                 <field class="field" name="vehicle_plate"/>
                             </div>
 
 
                             <div class="container_field" invisible="classification != 'heavies'">
-                                <span >Selecione o Tipo de Veículo:</span>
+                                <span >Tipo de Veículo:</span>
                                 <field class="field" name="heavy_type"/>
                             </div>
 
 
                             <div class="container_field" invisible="classification != 'heavies'">
-                                <span >Selecione o número do equipamento:</span>
+                                <span >Número do equipamento:</span>
                                 <field class="field" name="heavy_number"/>
                             </div>
 
                             <div class="container_button">
 
-                                <button name="create_patrimony" class="btnSecondary mybutton" type="object" string="Cadastro" confirm="Confimar criação de patrimônio?"/>
+                                <button name="create_patrimony" class="btnSecondary mybutton" type="object" string="Salvar" confirm="Confimar dados de patrimônio?"/>
 
                             </div>
 

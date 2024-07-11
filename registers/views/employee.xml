@@ -48,7 +48,7 @@
 
 
                                 <div class="container_field">
-                                    <span>Selecione o status:</span>
+                                    <span>Status:</span>
                                     <field class="field" name="status"/>
                                 </div>
 
@@ -57,7 +57,7 @@
 
                             <div class="container_button">
 
-                                <button class="btnSecondary mybutton" name="create_employee" type="object" string="Cadastro" confirm="Confimar criação de funcionário?"/>
+                                <button class="btnSecondary mybutton" name="create_employee" type="object" string="Salvar" confirm="Confimar dados de funcionário?"/>
 
                             </div>
                         </section>
@@ -75,9 +75,10 @@
         <field name="model">employee</field>
         <field name="arch" type="xml">
             <tree>
-            <field class="test" name="name"/>
-            <field class="test" name="cpf"/>
-            <field class="test" name="status"/>
+                <field class="test" name="name"/>
+                <field class="test" name="cpf"/>
+                <field class="test" name="status" decoration-success="status == 'ativo'"
+                decoration-danger="status == 'desligado'"/>
             </tree>
         </field>
     </record>

@@ -1,4 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-cadastro.access_employee,access_employee,cadastro.model_employee,base.group_user,1,1,1,1
-cadastro.access_client,access_client,cadastro.model_client,base.group_user,1,0,0,0
-cadastro.access_patrimony,access_patrimony,cadastro.model_patrimony,base.group_user,1,1,1,1
+registers.access_employee,access_employee,registers.model_employee,base.group_user,1,1,1,1
+registers.access_client,access_client,registers.model_client,base.group_user,1,0,0,0
+registers.access_patrimony,access_patrimony,registers.model_patrimony,base.group_user,1,1,1,1
+registers.access_bill,ccess_bill,registers.model_bill,base.group_user,1,1,1,1

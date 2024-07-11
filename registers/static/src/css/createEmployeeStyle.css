@@ -37,16 +37,15 @@
         opacity: 1;
         transform: translateX(0px);
     }
-} 
+}
 
 option[value='"Heavies"']{
     display: none;
 }
 
-.container_field span{
+ .container_field span{
     text-transform: capitalize;
     font-weight: bold;
-    margin-bottom: .85rem;
 }
 
 /* .container_field select{
