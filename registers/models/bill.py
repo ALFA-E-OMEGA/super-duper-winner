@@ -20,7 +20,7 @@ class Bill(models.Model):
         return date_today.date()
 
     _name = "bill"
-    _description = "Reistro de Contas."
+    _description = "Registro de Contas."
 
     bill_id = fields.Char(string='ID Conta', default=_generate_bill_id)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
@@ -133,6 +133,7 @@ class Bill(models.Model):
 
     @api.constrains('bill_file')
     def _check_file(self):
+        """Checks if the binary file is a '.pdf' file"""
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                     raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
