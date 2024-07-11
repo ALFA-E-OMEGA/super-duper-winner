@@ -1,8 +1,8 @@
 """This are the bill template and it's associated functions"""
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
 from uuid import uuid4
 from datetime import datetime
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 import pytz
 
 class Bill(models.Model):
@@ -80,6 +80,7 @@ class Bill(models.Model):
         }
 
     def update_bill_status(self):
+        """This function changes the bill status and locks editing the file"""
         if self.bill_status == 'Provisória':
             self.bill_status = 'Autorizada'
         elif self.bill_status == 'Autorizada':
@@ -136,4 +137,4 @@ class Bill(models.Model):
         """Checks if the binary file is a '.pdf' file"""
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
-                    raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
+                raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")

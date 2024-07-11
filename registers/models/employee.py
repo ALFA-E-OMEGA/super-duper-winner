@@ -47,7 +47,8 @@ class Employee(models.Model):
 
     @api.constrains('cpf')
     def _validate_cpf(self):
-        """Checks size of the CPF variable to limit different lengths and checks for non-numeric characters"""
+        """Checks size of the CPF variable to limit different lengths
+        and checks for non-numeric characters"""
         for rec in self:
             if len(rec.cpf) != 11:
                 raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
@@ -58,7 +59,8 @@ class Employee(models.Model):
 
     @api.constrains('cep')
     def _validate_cep(self):
-        """Checks size of the CEP variable to limit different lengths and checks for non-numeric characters"""
+        """Checks size of the CEP variable to limit different lengths
+        and checks for non-numeric characters"""
         for rec in self:
             if rec.cep:
                 if len(rec.cep) != 8:

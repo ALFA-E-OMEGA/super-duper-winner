@@ -41,9 +41,9 @@ class Patrimony(models.Model):
                                     ], string="pesado_num")
 
     def create_patrimony(self):
-        """This is the custom function for saving an 'patrimony' object"""
+        """This is the custom function for saving an 'patrimony' object,
+        clearing fields that are not going to be saves"""
 
-        """This 'if-else' eliminates fields that might have been otherwise filled but don't match the current 'classification'"""
         if self.classification == 'others':
             self.renavan = ''
             self.heavy_number = ''
@@ -84,7 +84,8 @@ class Patrimony(models.Model):
 
     @api.constrains('renavan')
     def _validate_renavan(self):
-        """Checks size of the Renavan variable to limit different lengths and checks for non-numeric characters"""
+        """Checks size of the Renavan variable to limit different lengths
+        and checks for non-numeric characters"""
         for rec in self:
             if rec.renavan and self.classification == 'vehicles':
                 if len(rec.renavan) != 9:
