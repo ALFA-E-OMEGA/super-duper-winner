@@ -23,17 +23,24 @@
 
                             <div class="subgroup">
                                 <div class="container_field">
-                                    <span>telefone:</span>
-                                    <field class="field" name="tel"/>
+                                    <span>Telefone 1:</span>
+                                    <field class="field" name="tel_one"/>
                                 </div>
-
 
                                 <div class="container_field">
-                                    <span>CPF:</span>
-                                    <field class="field" name="cpf"/>
+                                    <span>Telefone 2:</span>
+                                    <field class="field" name="tel_two" widget="phone"/>
                                 </div>
+
                             </div>
+
+                            <div class="container_field">
+                                <span>Status:</span>
+                                <field class="field" name="status"/>
+                            </div>
+
                         </section>
+
                         <section class="group">
                              <div class="container_field">
                                 <span>Endereço:</span>
@@ -46,13 +53,29 @@
                                     <field class="field" name="cep"/>
                                 </div>
 
-
                                 <div class="container_field">
-                                    <span>Status:</span>
-                                    <field class="field" name="status"/>
+                                    <span>CPF:</span>
+                                    <field class="field" name="cpf"/>
                                 </div>
 
+                            </div>
 
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>PIS-PASEP:</span>
+                                    <field class="field" name="pis_pasep"/>
+                                </div>
+
+                                <div class="container_field">
+                                    <span>N° Carteira de Trabalho:</span>
+                                    <field class="field" name="cart_trabalho"/>
+                                </div>
+
+                            </div>
+
+                            <div class="container_field">
+                                <span>RG:</span>
+                                <field class="field" name="rg"/>
                             </div>
 
                             <div class="container_button">
@@ -60,7 +83,9 @@
                                 <button class="btnSecondary mybutton" name="create_employee" type="object" string="Salvar" confirm="Confimar dados de funcionário?"/>
 
                             </div>
+
                         </section>
+
                     </article>
             </div>
             </form>
