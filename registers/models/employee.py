@@ -1,4 +1,5 @@
 """This are the employee template and it's associated functions"""
+# pylint: skip-file
 from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
 
@@ -107,8 +108,8 @@ class Employee(models.Model):
         and checks for non-numeric characters"""
         for rec in self:
             if len(rec.cart_trabalho) != 11:
-                raise ValidationError(_("O campo 'N° Carteira de Trabalho' está com o tamanho incorreto. "
+                raise ValidationError(_("O campo 'Carteira de Trabalho' está com o tamanho incorreto."
                                         "Precisa de 11 dígitos"))
             if not (rec.cart_trabalho).isnumeric():
-                raise ValidationError(_("O campo 'N° Carteira de Trabalho' contém carácteres inválidos. "
+                raise ValidationError(_("O campo 'Carteira de Trabalho' contém carácteres inválidos."
                                         "O campo deve conter apenas números"))
