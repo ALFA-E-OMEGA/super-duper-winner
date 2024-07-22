@@ -19,7 +19,7 @@
 
                             <div class="container_field">
                                 <span>Valor da conta:</span>
-                                <field class="field" name="value" readonly="bill_status != 'Provisória'"/>
+                                <field class="field" name="value" readonly="bill_status != 'Provisória'"  widget="monetary"/>
                             </div>
 
                             <div class="container_field">
@@ -46,8 +46,9 @@
                             </div>
 
                             <div class="container_field">
-                                <span>Assinatura:</span>
-                                <field class="field" name="signature" widget="signature" readonly="bill_status != 'Provisória'"/>
+                                <span>Arquivo PDF:</span>
+                                <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'" widget="pdf_viewer"/>
+                                <field class="field" name="filename" invisible="1" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                         </section>
@@ -70,9 +71,8 @@
                             </div>
 
                             <div class="container_field">
-                                <span>Arquivo PDF:</span>
-                                <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'"/>
-                                <field class="field" name="filename" invisible="1" readonly="bill_status != 'Provisória'"/>
+                                <span>Assinatura:</span>
+                                <field class="field" name="signature" widget="signature" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                             <div class="subgroup">
