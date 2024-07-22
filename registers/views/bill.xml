@@ -19,7 +19,12 @@
 
                             <div class="container_field">
                                 <span>Valor da conta:</span>
-                                <field class="field" name="value" readonly="bill_status != 'Provisória'"  widget="monetary"/>
+                                <field class="field" name="value" readonly="bill_status != 'Provisória'"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Centro de Custo:</span>
+                                <field class="field" name="cost_center_id" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                             <div class="container_field">
