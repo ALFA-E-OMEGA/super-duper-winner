@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="view_cost_center_form" model="ir.ui.view">
-        <field name="name">cost_center.form</field>
-        <field name="model">cost_center</field>
+    <record id="view_service_form" model="ir.ui.view">
+        <field name="name">service.form</field>
+        <field name="model">service</field>
         <field name="arch" type="xml">
-            <form class="myform" string="Cadastro de Centro de Custo">
+            <form class="myform" string="Cadastro de Serviço">
 
-            <div class="container_form cost_center_form">
-                <h1>Centro de Custo</h1>
+            <div class="container_form service_form">
+                <h1>Serviço</h1>
                     <article class="container_form_contents">
                         <section class="group">
                             <div class="container_field">
                                 <span>ID:</span>
-                                <field class="field" name="id_cost_center"/>
+                                <field class="field" name="id_service"/>
                             </div>
 
                             <div class="container_field">
@@ -29,8 +29,13 @@
                                 <field class="field" name="name"/>
                             </div>
 
+                            <div class="container_field">
+                                <span>Tipo:</span>
+                                <field class="field" name="type"/>
+                            </div>
+
                             <div class="container_button">
-                                <button name="create_cost_center" class="btnSecondary mybutton"
+                                <button name="create_service" class="btnSecondary mybutton"
                                 type="object" string="Salvar"
                                 confirm="Confimar dados de Centro de Custo?"/>
                             </div>
@@ -46,9 +51,9 @@
 
     </record>
 
-    <record id="view_cost_center_tree" model="ir.ui.view">
-        <field name="name">cost_center.tree</field>
-        <field name="model">cost_center</field>
+    <record id="view_service_tree" model="ir.ui.view">
+        <field name="name">service.tree</field>
+        <field name="model">service</field>
         <field name="arch" type="xml">
             <tree>
                 <field class="test" name="id"/>
@@ -57,17 +62,16 @@
         </field>
     </record>
 
-    <record id="action_register_cost_center" model="ir.actions.act_window">
-        <field name="name">Centro de Custo</field>
+    <record id="action_register_service" model="ir.actions.act_window">
+        <field name="name">Serviços</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">cost_center</field>
+        <field name="res_model">service</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_financeiro" name="Financeiro" sequence="13" parent="menu_register">
-        <menuitem  id="menu_cost_center_register"
-            action="action_register_cost_center"
-            name="Centro de Custo"
-            sequence="3"/>
-    </menuitem>
+    <menuitem  id="menu_service_register"
+            parent="menu_register"
+            action="action_register_service"
+            name="Serviços"
+            sequence="14"/>
 </odoo>

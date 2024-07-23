@@ -131,8 +131,8 @@
     </record>
 
     <menuitem id="menu_bill_register"
-            parent="menu_register"
+            parent="menu_financeiro"
             action="action_register_bill"
             name="Contas a Pagar"
-            sequence="12"/>
+            sequence="2"/>
 </odoo>

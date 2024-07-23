@@ -17,6 +17,7 @@
         'views/patrimony.xml',
         'views/bill.xml',
         'views/cost_center.xml',
+        'views/service.xml',
 
     ],
     'demo': [
