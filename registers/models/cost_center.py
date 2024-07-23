@@ -2,7 +2,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-class cost_center(models.Model):
+class CostCenter(models.Model):
     """Fields and functions for the cost_center object"""
     _name = "cost_center"
     _description = "Registro de Centro de Custo."
@@ -21,12 +21,25 @@ class cost_center(models.Model):
 
         self.env['cost_center'].write(vals)
 
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Sucesso"),
+                'type': 'success',
+                'message': _('Dados salvos com sucesso!'),
+                'sticky': False,
+                'next': {
+                    'type': 'ir.actions.act_window_close',
+                }
+            },
+        }
+
     @api.constrains('id_cost_center')
     def _validate_renavan(self):
         """Checks size of the 'id_cost_center' variable
         for non-numeric characters"""
         for rec in self:
             if not (rec.id_cost_center).isnumeric():
-                raise ValidationError(_("O campo 'Centro de Custo' contém carácteres inválidos. "
+                raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
-

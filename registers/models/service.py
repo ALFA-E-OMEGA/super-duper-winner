@@ -2,7 +2,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-class service(models.Model):
+class Service(models.Model):
     """Fields and functions for the service object"""
     _name = "service"
     _description = "Registro de Centro de Custo."
