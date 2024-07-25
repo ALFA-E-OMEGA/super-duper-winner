@@ -36,7 +36,7 @@ class CostCenter(models.Model):
         }
 
     @api.constrains('id_cost_center')
-    def _validate_renavan(self):
+    def _validate_id_cost_center(self):
         """Checks size of the 'id_cost_center' variable
         for non-numeric characters"""
         for rec in self:

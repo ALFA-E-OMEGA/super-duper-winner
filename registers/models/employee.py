@@ -78,7 +78,7 @@ class Employee(models.Model):
                                             "O campo deve conter apenas números"))
 
     @api.constrains('pis_pasep')
-    def _validate_cpf(self):
+    def _validate_pis_pasep(self):
         """Checks size of the PIS-PASEP variable to limit different lengths
         and checks for non-numeric characters"""
         for rec in self:
@@ -90,7 +90,7 @@ class Employee(models.Model):
                                         "O campo deve conter apenas números"))
 
     @api.constrains('rg')
-    def _validate_cpf(self):
+    def _validate_rg(self):
         """Checks size of the RG variable to limit different lengths
         and checks for non-numeric characters"""
         for rec in self:
@@ -103,13 +103,40 @@ class Employee(models.Model):
                                             "O campo deve conter apenas números"))
 
     @api.constrains('cart_trabalho')
-    def _validate_cpf(self):
+    def _validate_cart_trabalho(self):
         """Checks size of the Carteira de Trabalho variable to limit different lengths
         and checks for non-numeric characters"""
         for rec in self:
-            if len(rec.cart_trabalho) != 11:
-                raise ValidationError(_("O campo 'Carteira de Trabalho' está com o tamanho incorreto."
+            if rec.cart_trabalho:
+                if len(rec.cart_trabalho) != 11:
+                    raise ValidationError(_("O campo 'Carteira de Trabalho' está com o tamanho incorreto. "
+                                            "Precisa de 11 dígitos"))
+                if not (rec.cart_trabalho).isnumeric():
+                    raise ValidationError(_("O campo 'Carteira de Trabalho' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números"))
+
+    @api.constrains('tel_one')
+    def _validate_tel_one(self):
+        """Checks size of the 'tel_one' variable to limit different lengths
+        and checks for non-numeric characters"""
+        for rec in self:
+            if len(rec.tel_one) != 11:
+                raise ValidationError(_("O campo 'Telefone 1' está com o tamanho incorreto. "
                                         "Precisa de 11 dígitos"))
-            if not (rec.cart_trabalho).isnumeric():
-                raise ValidationError(_("O campo 'Carteira de Trabalho' contém carácteres inválidos."
+            if not (rec.tel_one).isnumeric():
+                raise ValidationError(_("O campo 'Telefone 1' contém carácteres inválidos. "
                                         "O campo deve conter apenas números"))
+
+    @api.constrains('tel_two')
+    def _validate_tel_two(self):
+        """Checks size of the PIS-PASEP variable to limit different lengths
+        and checks for non-numeric characters"""
+        for rec in self:
+            if rec.tel_two:
+                if len(rec.tel_two) != 11:
+                    raise ValidationError(_("O campo 'Telefone 2' está com o tamanho incorreto."
+                                            "Precisa de 11 dígitos"))
+                if not (rec.tel_two).isnumeric():
+                    raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos."
+                                            "O campo deve conter apenas números"))
+

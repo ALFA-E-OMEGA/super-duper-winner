@@ -119,5 +119,5 @@
             parent="menu_registro"
             action="action_register_employee"
             name="Funcionários"
-            sequence="1"/>
+            sequence="4"/>
 </odoo>

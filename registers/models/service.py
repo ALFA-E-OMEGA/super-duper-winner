@@ -38,7 +38,7 @@ class Service(models.Model):
         }
 
     @api.constrains('id_service')
-    def _validate_renavan(self):
+    def _validate_id_service(self):
         """Checks size of the 'id_service' variable
         for non-numeric characters"""
         for rec in self:
