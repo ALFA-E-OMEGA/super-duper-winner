@@ -8,8 +8,8 @@
     </record>
 
     <menuitem  id="menu_clients_register"
-            parent="menu_register"
+            parent="menu_registro"
             action="action_register_client"
-            name="Cadastro de Clientes"
-            sequence="10"/>
+            name="Clientes"
+            sequence="2"/>
 </odoo>

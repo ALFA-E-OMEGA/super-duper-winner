@@ -86,8 +86,8 @@
     </record>
 
     <menuitem id="menu_patrimony_register"
-            parent="menu_register"
+            parent="menu_registro"
             action="action_register_patrimony"
             name="Patrimônio"
-            sequence="11"/>
+            sequence="3"/>
 </odoo>

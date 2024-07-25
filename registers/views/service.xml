@@ -70,8 +70,8 @@
     </record>
 
     <menuitem  id="menu_service_register"
-            parent="menu_register"
+            parent="menu_financeiro"
             action="action_register_service"
             name="Serviços"
-            sequence="14"/>
+            sequence="4"/>
 </odoo>

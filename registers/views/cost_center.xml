@@ -64,10 +64,9 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_financeiro" name="Financeiro" sequence="13" parent="menu_register">
-        <menuitem  id="menu_cost_center_register"
-            action="action_register_cost_center"
-            name="Centro de Custo"
-            sequence="3"/>
-    </menuitem>
+    <menuitem  id="menu_cost_center_register"
+        parent="menu_financeiro"
+        action="action_register_cost_center"
+        name="Centro de Custo"
+        sequence="3"/>
 </odoo>
