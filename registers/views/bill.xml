@@ -24,7 +24,7 @@
 
                             <div class="container_field">
                                 <span>Centro de Custo:</span>
-                                <field class="field" name="cost_center_id" readonly="bill_status != 'Provisória'"/>
+                                <field class="field" name="cost_center_id" widget="selection" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                             <div class="container_field">
