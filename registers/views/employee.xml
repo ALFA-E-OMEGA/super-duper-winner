@@ -116,8 +116,8 @@
     </record>
 
     <menuitem  id="menu_employees_register"
-            parent="menu_register"
+            parent="menu_registro"
             action="action_register_employee"
             name="Funcionários"
-            sequence="10"/>
+            sequence="4"/>
 </odoo>

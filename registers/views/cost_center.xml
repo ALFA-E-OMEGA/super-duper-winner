@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cost_center_form" model="ir.ui.view">
+        <field name="name">cost_center.form</field>
+        <field name="model">cost_center</field>
+        <field name="arch" type="xml">
+            <form class="myform" string="Cadastro de Centro de Custo">
+
+            <div class="container_form cost_center_form">
+                <h1>Centro de Custo</h1>
+                    <article class="container_form_contents">
+                        <section class="group">
+                            <div class="container_field">
+                                <span>ID:</span>
+                                <field class="field" name="id_cost_center"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Descrição:</span>
+                                <field class="field" name="about"/>
+                            </div>
+
+                        </section>
+
+                        <section class="group">
+                            <div class="container_field">
+                                <span>Nome:</span>
+                                <field class="field" name="name"/>
+                            </div>
+
+                            <div class="container_button">
+                                <button name="create_cost_center" class="btnSecondary mybutton"
+                                type="object" string="Salvar"
+                                confirm="Confimar dados de Centro de Custo?"/>
+                            </div>
+
+                        </section>
+
+                    </article>
+            </div>
+            </form>
+
+
+        </field>
+
+    </record>
+
+    <record id="view_cost_center_tree" model="ir.ui.view">
+        <field name="name">cost_center.tree</field>
+        <field name="model">cost_center</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field class="test" name="id"/>
+                <field class="test" name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_register_cost_center" model="ir.actions.act_window">
+        <field name="name">Centro de Custo</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cost_center</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem  id="menu_cost_center_register"
+        parent="menu_financeiro"
+        action="action_register_cost_center"
+        name="Centro de Custo"
+        sequence="3"/>
+</odoo>

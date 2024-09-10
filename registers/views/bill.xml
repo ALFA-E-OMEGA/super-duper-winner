@@ -23,6 +23,11 @@
                             </div>
 
                             <div class="container_field">
+                                <span>Centro de Custo:</span>
+                                <field class="field" name="cost_center_id" widget="selection" readonly="bill_status != 'Provisória'"/>
+                            </div>
+
+                            <div class="container_field">
                                 <span>Origem:</span>
                                 <field class="field" name="origin" readonly="bill_status != 'Provisória'"/>
                             </div>
@@ -46,8 +51,9 @@
                             </div>
 
                             <div class="container_field">
-                                <span>Assinatura:</span>
-                                <field class="field" name="signature" widget="signature" readonly="bill_status != 'Provisória'"/>
+                                <span>Arquivo PDF:</span>
+                                <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'" widget="pdf_viewer"/>
+                                <field class="field" name="filename" invisible="1" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                         </section>
@@ -70,9 +76,8 @@
                             </div>
 
                             <div class="container_field">
-                                <span>Arquivo PDF:</span>
-                                <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'"/>
-                                <field class="field" name="filename" invisible="1" readonly="bill_status != 'Provisória'"/>
+                                <span>Assinatura:</span>
+                                <field class="field" name="signature" widget="signature" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                             <div class="subgroup">
@@ -126,8 +131,8 @@
     </record>
 
     <menuitem id="menu_bill_register"
-            parent="menu_register"
+            parent="menu_financeiro"
             action="action_register_bill"
             name="Contas a Pagar"
-            sequence="12"/>
+            sequence="2"/>
 </odoo>
