@@ -46,14 +46,14 @@
 
     </record>
 
-    <record id="view_cost_center_tree" model="ir.ui.view">
-        <field name="name">cost_center.tree</field>
+    <record id="view_cost_center_list" model="ir.ui.view">
+        <field name="name">cost_center.list</field>
         <field name="model">cost_center</field>
         <field name="arch" type="xml">
-            <tree>
+            <list string="Centro de Custo">
                 <field class="test" name="id"/>
                 <field class="test" name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -61,7 +61,7 @@
         <field name="name">Centro de Custo</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">cost_center</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem  id="menu_cost_center_register"

@@ -66,15 +66,15 @@
 
     </record>
 
-    <record id="view_patrimony_tree" model="ir.ui.view">
-        <field name="name">patrimony.tree</field>
+    <record id="view_patrimony_list" model="ir.ui.view">
+        <field name="name">patrimony.list</field>
         <field name="model">patrimony</field>
         <field name="arch" type="xml">
-            <tree>
+            <list string="Patrimônio">
             <field class="test" name="name"/>
             <field class="test" name="description"/>
             <field class="test" name="classification"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -82,7 +82,7 @@
         <field name="name">Listagem de Patrimônio</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">patrimony</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_patrimony_register"

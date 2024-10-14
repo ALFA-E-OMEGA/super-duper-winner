@@ -109,17 +109,17 @@
 
     </record>
 
-    <record id="view_bill_tree" model="ir.ui.view">
-        <field name="name">bill.tree</field>
+    <record id="view_bill_list" model="ir.ui.view">
+        <field name="name">bill.list</field>
         <field name="model">bill</field>
         <field name="arch" type="xml">
-            <tree>
+            <list string="Contas a Pagar">
                 <field class="test" name="bill_id"/>
                 <field class="test" name="validation_date"/>
                 <field class="test" name="bill_status" decoration-info="bill_status == 'Provisória'"
                 decoration-success="bill_status == 'Autorizada'" decoration-primary = "bill_status == 'Paga'"/>
                 <field class="test" name="origin"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -127,7 +127,7 @@
         <field name="name">Conta</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">bill</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_bill_register"

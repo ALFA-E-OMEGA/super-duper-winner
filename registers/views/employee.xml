@@ -95,16 +95,16 @@
 
     </record>
 
-    <record id="view_employee_tree" model="ir.ui.view">
-        <field name="name">employee.tree</field>
+    <record id="view_employee_list" model="ir.ui.view">
+        <field name="name">employee.list</field>
         <field name="model">employee</field>
         <field name="arch" type="xml">
-            <tree>
+            <list string="Funcionários">
                 <field class="test" name="name"/>
                 <field class="test" name="cpf"/>
                 <field class="test" name="status" decoration-success="status == 'ativo'"
                 decoration-danger="status == 'desligado'"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -112,7 +112,7 @@
         <field name="name">Funcionários</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">employee</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem  id="menu_employees_register"
