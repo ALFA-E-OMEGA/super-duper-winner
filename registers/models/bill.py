@@ -115,7 +115,7 @@ class Bill(models.Model):
         """Checks size of the CPF variable to limit different lengths"""
         for rec in self:
             if rec.cpf and self.origin == "is_cpf":
-                if len(rec.cpf) != 11:
+                if len(rec.cpf) != 1:
                     raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
                                             "Precisa de 11 dígitos"))
                 if not (rec.cpf).isnumeric():
@@ -140,3 +140,11 @@ class Bill(models.Model):
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
+            
+    @api.constrains('validation_date')
+    def _check_validation_date(self):
+        """Checks if 'validation_date' is not invalid"""
+        if self.validation_date:
+            if self.validation_date <= self.register_date:
+                raise ValidationError(_("A 'Data de Validade' é inválida. "
+                                        "Ela não pode ser mais antiga que a data de regsitro."))
