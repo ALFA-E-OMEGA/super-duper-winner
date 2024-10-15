@@ -115,7 +115,7 @@ class Bill(models.Model):
         """Checks size of the CPF variable to limit different lengths"""
         for rec in self:
             if rec.cpf and self.origin == "is_cpf":
-                if len(rec.cpf) != 1:
+                if len(rec.cpf) != 11:
                     raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
                                             "Precisa de 11 dígitos"))
                 if not (rec.cpf).isnumeric():
