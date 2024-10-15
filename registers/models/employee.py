@@ -143,3 +143,6 @@ class Employee(models.Model):
                     raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos."
                                             "O campo deve conter apenas números"))
 
+    _sql_constraints = [
+        ('cpf', 'UNIQUE (cpf)', 'Já existe um Funcionário com esse CPF.')
+    ]
