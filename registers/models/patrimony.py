@@ -39,6 +39,8 @@ class Patrimony(models.Model):
                                      ('9', 'Número 9'),
                                      ('10', 'Número 10'),
                                     ], string="pesado_num")
+    
+    acquisition_date = fields.Date(string='Data de Aquisição', required=False)
 
     def create_patrimony(self):
         """This is the custom function for saving an 'patrimony' object,
@@ -60,6 +62,7 @@ class Patrimony(models.Model):
             'name': self.name,
             'description': self.description,
             'classification': self.classification,
+            'acquisition_date': self.acquisition_date,
             'vehicle_plate': self.vehicle_plate,
             'renavan': self.renavan,
             'heavy_type': self.heavy_type,

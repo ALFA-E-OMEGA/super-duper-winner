@@ -28,6 +28,11 @@
                         </section>
                         <section class="group">
 
+                            <div class="container_field">
+                                <span>Data de Aquisição:</span>
+                                <field class="field" name="acquisition_date"/>
+                            </div>
+
                             <div class="container_field"  invisible="classification != 'vehicles'">
                                 <span>Renavan:</span>
                                 <field class="field" name="renavan" />
