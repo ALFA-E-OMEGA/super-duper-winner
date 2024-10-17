@@ -12,25 +12,50 @@
                     <article class="container_form_contents">
                         <section class="group">
                             <div  class="container_field">
-                                <span>Nome:</span>
-                                <field class="field" name="name"/>
+                                <span>Código:</span>
+                                <field class="field" name="id_patrimony"/>
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Marca:</span>
+                                    <field class="field" name="vehicle_maker"/>
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Modelo:</span>
+                                    <field class="field" name="vehicle_model"/>
+                                </div>
+                            
                             </div>
 
                             <div class="container_field">
-                                <span>Descrição:</span>
-                                <field class="field" name="description"/>
+                                <span>Tipo de Combustível:</span>
+                                <field class="field" name="fuel_type"/>
                             </div>
+
+                            <div class="container_field">
+                                <span>Data de Aquisição:</span>
+                                <field class="field" name="acquisition_date"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Arquivo PDF:</span>
+                                <field class="field" name="patrimony_file" filename="filename" widget="pdf_viewer"/>
+                                <field class="field" name="filename" invisible="1"/>
+                            </div>
+
+                        </section>
+                        <section class="group">
 
                             <div class="container_field">
                                 <span>Classificação:</span>
                                 <field class="field" name="classification"/>
                             </div>
-                        </section>
-                        <section class="group">
 
-                            <div class="container_field">
-                                <span>Data de Aquisição:</span>
-                                <field class="field" name="acquisition_date"/>
+                            <div class="container_field" invisible="classification != 'vehicles'">
+                                <span>Tipo de Veículo:</span>
+                                <field class="field" name="vehicle_type"/>
                             </div>
 
                             <div class="container_field"  invisible="classification != 'vehicles'">
@@ -76,8 +101,9 @@
         <field name="model">patrimony</field>
         <field name="arch" type="xml">
             <list string="Patrimônio">
-            <field class="test" name="name"/>
-            <field class="test" name="description"/>
+            <field class="test" name="id_patrimony"/>
+            <field class="test" name="vehicle_maker"/>
+            <field class="test" name="vehicle_model"/>
             <field class="test" name="classification"/>
             </list>
         </field>

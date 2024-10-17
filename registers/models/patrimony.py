@@ -7,15 +7,21 @@ class Patrimony(models.Model):
     _name = "patrimony"
     _description = "Registro de patrimônio."
 
-    name = fields.Char(string='Nome', required=True)
+    id_patrimony = fields.Char(string='Código', required=True)
 
+    fuel_type = fields.Char(string='Combustível', required=True)
 
-    description = fields.Char(string='Descrição', required=False)
+    vehicle_maker = fields.Char(string='Marca', required=False)
+    vehicle_model = fields.Char(string='Modelo', required=False)
 
     classification = fields.Selection([('vehicles', 'Veículos'),
                                         ('heavies', 'Equipamento Pesado'),
                                         ('others', 'Outros')
                                         ], string = 'Classificação', required=True)
+    
+    vehicle_type = fields.Selection([('truck', 'Caminhão'),
+                                     ('car', 'Carro')
+                                     ], string = 'Tipo de Veículo', required=False)
 
     vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
 
@@ -42,6 +48,9 @@ class Patrimony(models.Model):
     
     acquisition_date = fields.Date(string='Data de Aquisição', required=False)
 
+    patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
+    filename = fields.Char()
+
     def create_patrimony(self):
         """This is the custom function for saving an 'patrimony' object,
         clearing fields that are not going to be saves"""
@@ -51,19 +60,25 @@ class Patrimony(models.Model):
             self.heavy_number = ''
             self.heavy_type = ''
             self.vehicle_plate = ''
-        elif self.classification == 'vehciles':
+            self.vehicle_type = ''
+        elif self.classification == 'vehicles':
             self.heavy_number = ''
             self.heavy_type = ''
         elif self.classification == 'heavies':
             self.renavan = ''
             self.vehicle_plate = ''
+            self.vehicle_type = ''
 
         vals = {
-            'name': self.name,
-            'description': self.description,
+            'id_patrimony': self.id_patrimony,
+            'fuel_type': self.fuel_type,
+            'vehicle_maker': self.vehicle_maker,
+            'vehicle_model': self.vehicle_model,
             'classification': self.classification,
+            'vehicle_type': self.vehicle_type,
             'acquisition_date': self.acquisition_date,
             'vehicle_plate': self.vehicle_plate,
+            'patrimony_file': self.patrimony_file,
             'renavan': self.renavan,
             'heavy_type': self.heavy_type,
             'heavy_number': self.heavy_number
@@ -97,3 +112,19 @@ class Patrimony(models.Model):
                 if not (rec.renavan).isnumeric():
                     raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
+    
+    @api.constrains('id_patrimony')
+    def _validate_id_patrimony(self):
+        """Checks size of the 'id_patrimony' variable
+        for non-numeric characters"""
+        for rec in self:
+            if not (rec.id_patrimony).isnumeric():
+                raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números."))
+            
+    @api.constrains('patrimony_file')
+    def _check_patrimony_file(self):
+        """Checks if the binary file is a '.pdf' file"""
+        if self.filename:
+            if str(self.filename.split(".")[1]) != 'pdf' :
+                raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
