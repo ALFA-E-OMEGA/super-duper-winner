@@ -47,5 +47,6 @@ class Service(models.Model):
                                             "O campo deve conter apenas números."))
 
     _sql_constraints = [
-        ('id_service_unique', 'UNIQUE(id_service)', 'Já existe um \'Serviço\' com esse ID.')
+        ('id_service_unique', 'UNIQUE(id_service)',
+        'Já existe um \'Serviço\' com esse Código.')
     ]

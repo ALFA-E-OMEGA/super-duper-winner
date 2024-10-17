@@ -128,3 +128,8 @@ class Patrimony(models.Model):
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
+
+    _sql_constraints = [
+        ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
+        'Já existe um \'Patrimônio\' com esse Código.')
+    ]
