@@ -140,7 +140,7 @@ class Bill(models.Model):
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
-            
+
     @api.constrains('validation_date')
     def _check_validation_date(self):
         """Checks if 'validation_date' is not invalid"""

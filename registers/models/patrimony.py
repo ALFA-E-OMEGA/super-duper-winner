@@ -18,7 +18,7 @@ class Patrimony(models.Model):
                                         ('heavies', 'Equipamento Pesado'),
                                         ('others', 'Outros')
                                         ], string = 'Classificação', required=True)
-    
+
     vehicle_type = fields.Selection([('truck', 'Caminhão'),
                                      ('car', 'Carro')
                                      ], string = 'Tipo de Veículo', required=False)
@@ -45,7 +45,7 @@ class Patrimony(models.Model):
                                      ('9', 'Número 9'),
                                      ('10', 'Número 10'),
                                     ], string="pesado_num")
-    
+
     acquisition_date = fields.Date(string='Data de Aquisição', required=False)
 
     patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
@@ -112,7 +112,7 @@ class Patrimony(models.Model):
                 if not (rec.renavan).isnumeric():
                     raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
-    
+
     @api.constrains('id_patrimony')
     def _validate_id_patrimony(self):
         """Checks size of the 'id_patrimony' variable
@@ -121,7 +121,7 @@ class Patrimony(models.Model):
             if not (rec.id_patrimony).isnumeric():
                 raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
-            
+
     @api.constrains('patrimony_file')
     def _check_patrimony_file(self):
         """Checks if the binary file is a '.pdf' file"""
