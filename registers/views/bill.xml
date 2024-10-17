@@ -13,7 +13,7 @@
                         <section class="group">
 
                             <div class="container_field">
-                                <span>ID:</span>
+                                <span>Código:</span>
                                 <field class="field" name="bill_id" readonly='1'/>
                             </div>
 

@@ -22,7 +22,7 @@ class Bill(models.Model):
     _name = "bill"
     _description = "Registro de Contas."
 
-    bill_id = fields.Char(string='ID Conta', default=_generate_bill_id)
+    bill_id = fields.Char(string='Código', default=_generate_bill_id)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     bill_file = fields.Binary(string='PDF da Conta', attachment=True)
     validation_date = fields.Date(string='Data de Vencimento', required=True)
@@ -135,7 +135,7 @@ class Bill(models.Model):
                                                 "O campo deve conter apenas números"))
 
     @api.constrains('bill_file')
-    def _check_file(self):
+    def _check_bill_file(self):
         """Checks if the binary file is a '.pdf' file"""
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
