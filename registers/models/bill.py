@@ -39,6 +39,16 @@ class Bill(models.Model):
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
 
+    pdf_view_status = fields.Integer(default=0)
+
+    def update_pdf_view(self):
+        """Edits .xml so that the .pdf file is either expanded
+        or reduced in visualization"""
+        if self.pdf_view_status == 0:
+            self.pdf_view_status = 1
+        elif self.pdf_view_status == 1:
+            self.pdf_view_status = 0
+
     def create_bill(self):
         """This is the custom function for saving a 'bill' object"""
         if self.origin == "is_cpf":

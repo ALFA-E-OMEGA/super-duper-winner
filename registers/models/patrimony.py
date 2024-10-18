@@ -51,6 +51,16 @@ class Patrimony(models.Model):
     patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
     filename = fields.Char()
 
+    pdf_view_status = fields.Integer(default=0)
+
+    def update_pdf_view(self):
+        """Edits .xml so that the .pdf file is either expanded
+        or reduced in visualization"""
+        if self.pdf_view_status == 0:
+            self.pdf_view_status = 1
+        elif self.pdf_view_status == 1:
+            self.pdf_view_status = 0
+
     def create_patrimony(self):
         """This is the custom function for saving an 'patrimony' object,
         clearing fields that are not going to be saves"""

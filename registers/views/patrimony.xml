@@ -39,10 +39,32 @@
                                 <field class="field" name="acquisition_date"/>
                             </div>
 
-                            <div class="container_field">
+                            <div class="subgroup">
+                                <div class="container_field">
                                 <span>Arquivo PDF:</span>
-                                <field class="field" name="patrimony_file" filename="filename" widget="pdf_viewer"/>
+                                <div invisible="pdf_view_status == 1">
+                                    <field class="field" name="patrimony_file" filename="filename"
+                                    widget="pdf_viewer"/>
+                                </div>
+
+                                <div invisible="pdf_view_status == 0">
+                                    <field class="field" name="patrimony_file" filename="filename"/>
+                                </div>
+
                                 <field class="field" name="filename" invisible="1"/>
+                                </div>
+
+                                <div class="container_button">
+                                    <div invisible="pdf_view_status == 1">
+                                        <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Ver PDF"/>
+                                    </div>
+
+                                    <div invisible="pdf_view_status == 0">
+                                        <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Fechar PDF"/>
+                                    </div>
+
+                                </div>
+                                
                             </div>
 
                         </section>
