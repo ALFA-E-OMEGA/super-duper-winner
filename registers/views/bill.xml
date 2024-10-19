@@ -14,7 +14,7 @@
 
                             <div class="container_field">
                                 <span>Código:</span>
-                                <field class="field" name="bill_id" readonly='1'/>
+                                <field class="field" name="id_bill" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                             <div class="container_field">
@@ -138,7 +138,7 @@
         <field name="model">bill</field>
         <field name="arch" type="xml">
             <list string="Contas a Pagar">
-                <field class="test" name="bill_id"/>
+                <field class="test" name="id_bill"/>
                 <field class="test" name="validation_date"/>
                 <field class="test" name="bill_status" decoration-info="bill_status == 'Provisória'"
                 decoration-success="bill_status == 'Autorizada'" decoration-primary = "bill_status == 'Paga'"/>

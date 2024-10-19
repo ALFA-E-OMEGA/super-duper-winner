@@ -1,5 +1,4 @@
 """This are the bill template and it's associated functions"""
-from uuid import uuid4
 from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -7,11 +6,6 @@ import pytz
 
 class Bill(models.Model):
     """Fields and functions for the bill object"""
-
-
-    def _generate_bill_id(self):
-        """Function to generate an ID for the bill object"""
-        return uuid4().node
 
     def _generate_register_date(self):
         """Function to generate current date based on user timezone"""
@@ -22,7 +16,7 @@ class Bill(models.Model):
     _name = "bill"
     _description = "Registro de Contas."
 
-    bill_id = fields.Char(string='Código', default=_generate_bill_id)
+    id_bill = fields.Char(string='Código', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     bill_file = fields.Binary(string='PDF da Conta', attachment=True)
     validation_date = fields.Date(string='Data de Vencimento', required=True)
@@ -61,7 +55,7 @@ class Bill(models.Model):
             self.name = ''
 
         vals = {
-            'bill_id': self.bill_id,
+            'bill_id': self.id_bill,
             'register_date': self.register_date,
             'bill_file': self.bill_file,
             'validation_date': self.validation_date,
@@ -112,6 +106,15 @@ class Bill(models.Model):
             },
         }
 
+    @api.constrains('id_bill')
+    def _validate_rg(self):
+        """Checks size of the id_bill variable to
+        checks for non-numeric characters"""
+        for rec in self:
+            if rec.id_bill:
+                if not (rec.id_bill).isnumeric():
+                    raise ValidationError(_("O campo 'Código' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números"))
 
     @api.constrains('value')
     def _validate_value(self):
