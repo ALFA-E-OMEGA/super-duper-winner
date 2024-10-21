@@ -1,66 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="view_bill_form" model="ir.ui.view">
-        <field name="name">bill.form</field>
-        <field name="model">bill</field>
+    <record id="view_invoice_form" model="ir.ui.view">
+        <field name="name">invoice.form</field>
+        <field name="model">invoice</field>
         <field name="arch" type="xml">
             <form class="myform" string="Cadastro de Conta">
 
-            <div class="container_form bill_form">
+            <div class="container_form invoice_form">
                 <h1>Conta</h1>
                     <article class="container_form_contents">
                         <section class="group">
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Código:</span>
-                                    <field class="field" name="id_bill" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="id_invoice" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field">
                                     <span>Nota Fiscal:</span>
-                                    <field class="field" name="fiscal_note" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="fiscal_note" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                             </div>
 
                             <div class="container_field">
                                 <span>Valor da conta:</span>
-                                <field class="field" name="value" readonly="bill_status != 'Provisória'"/>
+                                <field class="field" name="value" readonly="invoice_status != 'Provisória'"/>
                             </div>
 
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Centro de Custo:</span>
-                                    <field class="field" name="cost_center_id" widget="selection" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="cost_center_id" widget="selection" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field">
                                     <span>Parcela:</span>
-                                    <field class="field" name="installment" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="installment" readonly="invoice_status != 'Provisória'"/>
                                 </div>
                             
                             </div>
 
                             <div class="container_field">
                                 <span>Origem:</span>
-                                <field class="field" name="origin" readonly="bill_status != 'Provisória'"/>
+                                <field class="field" name="origin" readonly="invoice_status != 'Provisória'"/>
                             </div>
 
                               <div class="subgroup">
                                 <div class="container_field" invisible="origin == 'other'">
                                     <span>Nome:</span>
-                                    <field class="field" name="name" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="name" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'is_cpf'">
                                     <span>CPF:</span>
-                                    <field class="field" name="cpf" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="cpf" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'is_cnpj'">
                                     <span>CNPJ:</span>
-                                    <field class="field" name="cnpj" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="cnpj" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                             </div>
@@ -70,15 +70,15 @@
                                 <div class="container_field">
                                 <span>Arquivo PDF:</span>
                                 <div invisible="pdf_view_status == 1">
-                                    <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'"
+                                    <field class="field" name="invoice_file" filename="filename" readonly="invoice_status != 'Provisória'"
                                     widget="pdf_viewer"/>
                                 </div>
 
                                 <div invisible="pdf_view_status == 0">
-                                    <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="invoice_file" filename="filename" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
-                                <field class="field" name="filename" invisible="1" readonly="bill_status != 'Provisória'"/>
+                                <field class="field" name="filename" invisible="1" readonly="invoice_status != 'Provisória'"/>
 
                             </div>
 
@@ -106,41 +106,41 @@
                                 </div>
 
                                 <div class="container_field">
-                                    <span>Data de Vencimento:</span>
-                                    <field class="field" name="validation_date" readonly="bill_status != 'Provisória'"/>
+                                    <span>Data de Recebimeto:</span>
+                                    <field class="field" name="receiving_date" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                             </div>
 
                             <div class="container_field">
                                     <span>Tipo de Conta:</span>
-                                    <field class="field" name="bill_type" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="invoice_type" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                             <div class="container_field">
                                 <span>Descrição:</span>
-                                <field class="field" name="description" readonly="bill_status != 'Provisória'"/>
+                                <field class="field" name="description" readonly="invoice_status != 'Provisória'"/>
                             </div>
 
                             <div class="container_field">
                                 <span>Assinatura:</span>
-                                <field class="field" name="signature" widget="signature" readonly="bill_status != 'Provisória'"/>
+                                <field class="field" name="signature" widget="signature" readonly="invoice_status != 'Provisória'"/>
                             </div>
 
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Status:</span>
-                                    <field class="field" name="bill_status" readonly='1'/>
+                                    <field class="field" name="invoice_status" readonly='1'/>
                                 </div>
 
                                 <div class="container_button">
-                                    <button name="create_bill" class="btnSecondary mybutton" type="object" string="Salvar"
-                                    confirm="Confimar dados de conta?" invisible="bill_status != 'Provisória'"/>
+                                    <button name="create_invoice" class="btnSecondary mybutton" type="object" string="Salvar"
+                                    confirm="Confimar dados de conta?" invisible="invoice_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_button">
-                                    <button name="update_bill_status" class="btnSecondary mybutton" type="object" string="Atualizar"
-                                    confirm="Autalizar o status da conta?" invisible="bill_status == 'Paga'"/>
+                                    <button name="update_invoice_status" class="btnSecondary mybutton" type="object" string="Atualizar"
+                                    confirm="Autalizar o status da conta?" invisible="invoice_status == 'Recebida'"/>
                                 </div>
 
                             </div>
@@ -156,30 +156,30 @@
 
     </record>
 
-    <record id="view_bill_list" model="ir.ui.view">
-        <field name="name">bill.list</field>
-        <field name="model">bill</field>
+    <record id="view_invoice_list" model="ir.ui.view">
+        <field name="name">invoice.list</field>
+        <field name="model">invoice</field>
         <field name="arch" type="xml">
-            <list string="Contas a Pagar">
-                <field class="test" name="id_bill"/>
-                <field class="test" name="validation_date"/>
-                <field class="test" name="bill_status" decoration-info="bill_status == 'Provisória'"
-                decoration-success="bill_status == 'Autorizada'" decoration-primary = "bill_status == 'Paga'"/>
-                <field class="test" name="bill_type"/>
+            <list string="Contas a Receber">
+                <field class="test" name="id_invoice"/>
+                <field class="test" name="receiving_date"/>
+                <field class="test" name="invoice_status" decoration-info="invoice_status == 'Provisória'"
+                decoration-success="invoice_status == 'Recebida'" />
+                <field class="test" name="invoice_type"/>
             </list>
         </field>
     </record>
 
-    <record id="action_register_bill" model="ir.actions.act_window">
-        <field name="name">Conta a Pagar</field>
+    <record id="action_register_invoice" model="ir.actions.act_window">
+        <field name="name">Conta a Receber</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">bill</field>
+        <field name="res_model">invoice</field>
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_bill_register"
+    <menuitem id="menu_invoice_register"
             parent="menu_financeiro"
-            action="action_register_bill"
-            name="Contas a Pagar"
-            sequence="2"/>
+            action="action_register_invoice"
+            name="Contas a Receber"
+            sequence="3"/>
 </odoo>

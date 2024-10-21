@@ -16,6 +16,7 @@
         'views/client.xml',
         'views/patrimony.xml',
         'views/bill.xml',
+        'views/invoice.xml',
         'views/cost_center.xml',
         'views/service.xml',
 

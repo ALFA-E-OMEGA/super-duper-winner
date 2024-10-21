@@ -68,5 +68,5 @@
         parent="menu_financeiro"
         action="action_register_cost_center"
         name="Centro de Custo"
-        sequence="3"/>
+        sequence="4"/>
 </odoo>

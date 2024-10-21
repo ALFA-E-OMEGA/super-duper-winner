@@ -6,3 +6,4 @@ registers.access_patrimony,access_patrimony,registers.model_patrimony,base.group
 registers.access_bill,access_bill,registers.model_bill,base.group_user,1,1,1,1
 registers.access_cost_center,access_cost_center,registers.model_cost_center,base.group_user,1,1,1,1
 registers.access_service,access_service,registers.model_service,base.group_user,1,1,1,1
+registers.access_invoice,access_invoice,registers.model_invoice,base.group_user,1,1,1,1
