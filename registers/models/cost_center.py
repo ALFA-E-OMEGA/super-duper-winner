@@ -43,3 +43,8 @@ class CostCenter(models.Model):
             if not (rec.id_cost_center).isnumeric():
                 raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
+
+    _sql_constraints = [
+        ('id_cost_center_unique', 'UNIQUE(id_cost_center)',
+         'Já existe um \'Centro de Custo\' com esse Código.')
+    ]

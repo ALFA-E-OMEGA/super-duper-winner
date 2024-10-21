@@ -13,8 +13,8 @@
                         <section class="group">
 
                             <div class="container_field">
-                                <span>ID:</span>
-                                <field class="field" name="bill_id" readonly='1'/>
+                                <span>Código:</span>
+                                <field class="field" name="id_bill" readonly="bill_status != 'Provisória'"/>
                             </div>
 
                             <div class="container_field">
@@ -50,10 +50,34 @@
 
                             </div>
 
-                            <div class="container_field">
+                            <div class="subgroup">
+
+                                <div class="container_field">
                                 <span>Arquivo PDF:</span>
-                                <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'" widget="pdf_viewer"/>
+                                <div invisible="pdf_view_status == 1">
+                                    <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'"
+                                    widget="pdf_viewer"/>
+                                </div>
+
+                                <div invisible="pdf_view_status == 0">
+                                    <field class="field" name="bill_file" filename="filename" readonly="bill_status != 'Provisória'"/>
+                                </div>
+
                                 <field class="field" name="filename" invisible="1" readonly="bill_status != 'Provisória'"/>
+
+                            </div>
+
+                            <div class="container_button">
+                                    <div invisible="pdf_view_status == 1">
+                                        <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Ver PDF"/>
+                                    </div>
+
+                                    <div invisible="pdf_view_status == 0">
+                                        <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Fechar PDF"/>
+                                    </div>
+
+                                </div>
+
                             </div>
 
                         </section>
@@ -109,17 +133,17 @@
 
     </record>
 
-    <record id="view_bill_tree" model="ir.ui.view">
-        <field name="name">bill.tree</field>
+    <record id="view_bill_list" model="ir.ui.view">
+        <field name="name">bill.list</field>
         <field name="model">bill</field>
         <field name="arch" type="xml">
-            <tree>
-                <field class="test" name="bill_id"/>
+            <list string="Contas a Pagar">
+                <field class="test" name="id_bill"/>
                 <field class="test" name="validation_date"/>
                 <field class="test" name="bill_status" decoration-info="bill_status == 'Provisória'"
                 decoration-success="bill_status == 'Autorizada'" decoration-primary = "bill_status == 'Paga'"/>
                 <field class="test" name="origin"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -127,7 +151,7 @@
         <field name="name">Conta</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">bill</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_bill_register"

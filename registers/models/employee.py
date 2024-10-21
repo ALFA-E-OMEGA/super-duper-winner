@@ -57,12 +57,13 @@ class Employee(models.Model):
         """Checks size of the CPF variable to limit different lengths
         and checks for non-numeric characters"""
         for rec in self:
-            if len(rec.cpf) != 11:
-                raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
-                                        "Precisa de 11 dígitos"))
-            if not (rec.cpf).isnumeric():
-                raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
-                                        "O campo deve conter apenas números"))
+            if rec.cpf:
+                if len(rec.cpf) != 11:
+                    raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
+                                            "Precisa de 11 dígitos"))
+                if not (rec.cpf).isnumeric():
+                    raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números"))
 
     @api.constrains('cep')
     def _validate_cep(self):
@@ -82,12 +83,13 @@ class Employee(models.Model):
         """Checks size of the PIS-PASEP variable to limit different lengths
         and checks for non-numeric characters"""
         for rec in self:
-            if len(rec.pis_pasep) != 11:
-                raise ValidationError(_("O campo 'PIS-PASEP' está com o tamanho incorreto. "
-                                        "Precisa de 11 dígitos"))
-            if not (rec.pis_pasep).isnumeric():
-                raise ValidationError(_("O campo 'PIS-PASEP' contém carácteres inválidos. "
-                                        "O campo deve conter apenas números"))
+            if rec.pis_pasep:
+                if len(rec.pis_pasep) != 11:
+                    raise ValidationError(_("O campo 'PIS-PASEP' está com o tamanho incorreto. "
+                                            "Precisa de 11 dígitos"))
+                if not (rec.pis_pasep).isnumeric():
+                    raise ValidationError(_("O campo 'PIS-PASEP' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números"))
 
     @api.constrains('rg')
     def _validate_rg(self):
@@ -120,12 +122,13 @@ class Employee(models.Model):
         """Checks size of the 'tel_one' variable to limit different lengths
         and checks for non-numeric characters"""
         for rec in self:
-            if len(rec.tel_one) != 11:
-                raise ValidationError(_("O campo 'Telefone 1' está com o tamanho incorreto. "
-                                        "Precisa de 11 dígitos"))
-            if not (rec.tel_one).isnumeric():
-                raise ValidationError(_("O campo 'Telefone 1' contém carácteres inválidos. "
-                                        "O campo deve conter apenas números"))
+            if rec.tel_one:
+                if len(rec.tel_one) != 11:
+                    raise ValidationError(_("O campo 'Telefone 1' está com o tamanho incorreto. "
+                                            "Precisa de 11 dígitos"))
+                if not (rec.tel_one).isnumeric():
+                    raise ValidationError(_("O campo 'Telefone 1' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números"))
 
     @api.constrains('tel_two')
     def _validate_tel_two(self):
@@ -140,3 +143,7 @@ class Employee(models.Model):
                     raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos."
                                             "O campo deve conter apenas números"))
 
+    _sql_constraints = [
+        ('cpf_employee_unique', 'UNIQUE(cpf)', 'Já existe um \'Funcionário\' com esse CPF.')
+    ]
+    
