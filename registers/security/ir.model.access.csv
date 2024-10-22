@@ -7,3 +7,4 @@ registers.access_bill,access_bill,registers.model_bill,base.group_user,1,1,1,1
 registers.access_cost_center,access_cost_center,registers.model_cost_center,base.group_user,1,1,1,1
 registers.access_service,access_service,registers.model_service,base.group_user,1,1,1,1
 registers.access_invoice,access_invoice,registers.model_invoice,base.group_user,1,1,1,1
+registers.access_contract,access_contract,registers.model_contract,base.group_user,1,1,1,1
