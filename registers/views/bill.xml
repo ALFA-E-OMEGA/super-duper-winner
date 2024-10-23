@@ -113,9 +113,15 @@
                             </div>
 
                             <div class="container_field">
-                                    <span>Tipo de Conta:</span>
-                                    <field class="field" name="bill_type" readonly="bill_status != 'Provisória'"/>
-                                </div>
+                                <span>Tipo de Conta:</span>
+                                <field class="field" name="bill_type" readonly="bill_status != 'Provisória'"/>
+                            </div>
+
+                            <div class="container_field" invisible="bill_type != 'contract'">
+                                <span>Contrato:</span>
+                                <field class="field" name="contract_id" widget="selection"
+                                readonly="bill_status != 'Provisória'"/>
+                            </div>
 
                             <div class="container_field">
                                 <span>Descrição:</span>

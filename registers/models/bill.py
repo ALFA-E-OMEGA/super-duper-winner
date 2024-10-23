@@ -37,6 +37,7 @@ class Bill(models.Model):
     bill_status = fields.Char(string='Status da Conta', default='Provisória')
     signature = fields.Binary(string='Assinatura', required=True)
     cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
+    contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
     name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -79,6 +80,7 @@ class Bill(models.Model):
             'name': self.name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,
+            'contract_id': self.contract_id,
         }
 
         self.env['bill'].write(vals)

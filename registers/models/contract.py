@@ -4,7 +4,7 @@ from odoo.exceptions import ValidationError
 from datetime import datetime
 import pytz
 
-class Contrato(models.Model):
+class Contract(models.Model):
     """Fields and functions for the contract object"""
 
     def _generate_register_date(self):
@@ -59,4 +59,11 @@ class Contrato(models.Model):
             if not (rec.id_contract).isnumeric():
                 raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
+            
+    def _compute_display_name(self):
+
+        for record in self:
+            name = record.client_type + ': ' + record.id_contract
+
+        record.display_name = name
             
