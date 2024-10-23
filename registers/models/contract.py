@@ -19,11 +19,12 @@ class Contract(models.Model):
     id_contract = fields.Char(string='Código', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     contract_date = fields.Date(string='Data do Contrato', required=True)
-    status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')],
+    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
                               string='Status', required=True)
     client_type = fields.Selection([('estado', 'Estado'), ('cidade', 'Cidade'),
                                     ('prefeitura', 'Prefeitura'), ('secretaria', 'Secretaria')],
                                     string="Cliente", required=True)
+    display_name = fields.Char(compute='_compute_display_name')
 
     def create_contract(self):
         """This is the custom function for saving an 'contract' object"""
@@ -33,6 +34,7 @@ class Contract(models.Model):
             'contract_date': self.contract_date,
             'status': self.status,
             'client_type': self.client_type,
+            'name': self.display_name,
         }
 
         self.env['contract'].write(vals)
@@ -61,9 +63,10 @@ class Contract(models.Model):
                                             "O campo deve conter apenas números."))
             
     def _compute_display_name(self):
-
+        """Function to generate specific name for any given record from
+        this model"""
         for record in self:
-            name = record.client_type + ': ' + record.id_contract
+            name = record.client_type + '_' + record.id_contract
 
         record.display_name = name
             

@@ -50,7 +50,7 @@
                               <div class="subgroup">
                                 <div class="container_field" invisible="origin == 'other'">
                                     <span>Nome:</span>
-                                    <field class="field" name="name" readonly="bill_status != 'Provisória'"/>
+                                    <field class="field" name="client_name" readonly="bill_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'is_cpf'">

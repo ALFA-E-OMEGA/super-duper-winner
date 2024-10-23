@@ -50,7 +50,7 @@
                               <div class="subgroup">
                                 <div class="container_field" invisible="origin == 'other'">
                                     <span>Nome:</span>
-                                    <field class="field" name="name" readonly="invoice_status != 'Provisória'"/>
+                                    <field class="field" name="client_name" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'is_cpf'">
@@ -106,16 +106,22 @@
                                 </div>
 
                                 <div class="container_field">
-                                    <span>Data de Recebimeto:</span>
+                                    <span>Data de Recebimento:</span>
                                     <field class="field" name="receiving_date" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                             </div>
 
                             <div class="container_field">
-                                    <span>Tipo de Conta:</span>
-                                    <field class="field" name="invoice_type" readonly="invoice_status != 'Provisória'"/>
-                                </div>
+                                <span>Tipo de Conta:</span>
+                                <field class="field" name="invoice_type" readonly="invoice_status != 'Provisória'"/>
+                            </div>
+
+                            <div class="container_field" invisible="invoice_type != 'contract'">
+                                <span>Contrato:</span>
+                                <field class="field" name="contract_id" widget="selection"
+                                readonly="invoice_status != 'Provisória'"/>
+                            </div>
 
                             <div class="container_field">
                                 <span>Descrição:</span>

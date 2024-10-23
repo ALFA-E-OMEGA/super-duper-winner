@@ -38,10 +38,11 @@ class Bill(models.Model):
     signature = fields.Binary(string='Assinatura', required=True)
     cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
-    name = fields.Char(string='Nome', required=False)
+    client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
+    display_name = fields.Char(compute='_compute_display_name')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -62,7 +63,7 @@ class Bill(models.Model):
         else:
             self.cpf = ''
             self.cnpj = ''
-            self.name = ''
+            self.client_name = ''
 
         vals = {
             'bill_id': self.id_bill,
@@ -77,10 +78,11 @@ class Bill(models.Model):
             'origin': self.origin,
             'bill_status': self.bill_status,
             'cost_center_id': self.cost_center_id,
-            'name': self.name,
+            'client_name': self.client_name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,
             'contract_id': self.contract_id,
+            'name': self.display_name,
         }
 
         self.env['bill'].write(vals)
@@ -191,3 +193,10 @@ class Bill(models.Model):
         'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada.')
     ]
 
+    def _compute_display_name(self):
+        """Function to generate specific name for any given record from
+        this model"""
+        for record in self:
+            name = record.id_bill + '_parcela_' + record.installment
+
+        record.display_name = name

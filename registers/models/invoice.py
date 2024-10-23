@@ -37,10 +37,12 @@ class Invoice(models.Model):
     invoice_status = fields.Char(string='Status da Conta', default='Provisória')
     signature = fields.Binary(string='Assinatura', required=True)
     cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
-    name = fields.Char(string='Nome', required=False)
+    contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
+    client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
+    display_name = fields.Char(compute='_compute_display_name')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -61,7 +63,7 @@ class Invoice(models.Model):
         else:
             self.cpf = ''
             self.cnpj = ''
-            self.name = ''
+            self.client_name = ''
 
         vals = {
             'invoice_id': self.id_invoice,
@@ -76,9 +78,11 @@ class Invoice(models.Model):
             'origin': self.origin,
             'invoice_status': self.invoice_status,
             'cost_center_id': self.cost_center_id,
-            'name': self.name,
+            'client_name': self.client_name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,
+            'contract_id': self.contract_id,
+            'name':self.display_name,
         }
 
         self.env['invoice'].write(vals)
@@ -179,3 +183,10 @@ class Invoice(models.Model):
         'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada.')
     ]
 
+    def _compute_display_name(self):
+        """Function to generate specific name for any given record from
+        this model"""
+        for record in self:
+            name = record.id_invoice + '_parcela_' + record.installment
+
+        record.display_name = name
