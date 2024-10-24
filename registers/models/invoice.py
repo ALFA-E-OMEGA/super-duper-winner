@@ -187,6 +187,8 @@ class Invoice(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            name = record.id_invoice + '_parcela_' + record.installment
-
+            if record.installment != '0':
+                name = record.id_invoice + '_parcela_' + record.installment
+            else:
+                name = record.id_invoice + '_parcela_unica'
         record.display_name = name
