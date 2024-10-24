@@ -37,7 +37,7 @@ class Invoice(models.Model):
     invoice_status = fields.Char(string='Status da Conta', default='Provisória')
     signature = fields.Binary(string='Assinatura', required=True)
     cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
-    contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
+    external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
     client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -66,7 +66,7 @@ class Invoice(models.Model):
             self.client_name = ''
 
         vals = {
-            'invoice_id': self.id_invoice,
+            'id_invoice': self.id_invoice,
             'installment': self.installment,
             'fiscal_note': self.fiscal_note,
             'invoice_type': self.invoice_type,
@@ -81,7 +81,7 @@ class Invoice(models.Model):
             'client_name': self.client_name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,
-            'contract_id': self.contract_id,
+            'external_contract_id': self.external_contract_id,
             'name':self.display_name,
         }
 

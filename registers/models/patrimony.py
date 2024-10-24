@@ -141,5 +141,5 @@ class Patrimony(models.Model):
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
-        'Já existe um \'Patrimônio\' com esse Código.')
+        'Já existe um \'Patrimônio\' com esse \'Código\'.')
     ]

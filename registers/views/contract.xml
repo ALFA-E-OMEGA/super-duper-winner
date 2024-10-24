@@ -31,6 +31,12 @@
                                 </div>
 
                             </div>
+                            
+                            <div class="container_field">
+                                <span>Contas:</span>
+                                <field name="invoice_ids"/>
+                            </div>
+                                
 
                         </section>
                         <section class="group">
@@ -58,6 +64,7 @@
                         </section>
 
                     </article>
+                    
             </div>
             </form>
 

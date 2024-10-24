@@ -119,7 +119,7 @@
 
                             <div class="container_field" invisible="invoice_type != 'contract'">
                                 <span>Contrato:</span>
-                                <field class="field" name="contract_id" widget="selection"
+                                <field class="field" name="external_contract_id" widget="selection"
                                 readonly="invoice_status != 'Provisória'"/>
                             </div>
 

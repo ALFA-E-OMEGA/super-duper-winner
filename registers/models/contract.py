@@ -25,6 +25,7 @@ class Contract(models.Model):
                                     ('prefeitura', 'Prefeitura'), ('secretaria', 'Secretaria')],
                                     string="Cliente", required=True)
     display_name = fields.Char(compute='_compute_display_name')
+    invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Contas Recebidas")
 
     def create_contract(self):
         """This is the custom function for saving an 'contract' object"""
@@ -35,6 +36,7 @@ class Contract(models.Model):
             'status': self.status,
             'client_type': self.client_type,
             'name': self.display_name,
+            'invoice_ids': self.invoice_ids,
         }
 
         self.env['contract'].write(vals)
@@ -67,6 +69,10 @@ class Contract(models.Model):
         this model"""
         for record in self:
             name = record.client_type + '_' + record.id_contract
-
         record.display_name = name
+
+    _sql_constraints = [
+        ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')
+    ]
+
             
