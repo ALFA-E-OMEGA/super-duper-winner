@@ -65,8 +65,8 @@
     </record>
 
     <menuitem  id="menu_cost_center_register"
-        parent="menu_financeiro"
+        parent="menu_outros"
         action="action_register_cost_center"
         name="Centro de Custo"
-        sequence="4"/>
+        sequence="1"/>
 </odoo>

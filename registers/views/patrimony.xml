@@ -118,7 +118,7 @@
 
                     <div class="container_field">
                         <span>Contratos:</span>
-                        <field name="contract_ids"/>
+                        <field name="contract_ids" options="{'unlink': False}"/>
                     </div>
             </div>
             </form>

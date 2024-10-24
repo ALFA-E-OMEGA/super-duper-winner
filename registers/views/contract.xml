@@ -34,7 +34,7 @@
 
                             <div class="container_field">
                                 <span>Contas:</span>
-                                <field name="invoice_ids"/>
+                                <field name="invoice_ids" widget="many2many" options="{'unlink': False}"/>
                             </div>
                                 
 
@@ -57,7 +57,7 @@
 
                             <div class="container_field">
                                 <span>Patrimônios:</span>
-                                <field name="patrimony_ids"/>
+                                <field name="patrimony_ids"  options="{'unlink': False}"/>
                             </div>
 
                             <div class="container_button">
