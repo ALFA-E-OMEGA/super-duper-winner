@@ -187,5 +187,5 @@
             parent="menu_financeiro"
             action="action_register_bill"
             name="Contas a Pagar"
-            sequence="2"/>
+            sequence="1"/>
 </odoo>

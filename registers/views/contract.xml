@@ -97,8 +97,8 @@
     </record>
 
     <menuitem  id="menu_contract_register"
-            parent="menu_registro"
+            parent="menu_financeiro"
             action="action_register_contract"
             name="Contratos"
-            sequence="5"/>
+            sequence="3"/>
 </odoo>

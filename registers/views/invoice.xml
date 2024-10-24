@@ -187,5 +187,5 @@
             parent="menu_financeiro"
             action="action_register_invoice"
             name="Contas a Receber"
-            sequence="3"/>
+            sequence="2"/>
 </odoo>
