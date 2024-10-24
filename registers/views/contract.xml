@@ -31,7 +31,7 @@
                                 </div>
 
                             </div>
-                            
+
                             <div class="container_field">
                                 <span>Contas:</span>
                                 <field name="invoice_ids"/>
@@ -55,6 +55,11 @@
 
                             </div>
 
+                            <div class="container_field">
+                                <span>Patrimônios:</span>
+                                <field name="patrimony_ids"/>
+                            </div>
+
                             <div class="container_button">
                                 <button name="create_contract" class="btnSecondary mybutton"
                                 type="object" string="Salvar"
@@ -63,7 +68,7 @@
 
                         </section>
 
-                    </article>
+                    </article>  
                     
             </div>
             </form>

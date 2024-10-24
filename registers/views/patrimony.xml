@@ -55,11 +55,11 @@
                                 </div>
 
                                 <div class="container_button">
-                                    <div invisible="pdf_view_status == 1">
+                                    <div invisible="pdf_view_status == 0">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Ver PDF"/>
                                     </div>
 
-                                    <div invisible="pdf_view_status == 0">
+                                    <div invisible="pdf_view_status == 1">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Fechar PDF"/>
                                     </div>
 
@@ -115,6 +115,11 @@
 
                         </section>
                     </article>
+
+                    <div class="container_field">
+                        <span>Contratos:</span>
+                        <field name="contract_ids"/>
+                    </div>
             </div>
             </form>
 

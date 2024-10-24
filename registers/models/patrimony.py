@@ -51,6 +51,8 @@ class Patrimony(models.Model):
     patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
     filename = fields.Char()
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato Original')
+    contract_ids = fields.Many2many('contract', 'contract_patrimony_rel_table',
+                                    string='Contratos')
 
     pdf_view_status = fields.Integer(default=0)
 

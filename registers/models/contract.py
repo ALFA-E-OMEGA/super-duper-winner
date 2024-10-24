@@ -26,6 +26,8 @@ class Contract(models.Model):
                                     string="Cliente", required=True)
     display_name = fields.Char(compute='_compute_display_name')
     invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Contas Recebidas")
+    patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
+                                     string='Patrimônios')
 
     def create_contract(self):
         """This is the custom function for saving an 'contract' object"""
