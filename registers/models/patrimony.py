@@ -50,6 +50,7 @@ class Patrimony(models.Model):
 
     patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
     filename = fields.Char()
+    external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato Original')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -91,7 +92,8 @@ class Patrimony(models.Model):
             'patrimony_file': self.patrimony_file,
             'renavan': self.renavan,
             'heavy_type': self.heavy_type,
-            'heavy_number': self.heavy_number
+            'heavy_number': self.heavy_number,
+            'external_contract_id': self.external_contract_id,
         }
 
         self.env['patrimony'].write(vals)
