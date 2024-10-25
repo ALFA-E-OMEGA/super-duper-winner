@@ -36,7 +36,7 @@ class Invoice(models.Model):
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
     receiving_date = fields.Date(string='Data de Recebimento', required=True)
-    description = fields.Char(string='Descrição', required=False)
+    description = fields.Text(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
                                ('other', 'Outro')], string='Fonte', required=True,
