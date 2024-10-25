@@ -13,17 +13,23 @@ class Bill(models.Model):
         user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
         date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
         return date_today.date()
+    
+    def _generate_installment_list(self, a):
+        list = []
+        list.append(('0', 'Não Possui'))
+
+        for r in range(1, a+1):
+            b = (r, r)
+            list.append(b)
+        return list
 
     _name = "bill"
     _description = "Registro de Contas a Pagar."
 
     id_bill = fields.Char(string='Código', required=False)
     fiscal_note = fields.Char(string='Código', required=False)
-    installment = fields.Selection([('1', '1'), ('2', '2'), ('3', '3'),
-                                    ('4', '4'), ('5', '5'), ('6', '6'),
-                                    ('7', '7'), ('8', '8'), ('9', '9'),
-                                    ('10', '10'), ('0', 'Não Possui')],
-                                    string='Parcela', required=True)
+    installment = fields.Selection(selection=lambda self: self._generate_installment_list(18),
+                                   string='Parcela', required=True)
     bill_type = fields.Selection([('maintenance', 'Manutenção'),
                                   ('contract', 'Contrato')],
                                   string='Tipo de Conta', required=True)
