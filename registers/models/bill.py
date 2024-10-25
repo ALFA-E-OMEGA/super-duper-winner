@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable
+# pylint: disable=undefined-loop-variable, protected-access
 """This are the bill template and it's associated functions"""
 from datetime import datetime
 from odoo import models, fields, api, _
@@ -13,15 +13,15 @@ class Bill(models.Model):
         user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
         date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
         return date_today.date()
-    
+
     def _generate_installment_list(self, a):
-        list = []
-        list.append(('0', 'Não Possui'))
+        installment_list = []
+        installment_list.append(('0', 'Não Possui'))
 
         for r in range(1, a+1):
             b = (r, r)
-            list.append(b)
-        return list
+            installment_list.append(b)
+        return installment_list
 
     _name = "bill"
     _description = "Registro de Contas a Pagar."
