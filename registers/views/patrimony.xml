@@ -55,11 +55,11 @@
                                 </div>
 
                                 <div class="container_button">
-                                    <div invisible="pdf_view_status == 1">
+                                    <div invisible="pdf_view_status == 0">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Ver PDF"/>
                                     </div>
 
-                                    <div invisible="pdf_view_status == 0">
+                                    <div invisible="pdf_view_status == 1">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Fechar PDF"/>
                                     </div>
 
@@ -69,10 +69,15 @@
 
                         </section>
                         <section class="group">
-
-                            <div class="container_field">
-                                <span>Classificação:</span>
-                                <field class="field" name="classification"/>
+                            <div class="subroup">
+                                <div class="container_field">
+                                    <span>Contrato Original:</span>
+                                    <field class="field" name="external_contract_id" widget="selection"/>
+                                </div>
+                                <div class="container_field">
+                                    <span>Classificação:</span>
+                                    <field class="field" name="classification"/>
+                                </div>
                             </div>
 
                             <div class="container_field" invisible="classification != 'vehicles'">
@@ -110,6 +115,11 @@
 
                         </section>
                     </article>
+
+                    <div class="container_field">
+                        <span>Contratos:</span>
+                        <field name="contract_ids" options="{'unlink': False}"/>
+                    </div>
             </div>
             </form>
 

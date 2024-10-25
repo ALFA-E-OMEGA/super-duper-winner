@@ -144,6 +144,6 @@ class Employee(models.Model):
                                             "O campo deve conter apenas números"))
 
     _sql_constraints = [
-        ('cpf_employee_unique', 'UNIQUE(cpf)', 'Já existe um \'Funcionário\' com esse CPF.')
+        ('cpf_employee_unique', 'UNIQUE(cpf)', 'Já existe um \'Funcionário\' com esse \'CPF\'.')
     ]
     

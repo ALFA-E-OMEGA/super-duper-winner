@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem  id="main_menu" name="Cadastro" sequence="10">
+    <menuitem  id="main_menu" name="Sistema" sequence="10">
         <menuitem id="menu_registro" name="Registros" sequence="12"/>
         <menuitem id="menu_financeiro" name="Financeiro" sequence="13"/>
+        <menuitem id="menu_outros" name="Outros" sequence="14"/>
     </menuitem>
-
-    <!-- <menuitem  id="menu_bens_register"
-                parent="menu_register"
-                name="Cadastro de Bens"
-                sequence="10"/> -->
 
 </odoo>

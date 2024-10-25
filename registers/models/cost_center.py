@@ -46,5 +46,5 @@ class CostCenter(models.Model):
 
     _sql_constraints = [
         ('id_cost_center_unique', 'UNIQUE(id_cost_center)',
-         'Já existe um \'Centro de Custo\' com esse Código.')
+         'Já existe um \'Centro de Custo\' com esse \'Código\'.')
     ]
