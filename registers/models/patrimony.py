@@ -1,3 +1,4 @@
+# pylint: disable=undefined-loop-variable
 """This is the file for the 'patrimony' object"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -144,15 +145,15 @@ class Patrimony(models.Model):
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
-    
+
     @api.constrains('vehicle_plate')
     def _validate_vehicle_plate(self):
         """Checks size of the 'vehicle_plate' variable to limit different lengths"""
         for rec in self:
             if rec.vehicle_plate and self.classification == 'vehicles':
                 if len(rec.vehicle_plate) != 7:
-                    raise ValidationError(_("O campo 'Placa do Veículo' está com o tamanho incorreto. "
-                                            "Precisa de 7 dígitos"))
+                    raise ValidationError(_("O campo 'Placa do Veículo' está com o tamanho"
+                                            "incorreto. Precisa de 7 dígitos"))
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',

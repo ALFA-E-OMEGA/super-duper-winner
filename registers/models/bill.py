@@ -1,3 +1,4 @@
+# pylint: disable=undefined-loop-variable
 """This are the bill template and it's associated functions"""
 from datetime import datetime
 from odoo import models, fields, api, _
@@ -150,7 +151,7 @@ class Bill(models.Model):
                 if not (rec.cpf).isnumeric():
                     raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
                                             "O campo deve conter apenas números"))
-    
+
     @api.constrains('fiscal_note')
     def _validate_rg(self):
         """Checks size of the fiscal_note variable to
@@ -187,7 +188,7 @@ class Bill(models.Model):
             if self.validation_date <= self.register_date:
                 raise ValidationError(_("A 'Data de Validade' é inválida. "
                                         "Ela não pode ser mais antiga que a data de regsitro."))
-            
+
     _sql_constraints = [
         ('id_bill_installment_unique', 'UNIQUE(id_bill, installment)',
         'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada.')

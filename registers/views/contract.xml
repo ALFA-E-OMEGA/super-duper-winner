@@ -19,11 +19,10 @@
 
                             <div class="subgroup">
                                 <div class="container_field">
-                                    <span>Cliente:</span>
-                                    <field class="field" name="client_type"/>
-
+                                    <span>Data de Registro:</span>
+                                    <field class="field" name="register_date" readonly="1"/>
                                 </div>
-
+                                
                                 <div class="container_field">
                                     <span>Status:</span>
                                     <field class="field" name="status"/>
@@ -40,19 +39,14 @@
 
                         </section>
                         <section class="group">
-                            <div class="subgroup">
-                                <div class="container_field">
-                                    <span>Data de Registro:</span>
-                                    <field class="field" name="register_date" readonly="1"/>
+                            <div class="container_field">
+                                <span>Cliente:</span>
+                                <field class="field" name="client_type"/>
+                            </div>
 
-                                </div>
-
-                                <div class="container_field">
-                                    <span>Data do Contrato:</span>
-                                    <field class="field" name="contract_date"/>
-                                    
-                                </div>
-
+                            <div class="container_field">
+                                <span>Data do Contrato:</span>
+                                <field class="field" name="contract_date"/>    
                             </div>
 
                             <div class="container_field">

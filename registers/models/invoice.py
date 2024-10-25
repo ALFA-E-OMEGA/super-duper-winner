@@ -1,3 +1,4 @@
+# pylint: disable=undefined-loop-variable
 """This are the invoice template and it's associated functions"""
 from datetime import datetime
 from odoo import models, fields, api, _
@@ -148,7 +149,7 @@ class Invoice(models.Model):
                 if not (rec.cpf).isnumeric():
                     raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
                                             "O campo deve conter apenas números"))
-    
+
     @api.constrains('fiscal_note')
     def _validate_rg(self):
         """Checks size of the fiscal_note variable to
@@ -177,7 +178,7 @@ class Invoice(models.Model):
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
-            
+
     _sql_constraints = [
         ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
         'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada.')

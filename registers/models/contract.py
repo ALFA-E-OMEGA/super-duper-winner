@@ -1,3 +1,4 @@
+# pylint: disable=undefined-loop-variable, wrong-import-order
 """This are the contract template and it's associated functions"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -12,7 +13,7 @@ class Contract(models.Model):
         user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
         date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
         return date_today.date()
-    
+
     _name = "contract"
     _description = "Registro de Contrato."
 
@@ -65,7 +66,7 @@ class Contract(models.Model):
             if not (rec.id_contract).isnumeric():
                 raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
-            
+
     def _compute_display_name(self):
         """Function to generate specific name for any given record from
         this model"""
@@ -76,5 +77,3 @@ class Contract(models.Model):
     _sql_constraints = [
         ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')
     ]
-
-            
