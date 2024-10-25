@@ -1,12 +1,12 @@
 # pylint: disable=undefined-loop-variable
-"""This are the bill template and it's associated functions"""
+"""This are the invoice template and it's associated functions"""
 from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 import pytz
 
-class Bill(models.Model):
-    """Fields and functions for the bill object"""
+class Invoice(models.Model):
+    """Fields and functions for the invoice object"""
 
     def _generate_register_date(self):
         """Function to generate current date based on user timezone"""
@@ -14,31 +14,31 @@ class Bill(models.Model):
         date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
         return date_today.date()
 
-    _name = "bill"
-    _description = "Registro de Contas a Pagar."
+    _name = "invoice"
+    _description = "Registro de Contas a Receber."
 
-    id_bill = fields.Char(string='Código', required=False)
+    id_invoice = fields.Char(string='Código', required=False)
     fiscal_note = fields.Char(string='Código', required=False)
     installment = fields.Selection([('1', '1'), ('2', '2'), ('3', '3'),
                                     ('4', '4'), ('5', '5'), ('6', '6'),
                                     ('7', '7'), ('8', '8'), ('9', '9'),
                                     ('10', '10'), ('0', 'Não Possui')],
                                     string='Parcela', required=True)
-    bill_type = fields.Selection([('maintenance', 'Manutenção'),
+    invoice_type = fields.Selection([('maintenance', 'Manutenção'),
                                   ('contract', 'Contrato')],
                                   string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
-    bill_file = fields.Binary(string='PDF da Conta', attachment=True)
-    validation_date = fields.Date(string='Data de Vencimento', required=True)
+    invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
+    receiving_date = fields.Date(string='Data de Recebimento', required=True)
     description = fields.Char(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
                                ('other', 'Outro')], string='Fonte', required=True,
                                default='other')
-    bill_status = fields.Char(string='Status da Conta', default='Provisória')
+    invoice_status = fields.Char(string='Status da Conta', default='Provisória')
     signature = fields.Binary(string='Assinatura', required=True)
     cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
-    contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
+    external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
     client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -55,8 +55,8 @@ class Bill(models.Model):
         elif self.pdf_view_status == 1:
             self.pdf_view_status = 0
 
-    def create_bill(self):
-        """This is the custom function for saving a 'bill' object"""
+    def create_invoice(self):
+        """This is the custom function for saving a 'invoice' object"""
         if self.origin == "is_cpf":
             self.cnpj = ''
         elif self.origin == "is_cnpj":
@@ -67,26 +67,26 @@ class Bill(models.Model):
             self.client_name = ''
 
         vals = {
-            'bill_id': self.id_bill,
+            'id_invoice': self.id_invoice,
             'installment': self.installment,
             'fiscal_note': self.fiscal_note,
-            'bill_type': self.bill_type,
+            'invoice_type': self.invoice_type,
             'register_date': self.register_date,
-            'bill_file': self.bill_file,
-            'validation_date': self.validation_date,
+            'invoice_file': self.invoice_file,
+            'receiveing_date': self.receiving_date,
             'description': self.description,
             'value': self.value,
             'origin': self.origin,
-            'bill_status': self.bill_status,
+            'invoice_status': self.invoice_status,
             'cost_center_id': self.cost_center_id,
             'client_name': self.client_name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,
-            'contract_id': self.contract_id,
-            'name': self.display_name,
+            'external_contract_id': self.external_contract_id,
+            'name':self.display_name,
         }
 
-        self.env['bill'].write(vals)
+        self.env['invoice'].write(vals)
 
         return {
             'type': 'ir.actions.client',
@@ -102,12 +102,10 @@ class Bill(models.Model):
             },
         }
 
-    def update_bill_status(self):
-        """This function changes the bill status and locks editing the file"""
-        if self.bill_status == 'Provisória':
-            self.bill_status = 'Autorizada'
-        elif self.bill_status == 'Autorizada':
-            self.bill_status = 'Paga'
+    def update_invoice_status(self):
+        """This function changes the invoice status and locks editing the file"""
+        if self.invoice_status == 'Provisória':
+            self.invoice_status = 'Recebida'
 
         return {
             'type': 'ir.actions.client',
@@ -115,7 +113,7 @@ class Bill(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': _('Status atualizado para ' + self.bill_status + '!'),
+                'message': _('Status atualizado para ' + self.invoice_status + '!'),
                 'sticky': False,
                 'next': {
                     'type': 'ir.actions.act_window_close',
@@ -123,13 +121,13 @@ class Bill(models.Model):
             },
         }
 
-    @api.constrains('id_bill')
+    @api.constrains('id_invoice')
     def _validate_rg(self):
-        """Checks size of the id_bill variable to
+        """Checks size of the id_invoice variable to
         checks for non-numeric characters"""
         for rec in self:
-            if rec.id_bill:
-                if not (rec.id_bill).isnumeric():
+            if rec.id_invoice:
+                if not (rec.id_invoice).isnumeric():
                     raise ValidationError(_("O campo 'Código' contém carácteres inválidos. "
                                             "O campo deve conter apenas números"))
 
@@ -174,24 +172,16 @@ class Bill(models.Model):
                     raise ValidationError(_("O campo 'CNPJ' contém carácteres inválidos. "
                                                 "O campo deve conter apenas números"))
 
-    @api.constrains('bill_file')
-    def _check_bill_file(self):
+    @api.constrains('invoice_file')
+    def _check_invoice_file(self):
         """Checks if the binary file is a '.pdf' file"""
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
 
-    @api.constrains('validation_date')
-    def _check_validation_date(self):
-        """Checks if 'validation_date' is not invalid"""
-        if self.validation_date:
-            if self.validation_date <= self.register_date:
-                raise ValidationError(_("A 'Data de Validade' é inválida. "
-                                        "Ela não pode ser mais antiga que a data de regsitro."))
-
     _sql_constraints = [
-        ('id_bill_installment_unique', 'UNIQUE(id_bill, installment)',
-        'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada.')
+        ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
+        'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada.')
     ]
 
     def _compute_display_name(self):
@@ -199,8 +189,7 @@ class Bill(models.Model):
         this model"""
         for record in self:
             if record.installment != '0':
-                name = record.id_bill + '_parcela_' + record.installment
+                name = record.id_invoice + '_parcela_' + record.installment
             else:
-                name = record.id_bill + '_parcela_unica'
-
+                name = record.id_invoice + '_parcela_unica'
         record.display_name = name

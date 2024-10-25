@@ -1,3 +1,4 @@
+# pylint: disable=undefined-loop-variable
 """This is the file for the 'patrimony' object"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -9,9 +10,9 @@ class Patrimony(models.Model):
 
     id_patrimony = fields.Char(string='Código', required=True)
 
-    fuel_type = fields.Char(string='Combustível', required=True)
+    fuel_type = fields.Char(string='Combustível', required=False)
 
-    vehicle_maker = fields.Char(string='Marca', required=False)
+    vehicle_maker = fields.Char(string='Marca', required=True)
     vehicle_model = fields.Char(string='Modelo', required=False)
 
     classification = fields.Selection([('vehicles', 'Veículos'),
@@ -23,7 +24,7 @@ class Patrimony(models.Model):
                                      ('car', 'Carro')
                                      ], string = 'Tipo de Veículo', required=False)
 
-    vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
+    vehicle_plate = fields.Char(string='Placa do Veículo', required=True)
 
     renavan = fields.Char(string='Renavan', required=False)
 
@@ -50,6 +51,10 @@ class Patrimony(models.Model):
 
     patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
     filename = fields.Char()
+    external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato Original')
+    contract_ids = fields.Many2many('contract', 'contract_patrimony_rel_table',
+                                    string='Contratos')
+    display_name = fields.Char(compute='_compute_display_name')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -91,7 +96,9 @@ class Patrimony(models.Model):
             'patrimony_file': self.patrimony_file,
             'renavan': self.renavan,
             'heavy_type': self.heavy_type,
-            'heavy_number': self.heavy_number
+            'heavy_number': self.heavy_number,
+            'external_contract_id': self.external_contract_id,
+            'name': self.display_name,
         }
 
         self.env['patrimony'].write(vals)
@@ -139,7 +146,24 @@ class Patrimony(models.Model):
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
 
+    @api.constrains('vehicle_plate')
+    def _validate_vehicle_plate(self):
+        """Checks size of the 'vehicle_plate' variable to limit different lengths"""
+        for rec in self:
+            if rec.vehicle_plate and self.classification == 'vehicles':
+                if len(rec.vehicle_plate) != 7:
+                    raise ValidationError(_("O campo 'Placa do Veículo' está com o tamanho"
+                                            "incorreto. Precisa de 7 dígitos"))
+
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
-        'Já existe um \'Patrimônio\' com esse Código.')
+        'Já existe um \'Patrimônio\' com esse \'Código\'.')
     ]
+
+    def _compute_display_name(self):
+        """Function to generate specific name for any given record from
+        this model"""
+        for record in self:
+            name = record.vehicle_maker + '_' + record.id_patrimony
+
+        record.display_name = name
