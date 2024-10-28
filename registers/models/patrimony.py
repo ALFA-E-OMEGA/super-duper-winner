@@ -152,6 +152,9 @@ class Patrimony(models.Model):
                 if len(rec.vehicle_plate) != 7:
                     raise ValidationError(_("O campo 'Placa do Veículo' está com o tamanho"
                                             "incorreto. Precisa de 7 dígitos"))
+                if not (rec.vehicle_plate).isalnum():
+                    raise ValidationError(_("O campo 'Placa do Veículo' contém caracteres inválidos. "
+                                            "O campo deve conter apenas letras e números."))
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
@@ -162,6 +165,6 @@ class Patrimony(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            name = record.vehicle_plate
+            name = record.vehicle_plate.upper()
 
         record.display_name = name
