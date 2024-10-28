@@ -30,8 +30,7 @@ class Invoice(models.Model):
     fiscal_note = fields.Char(string='Código', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
                                    string='Parcela', required=True)
-    invoice_type = fields.Selection([('maintenance', 'Manutenção'),
-                                  ('contract', 'Contrato')],
+    invoice_type = fields.Selection([('contract', 'Contrato')],
                                   string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
@@ -43,7 +42,7 @@ class Invoice(models.Model):
                                default='other')
     invoice_status = fields.Char(string='Status da Conta', default='Provisória')
     signature = fields.Binary(string='Assinatura', required=True)
-    cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
+    external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
     client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
@@ -84,7 +83,7 @@ class Invoice(models.Model):
             'value': self.value,
             'origin': self.origin,
             'invoice_status': self.invoice_status,
-            'cost_center_id': self.cost_center_id,
+            'external_cost_center_id': self.external_cost_center_id,
             'client_name': self.client_name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,

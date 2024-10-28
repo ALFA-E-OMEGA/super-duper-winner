@@ -30,8 +30,7 @@ class Bill(models.Model):
     fiscal_note = fields.Char(string='Código', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(18),
                                    string='Parcela', required=True)
-    bill_type = fields.Selection([('maintenance', 'Manutenção'),
-                                  ('contract', 'Contrato')],
+    bill_type = fields.Selection([('maintenance', 'Manutenção')],
                                   string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     bill_file = fields.Binary(string='PDF da Conta', attachment=True)
@@ -43,8 +42,8 @@ class Bill(models.Model):
                                default='other')
     bill_status = fields.Char(string='Status da Conta', default='Provisória')
     signature = fields.Binary(string='Assinatura', required=True)
-    cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
-    contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
+    external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
+    external_patrimony_id = fields.Many2one(comodel_name='patrimony', string='Patrimônio')
     client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -84,11 +83,11 @@ class Bill(models.Model):
             'value': self.value,
             'origin': self.origin,
             'bill_status': self.bill_status,
-            'cost_center_id': self.cost_center_id,
+            'external_cost_center_id': self.external_cost_center_id,
             'client_name': self.client_name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,
-            'contract_id': self.contract_id,
+            'external_patrimony_id': self.external_patrimony_id,
             'name': self.display_name,
         }
 
