@@ -12,7 +12,7 @@ class Patrimony(models.Model):
 
     fuel_type = fields.Char(string='Combustível', required=False)
 
-    vehicle_maker = fields.Char(string='Marca', required=True)
+    vehicle_maker = fields.Char(string='Marca', required=False)
     vehicle_model = fields.Char(string='Modelo', required=False)
 
     classification = fields.Selection([('vehicles', 'Veículos'),
@@ -74,14 +74,12 @@ class Patrimony(models.Model):
             self.renavan = ''
             self.heavy_number = ''
             self.heavy_type = ''
-            self.vehicle_plate = ''
             self.vehicle_type = ''
         elif self.classification == 'vehicles':
             self.heavy_number = ''
             self.heavy_type = ''
         elif self.classification == 'heavies':
             self.renavan = ''
-            self.vehicle_plate = ''
             self.vehicle_type = ''
 
         vals = {
@@ -154,6 +152,10 @@ class Patrimony(models.Model):
                 if len(rec.vehicle_plate) != 7:
                     raise ValidationError(_("O campo 'Placa do Veículo' está com o tamanho"
                                             "incorreto. Precisa de 7 dígitos"))
+                if not (rec.vehicle_plate).isalnum():
+                    raise ValidationError(_("O campo 'Placa do Veículo' contém caracteres"
+                                            " inválidos. "
+                                            "O campo deve conter apenas letras e números."))
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
@@ -164,6 +166,6 @@ class Patrimony(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            name = record.vehicle_maker + '_' + record.id_patrimony
+            name = record.vehicle_plate.upper()
 
         record.display_name = name

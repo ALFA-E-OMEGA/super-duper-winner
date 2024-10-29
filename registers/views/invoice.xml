@@ -32,7 +32,7 @@
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Centro de Custo:</span>
-                                    <field class="field" name="cost_center_id" widget="selection" readonly="invoice_status != 'Provisória'"/>
+                                    <field class="field" name="external_cost_center_id" widget="selection" readonly="invoice_status != 'Provisória'"/>
                                 </div>
 
                                 <div class="container_field">
