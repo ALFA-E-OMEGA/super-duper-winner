@@ -71,7 +71,7 @@ class Bill(models.Model):
             self.cpf = ''
             self.cnpj = ''
             self.client_name = ''
-        
+
         if self.bill_type != 'maintenance':
             self.external_patrimony_id = ''
 

@@ -153,7 +153,8 @@ class Patrimony(models.Model):
                     raise ValidationError(_("O campo 'Placa do Veículo' está com o tamanho"
                                             "incorreto. Precisa de 7 dígitos"))
                 if not (rec.vehicle_plate).isalnum():
-                    raise ValidationError(_("O campo 'Placa do Veículo' contém caracteres inválidos. "
+                    raise ValidationError(_("O campo 'Placa do Veículo' contém caracteres"
+                                            " inválidos. "
                                             "O campo deve conter apenas letras e números."))
 
     _sql_constraints = [
