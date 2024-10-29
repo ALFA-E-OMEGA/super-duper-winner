@@ -30,7 +30,8 @@ class Invoice(models.Model):
     fiscal_note = fields.Char(string='Código', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
                                    string='Parcela', required=True)
-    invoice_type = fields.Selection([('contract', 'Contrato')],
+    invoice_type = fields.Selection([('contract', 'Contrato'),
+                                  ('other', 'Outro')],
                                   string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
@@ -70,6 +71,9 @@ class Invoice(models.Model):
             self.cpf = ''
             self.cnpj = ''
             self.client_name = ''
+
+        if self.invoice_type != 'contract':
+            self.external_contract_id = ''
 
         vals = {
             'id_invoice': self.id_invoice,

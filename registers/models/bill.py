@@ -30,7 +30,8 @@ class Bill(models.Model):
     fiscal_note = fields.Char(string='Código', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(18),
                                    string='Parcela', required=True)
-    bill_type = fields.Selection([('maintenance', 'Manutenção')],
+    bill_type = fields.Selection([('maintenance', 'Manutenção'),
+                                  ('other', 'Outro')],
                                   string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     bill_file = fields.Binary(string='PDF da Conta', attachment=True)
@@ -70,6 +71,9 @@ class Bill(models.Model):
             self.cpf = ''
             self.cnpj = ''
             self.client_name = ''
+        
+        if self.bill_type != 'maintenance':
+            self.external_patrimony_id = ''
 
         vals = {
             'bill_id': self.id_bill,
