@@ -20,6 +20,7 @@
         'views/cost_center.xml',
         'views/service.xml',
         'views/contract.xml',
+        'views/operation.xml',
 
     ],
     'demo': [

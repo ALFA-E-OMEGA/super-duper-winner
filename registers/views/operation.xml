@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_operation_form" model="ir.ui.view">
+        <field name="name">operation.form</field>
+        <field name="model">operation</field>
+        <field name="arch" type="xml">
+            <form class="myform" string="Cadastro de Operação de Caixa">
+
+            <div class="container_form operation_form">
+                <h1>Operação de Caixa</h1>
+                    <article class="container_form_contents">
+                        <section class="group">
+                            <div class="container_field">
+                                <span>Operação:</span>
+                                <field class="field" name="id_operation"/>
+                            </div>
+
+                        </section>
+
+                        <section class="group">
+                            <div class="container_field">
+                                <span>Data de Operação:</span>
+                                <field class="field" name="operation_date"/>
+                            </div>
+
+                            <div class="container_button">
+                                <button name="create_operation" class="btnSecondary mybutton"
+                                type="object" string="Salvar"
+                                confirm="Confimar dados de Operação de Caixa?"/>
+                            </div>
+
+                        </section>
+
+                    </article>
+            </div>
+            </form>
+
+
+        </field>
+
+    </record>
+
+    <record id="view_operation_list" model="ir.ui.view">
+        <field name="name">operation.list</field>
+        <field name="model">operation</field>
+        <field name="arch" type="xml">
+            <list string="Operação de Caixa">
+                <field class="test" name="id_operation"/>
+                <field class="test" name="operation_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_register_operation" model="ir.actions.act_window">
+        <field name="name">Operação de Caixa</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">operation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem  id="menu_operation_register"
+        parent="menu_financeiro"
+        action="action_register_operation"
+        name="Operação de Caixa"
+        sequence="4"/>
+</odoo>

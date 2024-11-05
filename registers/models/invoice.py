@@ -27,7 +27,7 @@ class Invoice(models.Model):
     _description = "Registro de Contas a Receber."
 
     id_invoice = fields.Char(string='Código', required=False)
-    fiscal_note = fields.Char(string='Código', required=False)
+    fiscal_note = fields.Char(string='Nota Fiscal', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
                                    string='Parcela', required=True)
     invoice_type = fields.Selection([('contract', 'Contrato'),

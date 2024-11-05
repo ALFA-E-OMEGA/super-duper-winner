@@ -27,7 +27,7 @@ class Bill(models.Model):
     _description = "Registro de Contas a Pagar."
 
     id_bill = fields.Char(string='Código', required=False)
-    fiscal_note = fields.Char(string='Código', required=False)
+    fiscal_note = fields.Char(string='Nota Fiscal', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(18),
                                    string='Parcela', required=True)
     bill_type = fields.Selection([('maintenance', 'Manutenção'),
