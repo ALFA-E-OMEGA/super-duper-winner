@@ -12,8 +12,13 @@
                     <article class="container_form_contents">
                         <section class="group">
                             <div class="container_field">
-                                <span>Operação:</span>
-                                <field class="field" name="id_operation"/>
+                                <span>Status:</span>
+                                <field class="field" name="operation_status"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Editável:</span>
+                                <field class="field" name="is_editable"/>
                             </div>
 
                         </section>
@@ -24,10 +29,28 @@
                                 <field class="field" name="operation_date"/>
                             </div>
 
-                            <div class="container_button">
-                                <button name="create_operation" class="btnSecondary mybutton"
-                                type="object" string="Salvar"
-                                confirm="Confimar dados de Operação de Caixa?"/>
+                            <div class="container_field">
+                                <span>Razão de Reabertura:</span>
+                                <field class="field" name="reopen_reason"/>
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_button">
+                                    <button name="close_operation" class="btnSecondary mybutton" type="object" string="Fechar"
+                                    confirm="Deseja fechar o caixa?" invisible="operation_status == '0'"/>
+                                </div>
+                                
+                                <div class="container_button">
+                                    <button name="reopen_operation" class="btnSecondary mybutton" type="object" string="Reabrir"
+                                    confirm="Deseja re-abrir o caixa?" invisible="operation_status == '1'"/>
+                                </div>
+
+                                <div class="container_button">
+                                    <button name="create_operation" class="btnSecondary mybutton"
+                                    type="object" string="Salvar"
+                                    confirm="Confimar dados de Operação de Caixa?"/>
+                                </div>
+
                             </div>
 
                         </section>
@@ -46,7 +69,7 @@
         <field name="model">operation</field>
         <field name="arch" type="xml">
             <list string="Operação de Caixa">
-                <field class="test" name="id_operation"/>
+                <field class="test" name="operation_status"/>
                 <field class="test" name="operation_date"/>
             </list>
         </field>
