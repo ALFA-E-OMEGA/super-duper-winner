@@ -22,7 +22,9 @@ class Operation(models.Model):
                                        default='1')
     reopen_reason = fields.Text(string='Razão de Reabertura', required=False)
     is_editable = fields.Boolean(string='Editável', required=True, compute='compute_is_editable',
-                                 default=True)
+                                 default=True) 
+    invoice_ids = fields.One2many('invoice', 'external_operation_id',  string="Contas a Receber")
+    bill_ids = fields.One2many('bill', 'external_operation_id',  string="Contas a Pagar")
 
     def create_operation(self):
         """This is the custom function for saving an 'operation' object"""
@@ -31,6 +33,7 @@ class Operation(models.Model):
             'operation_status': self.operation_status,
             'reopen_reason': self.reopen_reason,
             'is_editable': self.is_editable,
+            'bill_ids': self.bill_ids,
             }
 
         self.env['operation'].write(vals)

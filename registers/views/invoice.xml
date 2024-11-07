@@ -111,10 +111,18 @@
                                 </div>
 
                             </div>
+                            
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Tipo de Conta:</span>
+                                    <field class="field" name="invoice_type" readonly="invoice_status != 'Provisória'"/>
+                                </div>
 
-                            <div class="container_field">
-                                <span>Tipo de Conta:</span>
-                                <field class="field" name="invoice_type" readonly="invoice_status != 'Provisória'"/>
+                                <div class="container_field">
+                                    <span>Descrição:</span>
+                                    <field class="field" name="description" readonly="invoice_status != 'Provisória'"/>
+                                </div>
+                            
                             </div>
 
                             <div class="container_field" invisible="invoice_type != 'contract'">
@@ -124,8 +132,8 @@
                             </div>
 
                             <div class="container_field">
-                                <span>Descrição:</span>
-                                <field class="field" name="description" readonly="invoice_status != 'Provisória'"/>
+                                <span>Dia de Pagamento:</span>
+                                <field class="field" name="external_operation_id" widget="selection" readonly="1"/>
                             </div>
 
                             <div class="container_field">

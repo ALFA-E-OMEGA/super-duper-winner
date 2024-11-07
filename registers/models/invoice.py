@@ -45,6 +45,7 @@ class Invoice(models.Model):
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
+    external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
     client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -92,6 +93,7 @@ class Invoice(models.Model):
             'cpf': self.cpf,
             'cnpj': self.cnpj,
             'external_contract_id': self.external_contract_id,
+            'external_opration_id': self.external_operation_id,
             'name':self.display_name,
         }
 
@@ -198,7 +200,7 @@ class Invoice(models.Model):
         this model"""
         for record in self:
             if record.installment != '0':
-                name = record.id_invoice + '_parcela_' + record.installment
+                name = record.id_invoice + '-parcela-' + record.installment
             else:
-                name = record.id_invoice + '_parcela_unica'
+                name = record.id_invoice + '-parcela-unica'
         record.display_name = name

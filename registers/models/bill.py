@@ -45,6 +45,7 @@ class Bill(models.Model):
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_patrimony_id = fields.Many2one(comodel_name='patrimony', string='Patrimônio')
+    external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
     client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -92,6 +93,7 @@ class Bill(models.Model):
             'cpf': self.cpf,
             'cnpj': self.cnpj,
             'external_patrimony_id': self.external_patrimony_id,
+            'external_operation_id': self.external_cost_center_id,
             'name': self.display_name,
         }
 
@@ -208,8 +210,8 @@ class Bill(models.Model):
         this model"""
         for record in self:
             if record.installment != '0':
-                name = record.id_bill + '_parcela_' + record.installment
+                name = record.id_bill + '-parcela-' + record.installment
             else:
-                name = record.id_bill + '_parcela_unica'
+                name = record.id_bill + '-parcela-unica'
 
         record.display_name = name
