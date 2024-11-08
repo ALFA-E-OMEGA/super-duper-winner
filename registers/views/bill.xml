@@ -132,9 +132,18 @@
                                 readonly="bill_status != 'Provisória'"/>
                             </div>
 
-                            <div class="container_field">
-                                <span>Dia de Pagamento:</span>
-                                <field class="field" name="external_operation_id" widget="selection" readonly="1"/>
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Dia de Pagamento:</span>
+                                    <field class="field" name="external_operation_id" widget="selection" readonly="1"/>
+                                </div>
+
+                                <div class="container_button">
+                                    <button name="clear_external_operation_id" class="btnSecondary mybutton" type="object"
+                                    string="Limpar" confirm="Desassociar a conta do caixa?"
+                                    invisible="is_clearable == False"/>
+                                </div>
+                            
                             </div>
 
                             <div class="container_field">

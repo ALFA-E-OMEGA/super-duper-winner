@@ -6,7 +6,7 @@ from odoo.exceptions import ValidationError
 import pytz
 
 class Invoice(models.Model):
-    """Fields and functions for the invoice object"""
+    """Fields and functions for the invoice record"""
 
     def _generate_register_date(self):
         """Function to generate current date based on user timezone"""
@@ -51,6 +51,7 @@ class Invoice(models.Model):
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
+    is_clearable = fields.Boolean(string='Limpável', compute='_compute_is_clearable')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -62,8 +63,14 @@ class Invoice(models.Model):
         elif self.pdf_view_status == 1:
             self.pdf_view_status = 0
 
+    def clear_external_operation_id(self):
+        """Removes the association between an 'external_operation_id'
+        and a 'invoice' record"""
+        if self.external_operation_id:
+            self.external_operation_id = False
+
     def create_invoice(self):
-        """This is the custom function for saving a 'invoice' object"""
+        """This is the custom function for saving a 'invoice' record"""
         if self.origin == "is_cpf":
             self.cnpj = ''
         elif self.origin == "is_cnpj":
@@ -95,6 +102,7 @@ class Invoice(models.Model):
             'external_contract_id': self.external_contract_id,
             'external_opration_id': self.external_operation_id,
             'name':self.display_name,
+            'is_clearable': self.is_clearable,
         }
 
         self.env['invoice'].write(vals)
@@ -204,3 +212,12 @@ class Invoice(models.Model):
             else:
                 name = record.id_invoice + '-parcela-unica'
         record.display_name = name
+    
+    def _compute_is_clearable(self):
+        """Disables removing association if the 'external_operation_id' is
+        no longer editable"""
+        for rec in self:
+            if rec.external_operation_id:
+                rec.is_clearable = rec.external_operation_id.is_editable
+            else:
+                rec.is_clearable = False

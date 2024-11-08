@@ -51,6 +51,7 @@ class Bill(models.Model):
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
+    is_clearable = fields.Boolean(string='Limpável', compute='_compute_is_clearable')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -62,8 +63,14 @@ class Bill(models.Model):
         elif self.pdf_view_status == 1:
             self.pdf_view_status = 0
 
+    def clear_external_operation_id(self):
+        """Removes the association between an 'external_operation_id'
+        and a 'bill' record"""
+        if self.external_operation_id:
+            self.external_operation_id = False
+
     def create_bill(self):
-        """This is the custom function for saving a 'bill' object"""
+        """This is the custom function for saving a 'bill' record"""
         if self.origin == "is_cpf":
             self.cnpj = ''
         elif self.origin == "is_cnpj":
@@ -95,6 +102,7 @@ class Bill(models.Model):
             'external_patrimony_id': self.external_patrimony_id,
             'external_operation_id': self.external_cost_center_id,
             'name': self.display_name,
+            'is_clearable': self.is_clearable,
         }
 
         self.env['bill'].write(vals)
@@ -215,3 +223,12 @@ class Bill(models.Model):
                 name = record.id_bill + '-parcela-unica'
 
         record.display_name = name
+    
+    def _compute_is_clearable(self):
+        """Disables removing association if the 'external_operation_id' is
+        no longer editable"""
+        for rec in self:
+            if rec.external_operation_id:
+                rec.is_clearable = rec.external_operation_id.is_editable
+            else:
+                rec.is_clearable = False
