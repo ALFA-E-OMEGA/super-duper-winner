@@ -82,6 +82,9 @@ class Bill(models.Model):
 
         if self.bill_type != 'maintenance':
             self.external_patrimony_id = ''
+        
+        if self.bill_status == 'Provisória':
+            self.external_operation_id = False
 
         vals = {
             'bill_id': self.id_bill,
@@ -204,7 +207,7 @@ class Bill(models.Model):
     def _check_validation_date(self):
         """Checks if 'validation_date' is not invalid"""
         if self.validation_date:
-            if self.validation_date <= self.register_date:
+            if self.validation_date < self.register_date:
                 raise ValidationError(_("A 'Data de Validade' é inválida. "
                                         "Ela não pode ser mais antiga que a data de regsitro."))
 

@@ -27,6 +27,7 @@ class Operation(models.Model):
     bill_ids = fields.One2many('bill', 'external_operation_id',  string="Contas a Pagar")
     revenues_sum = fields.Float(string='Lucro Total', compute='_compute_revenues_sum')
     expenses_sum = fields.Float(string='Despesa Total', compute='_compute_expenses_sum')
+    total_profit = fields.Float(string='Lucro Total', default=0.0)
 
     def create_operation(self):
         """This is the custom function for saving an 'operation' object"""
@@ -38,6 +39,7 @@ class Operation(models.Model):
             'bill_ids': self.bill_ids,
             'revenues_sum': self.revenues_sum,
             'expenses_sum': self.expenses_sum,
+            'total_profit': self.total_profit,
             }
 
         self.env['operation'].write(vals)
@@ -45,6 +47,8 @@ class Operation(models.Model):
     def close_operation(self):
         """This function closes the operation status and locks editing the file"""
         self.operation_status = '0'
+        for rec in self:
+            rec.total_profit = rec.revenues_sum - rec.expenses_sum
 
         return {
             'type': 'ir.actions.client',
