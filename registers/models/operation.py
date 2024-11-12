@@ -103,8 +103,11 @@ class Operation(models.Model):
         for rec in self:
             total_expense = 0.0
             for bill in rec.bill_ids:
-                expense = bill.value
-                total_expense += expense
+                if bill.bill_status != 'Provisória':
+                    expense = bill.value
+                    total_expense += expense
+                else:
+                    bill.external_operation_id = False
             rec.expenses_sum = total_expense
 
 

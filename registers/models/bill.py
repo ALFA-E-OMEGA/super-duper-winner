@@ -82,9 +82,6 @@ class Bill(models.Model):
 
         if self.bill_type != 'maintenance':
             self.external_patrimony_id = ''
-        
-        if self.bill_status == 'Provisória':
-            self.external_operation_id = False
 
         vals = {
             'bill_id': self.id_bill,
