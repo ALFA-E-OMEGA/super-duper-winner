@@ -22,6 +22,11 @@
                             </div>
 
                             <div class="container_field">
+                                <span>Receita Total:</span>
+                                <field class="field" name="revenues_sum" readonly="1"/>
+                            </div>
+
+                            <div class="container_field">
                                 <span>Receitas:</span>
                                 <field name="invoice_ids" widget="many2many" options="{'unlink': False}"/>
                             </div>
@@ -37,6 +42,11 @@
                             <div class="container_field">
                                 <span>Razão de Reabertura:</span>
                                 <field class="field" name="reopen_reason"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Despesa Total:</span>
+                                <field class="field" name="expenses_sum" readonly="1"/>
                             </div>
 
                             <div class="container_field">

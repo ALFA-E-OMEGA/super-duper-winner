@@ -21,10 +21,12 @@ class Operation(models.Model):
                                        string="Status de Caixa", required=True,
                                        default='1')
     reopen_reason = fields.Text(string='Razão de Reabertura', required=False)
-    is_editable = fields.Boolean(string='Editável', required=True, compute='compute_is_editable',
+    is_editable = fields.Boolean(string='Editável', required=True, compute='_compute_is_editable',
                                  default=True) 
     invoice_ids = fields.One2many('invoice', 'external_operation_id',  string="Contas a Receber")
     bill_ids = fields.One2many('bill', 'external_operation_id',  string="Contas a Pagar")
+    revenues_sum = fields.Float(string='Lucro Total', compute='_compute_revenues_sum')
+    expenses_sum = fields.Float(string='Despesa Total', compute='_compute_expenses_sum')
 
     def create_operation(self):
         """This is the custom function for saving an 'operation' object"""
@@ -34,6 +36,8 @@ class Operation(models.Model):
             'reopen_reason': self.reopen_reason,
             'is_editable': self.is_editable,
             'bill_ids': self.bill_ids,
+            'revenues_sum': self.revenues_sum,
+            'expenses_sum': self.expenses_sum,
             }
 
         self.env['operation'].write(vals)
@@ -74,7 +78,7 @@ class Operation(models.Model):
             },
         }
     
-    def compute_is_editable(self):
+    def _compute_is_editable(self):
         """Function only allows altering the operation in it's current date"""
         current_date = self._generate_register_date()
         for rec in self:
@@ -82,6 +86,23 @@ class Operation(models.Model):
                 rec.is_editable = True
             else:
                 rec.is_editable = False
+    
+    def _compute_revenues_sum(self):
+        for rec in self:
+            total_revenue = 0.0
+            for invoice in rec.invoice_ids:
+                revenue = invoice.value
+                total_revenue += revenue
+            rec.revenues_sum = total_revenue
+    
+    def _compute_expenses_sum(self):
+        for rec in self:
+            total_expense = 0.0
+            for bill in rec.bill_ids:
+                expense = bill.value
+                total_expense += expense
+            rec.expenses_sum = total_expense
+
 
     _sql_constraints = [
         ('operation_date_unique', 'UNIQUE(operation_date)',
