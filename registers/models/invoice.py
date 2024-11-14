@@ -35,7 +35,6 @@ class Invoice(models.Model):
                                   string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
-    receiving_date = fields.Date(string='Data de Recebimento', required=True)
     description = fields.Text(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
@@ -43,6 +42,7 @@ class Invoice(models.Model):
                                default='other')
     invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Faturada'),
                                        ],string='Status da Conta', default='0')
+    status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
@@ -91,7 +91,6 @@ class Invoice(models.Model):
             'invoice_type': self.invoice_type,
             'register_date': self.register_date,
             'invoice_file': self.invoice_file,
-            'receiveing_date': self.receiving_date,
             'description': self.description,
             'value': self.value,
             'origin': self.origin,
@@ -133,7 +132,7 @@ class Invoice(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': _('Status atualizado para ' + self.invoice_status + '!'),
+                'message': _('Status atualizado para \'' + self.status_value + '\'!'),
                 'sticky': False,
                 'next': {
                     'type': 'ir.actions.act_window_close',
@@ -222,3 +221,8 @@ class Invoice(models.Model):
                 rec.is_clearable = rec.external_operation_id.is_editable
             else:
                 rec.is_clearable = False
+    
+    def _compute_status_value(self):
+        for rec in self:
+            if rec.bill_status == '0':
+                self.status_value = 'Faturada'

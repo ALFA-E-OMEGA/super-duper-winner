@@ -48,6 +48,14 @@ class Operation(models.Model):
         """This function closes the operation status and locks editing the file"""
         self.operation_status = '0'
         for rec in self:
+            for bill in rec.bill_ids:
+                if bill.bill_status == '1':
+                    bill.bill_status = '2'
+
+            for invoice in rec.invoice_ids:
+                if invoice.invoice_status == '0':
+                    invoice.invoice_status = '1'
+
             rec.total_profit = rec.revenues_sum - rec.expenses_sum
 
         return {

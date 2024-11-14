@@ -43,6 +43,7 @@ class Bill(models.Model):
                                default='other')
     bill_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Paga'),
                                     ], string='Status da Conta', default='0')
+    status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_patrimony_id = fields.Many2one(comodel_name='patrimony', string='Patrimônio')
@@ -135,7 +136,7 @@ class Bill(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': _('Status atualizado para ' + self.bill_status + '!'),
+                'message': _('Status atualizado para \'' + self.status_value + '\'!'),
                 'sticky': False,
                 'next': {
                     'type': 'ir.actions.act_window_close',
@@ -233,3 +234,10 @@ class Bill(models.Model):
                 rec.is_clearable = rec.external_operation_id.is_editable
             else:
                 rec.is_clearable = False
+    
+    def _compute_status_value(self):
+        for rec in self:
+            if rec.bill_status == '0':
+                self.status_value = 'Autorizada'
+            elif rec.bill_status == '1':
+                self.status_value = 'Paga'
