@@ -41,7 +41,8 @@ class Invoice(models.Model):
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
                                ('other', 'Outro')], string='Fonte', required=True,
                                default='other')
-    invoice_status = fields.Char(string='Status da Conta', default='Provisória')
+    invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Faturada'),
+                                       ],string='Status da Conta', default='0')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
@@ -123,8 +124,8 @@ class Invoice(models.Model):
 
     def update_invoice_status(self):
         """This function changes the invoice status and locks editing the file"""
-        if self.invoice_status == 'Provisória':
-            self.invoice_status = 'Recebida'
+        if self.invoice_status == '0':
+            self.invoice_status = '1'
 
         return {
             'type': 'ir.actions.client',

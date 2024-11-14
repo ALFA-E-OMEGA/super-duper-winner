@@ -41,7 +41,8 @@ class Bill(models.Model):
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
                                ('other', 'Outro')], string='Fonte', required=True,
                                default='other')
-    bill_status = fields.Char(string='Status da Conta', default='Provisória')
+    bill_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Paga'),
+                                    ], string='Status da Conta', default='0')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_patrimony_id = fields.Many2one(comodel_name='patrimony', string='Patrimônio')
@@ -123,10 +124,10 @@ class Bill(models.Model):
 
     def update_bill_status(self):
         """This function changes the bill status and locks editing the file"""
-        if self.bill_status == 'Provisória':
-            self.bill_status = 'Autorizada'
-        elif self.bill_status == 'Autorizada':
-            self.bill_status = 'Paga'
+        if self.bill_status == '0':
+            self.bill_status = '1'
+        elif self.bill_status == '1':
+            self.bill_status = '2'
 
         return {
             'type': 'ir.actions.client',

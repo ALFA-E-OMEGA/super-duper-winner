@@ -103,7 +103,7 @@ class Operation(models.Model):
         for rec in self:
             total_expense = 0.0
             for bill in rec.bill_ids:
-                if bill.bill_status != 'Provisória':
+                if bill.bill_status != '0':
                     expense = bill.value
                     total_expense += expense
                 else:
