@@ -103,19 +103,24 @@ class Operation(models.Model):
         for rec in self:
             total_revenue = 0.0
             for invoice in rec.invoice_ids:
-                revenue = invoice.value
-                total_revenue += revenue
+                if invoice.invoice_status == '1':
+                    self.write({'invoice_ids': [(3, invoice.id)]})
+                else:
+                    revenue = invoice.value
+                    total_revenue += revenue
             rec.revenues_sum = total_revenue
     
     def _compute_expenses_sum(self):
         for rec in self:
             total_expense = 0.0
             for bill in rec.bill_ids:
-                if bill.bill_status != '0':
+                if bill.bill_status == '0':
+                    self.write({'bill_ids': [(3, bill.id)]})
+                elif bill.bill_status == '2' and bill.external_operation_id:
+                    self.write({'bill_ids': [(3, bill.id)]})
+                else:
                     expense = bill.value
                     total_expense += expense
-                else:
-                    bill.external_operation_id = False
             rec.expenses_sum = total_expense
 
 
