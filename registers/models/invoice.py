@@ -64,12 +64,6 @@ class Invoice(models.Model):
         elif self.pdf_view_status == 1:
             self.pdf_view_status = 0
 
-    def clear_external_operation_id(self):
-        """Removes the association between an 'external_operation_id'
-        and a 'invoice' record"""
-        if self.external_operation_id:
-            self.external_operation_id = False
-
     def create_invoice(self):
         """This is the custom function for saving a 'invoice' record"""
         if self.origin == "is_cpf":
@@ -140,6 +134,8 @@ class Invoice(models.Model):
             },
         }
 
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+
     @api.constrains('id_invoice')
     def _validate_rg(self):
         """Checks size of the id_invoice variable to
@@ -197,11 +193,20 @@ class Invoice(models.Model):
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
+            
+    @api.constrains('external_operation_id')
+    def _check_external_operation_id(self):
+        for rec in self:
+            if rec.external_operation_id:
+                if rec.external_operation_id.is_editable != True:
+                    raise ValidationError(_("O caixa associado está fechado!"))
 
     _sql_constraints = [
         ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
         'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada.')
     ]
+
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 
     def _compute_display_name(self):
         """Function to generate specific name for any given record from
@@ -225,4 +230,6 @@ class Invoice(models.Model):
     def _compute_status_value(self):
         for rec in self:
             if rec.bill_status == '0':
+                self.status_value = 'Provisória'
+            elif rec.bill_status == '1':
                 self.status_value = 'Faturada'

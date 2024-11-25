@@ -31,12 +31,15 @@ class Operation(models.Model):
 
     def create_operation(self):
         """This is the custom function for saving an 'operation' object"""
+        for rec in self:
+            for bill in rec.bill_ids:
+                if bill.bill_status == '2' and bill.external_operation_id == True:
+                    bill.external_operation_id = bill.external_operation_id
         vals = {
             'operation_date': self.operation_date,
             'operation_status': self.operation_status,
             'reopen_reason': self.reopen_reason,
             'is_editable': self.is_editable,
-            'bill_ids': self.bill_ids,
             'revenues_sum': self.revenues_sum,
             'expenses_sum': self.expenses_sum,
             'total_profit': self.total_profit,
@@ -103,11 +106,8 @@ class Operation(models.Model):
         for rec in self:
             total_revenue = 0.0
             for invoice in rec.invoice_ids:
-                if invoice.invoice_status == '1':
-                    self.write({'invoice_ids': [(3, invoice.id)]})
-                else:
-                    revenue = invoice.value
-                    total_revenue += revenue
+                revenue = invoice.value
+                total_revenue += revenue
             rec.revenues_sum = total_revenue
     
     def _compute_expenses_sum(self):
@@ -115,8 +115,6 @@ class Operation(models.Model):
             total_expense = 0.0
             for bill in rec.bill_ids:
                 if bill.bill_status == '0':
-                    self.write({'bill_ids': [(3, bill.id)]})
-                elif bill.bill_status == '2' and bill.external_operation_id:
                     self.write({'bill_ids': [(3, bill.id)]})
                 else:
                     expense = bill.value

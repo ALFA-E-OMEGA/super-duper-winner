@@ -65,12 +65,6 @@ class Bill(models.Model):
         elif self.pdf_view_status == 1:
             self.pdf_view_status = 0
 
-    def clear_external_operation_id(self):
-        """Removes the association between an 'external_operation_id'
-        and a 'bill' record"""
-        if self.external_operation_id:
-            self.external_operation_id = False
-
     def create_bill(self):
         """This is the custom function for saving a 'bill' record"""
         if self.origin == "is_cpf":
@@ -143,6 +137,8 @@ class Bill(models.Model):
                 }
             },
         }
+    
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 
     @api.constrains('id_bill')
     def _validate_rg(self):
@@ -209,11 +205,20 @@ class Bill(models.Model):
             if self.validation_date < self.register_date:
                 raise ValidationError(_("A 'Data de Validade' é inválida. "
                                         "Ela não pode ser mais antiga que a data de regsitro."))
+            
+    @api.constrains('external_operation_id')
+    def _check_external_operation_id(self):
+        for rec in self:
+            if rec.external_operation_id:
+                if rec.external_operation_id.is_editable != True:
+                    raise ValidationError(_("O caixa associado está fechado!"))
 
     _sql_constraints = [
         ('id_bill_installment_unique', 'UNIQUE(id_bill, installment)',
         'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada.')
     ]
+
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 
     def _compute_display_name(self):
         """Function to generate specific name for any given record from
@@ -238,6 +243,8 @@ class Bill(models.Model):
     def _compute_status_value(self):
         for rec in self:
             if rec.bill_status == '0':
-                self.status_value = 'Autorizada'
+                self.status_value = 'Provisória'
             elif rec.bill_status == '1':
+                self.status_value = 'Autorizada'
+            elif rec.bill_status == '2':
                 self.status_value = 'Paga'
