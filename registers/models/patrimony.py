@@ -115,6 +115,8 @@ class Patrimony(models.Model):
             },
         }
 
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     @api.constrains('renavan')
     def _validate_renavan(self):
         """Checks size of the Renavan variable to limit different lengths
@@ -161,6 +163,8 @@ class Patrimony(models.Model):
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
         'Já existe um \'Patrimônio\' com esse \'Código\'.')
     ]
+
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _compute_display_name(self):
         """Function to generate specific name for any given record from

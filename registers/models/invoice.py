@@ -52,7 +52,7 @@ class Invoice(models.Model):
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
-    is_clearable = fields.Boolean(string='Limpável', compute='_compute_is_clearable')
+    #is_clearable = fields.Boolean(string='Limpável', compute='_compute_is_clearable')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -96,7 +96,7 @@ class Invoice(models.Model):
             'external_contract_id': self.external_contract_id,
             'external_opration_id': self.external_operation_id,
             'name':self.display_name,
-            'is_clearable': self.is_clearable,
+            #'is_clearable': self.is_clearable,
         }
 
         self.env['invoice'].write(vals)
@@ -218,14 +218,14 @@ class Invoice(models.Model):
                 name = record.id_invoice + '-parcela-unica'
         record.display_name = name
     
-    def _compute_is_clearable(self):
-        """Disables removing association if the 'external_operation_id' is
-        no longer editable"""
+    """def _compute_is_clearable(self):
+        \"\"\"Disables removing association if the 'external_operation_id' is
+        no longer editable\"\"\"
         for rec in self:
             if rec.external_operation_id:
                 rec.is_clearable = rec.external_operation_id.is_editable
             else:
-                rec.is_clearable = False
+                rec.is_clearable = False"""
     
     def _compute_status_value(self):
         for rec in self:

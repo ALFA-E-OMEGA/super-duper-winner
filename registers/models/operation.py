@@ -92,13 +92,25 @@ class Operation(models.Model):
                 }
             },
         }
-    
+
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+
+    _sql_constraints = [
+        ('operation_date_unique', 'UNIQUE(operation_date)',
+         'Já existe um \'Caixa\' nesta \'Data\'.')
+    ]
+
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+
     def _compute_is_editable(self):
         """Function only allows altering the operation in it's current date"""
         current_date = self._generate_register_date()
         for rec in self:
             if rec.operation_date == current_date:
-                rec.is_editable = True
+                if rec.operation_status == '1':
+                    rec.is_editable = True
+                elif rec.operation_status == '0':
+                    rec.is_editable = False
             else:
                 rec.is_editable = False
     
@@ -120,10 +132,3 @@ class Operation(models.Model):
                     expense = bill.value
                     total_expense += expense
             rec.expenses_sum = total_expense
-
-
-    _sql_constraints = [
-        ('operation_date_unique', 'UNIQUE(operation_date)',
-         'Já existe um \'Caixa\' nesta \'Data\'.')
-    ]
-
