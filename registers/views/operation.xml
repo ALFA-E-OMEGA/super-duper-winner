@@ -18,7 +18,7 @@
 
                             <div class="container_field">
                                 <span>Editável:</span>
-                                <field class="field" name="is_editable"/>
+                                <field class="field" name="is_editable" readonly="1"/>
                             </div>
 
                             <div class="container_field">
@@ -44,7 +44,7 @@
                                 <field class="field" name="operation_date"/>
                             </div>
 
-                            <div class="container_field">
+                            <div class="container_field" invisible="is_reopen != True">
                                 <span>Razão de Reabertura:</span>
                                 <field class="field" name="reopen_reason"/>
                             </div>
@@ -96,6 +96,7 @@
             <list string="Operação de Caixa">
                 <field class="test" name="operation_status"/>
                 <field class="test" name="operation_date"/>
+                <field class="test" name="total_profit"/>
             </list>
         </field>
     </record>

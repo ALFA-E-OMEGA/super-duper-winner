@@ -23,6 +23,7 @@ class Operation(models.Model):
     reopen_reason = fields.Text(string='Razão de Reabertura', required=False)
     is_editable = fields.Boolean(string='Editável', required=True, compute='_compute_is_editable',
                                  default=True) 
+    is_reopen = fields.Boolean(string='Foi Reaberto', required=False, default=False)
     invoice_ids = fields.One2many('invoice', 'external_operation_id',  string="Contas a Receber")
     bill_ids = fields.One2many('bill', 'external_operation_id',  string="Contas a Pagar")
     revenues_sum = fields.Float(string='Lucro Total', compute='_compute_revenues_sum')
@@ -31,24 +32,55 @@ class Operation(models.Model):
 
     def create_operation(self):
         """This is the custom function for saving an 'operation' object"""
-        for rec in self:
-            for bill in rec.bill_ids:
-                if bill.bill_status == '2' and bill.external_operation_id == True:
-                    bill.external_operation_id = bill.external_operation_id
+
+        if self.is_reopen == True:
+            if self.reopen_reason:
+                if len(self.reopen_reason) < 6:
+                    raise ValidationError(_('Uma conta reaberta precisa de um motivo'
+                                            ' para a reabertura.')) 
+            else:
+                raise ValidationError(_('Uma conta reaberta precisa de um motivo'
+                                            ' para a reabertura.'))
+
         vals = {
             'operation_date': self.operation_date,
             'operation_status': self.operation_status,
             'reopen_reason': self.reopen_reason,
             'is_editable': self.is_editable,
+            'is_reopen': self.is_reopen,
             'revenues_sum': self.revenues_sum,
             'expenses_sum': self.expenses_sum,
             'total_profit': self.total_profit,
             }
 
         self.env['operation'].write(vals)
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Sucesso"),
+                'type': 'success',
+                'message': _('Dados salvos com sucesso!'),
+                'sticky': False,
+                'next': {
+                    'type': 'ir.actions.act_window_close',
+                }
+            },
+        }
     
     def close_operation(self):
         """This function closes the operation status and locks editing the file"""
+
+        if self.is_reopen == True:
+            if self.reopen_reason:
+                if len(self.reopen_reason) < 6:
+                    raise ValidationError(_('Uma conta reaberta precisa de um motivo'
+                                            ' para a reabertura.')) 
+            else:
+                raise ValidationError(_('Uma conta reaberta precisa de um motivo'
+                                            ' para a reabertura.'))
+            
         self.operation_status = '0'
         for rec in self:
             for bill in rec.bill_ids:
@@ -78,6 +110,7 @@ class Operation(models.Model):
     def reopen_operation(self):
         """This function re-opens the operation and updates the 'Reason' field to true"""
         self.operation_status = '1'
+        self.is_reopen = True
 
         return {
             'type': 'ir.actions.client',
@@ -93,7 +126,7 @@ class Operation(models.Model):
             },
         }
 
-# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _sql_constraints = [
         ('operation_date_unique', 'UNIQUE(operation_date)',
