@@ -3,7 +3,8 @@
     <menuitem  id="main_menu" name="Sistema" sequence="10">
         <menuitem id="menu_registro" name="Registros" sequence="12"/>
         <menuitem id="menu_financeiro" name="Financeiro" sequence="13"/>
-        <menuitem id="menu_outros" name="Outros" sequence="14"/>
+        <menuitem id="menu_caixa" name="Caixa" sequence="14"/>
+        <menuitem id="menu_outros" name="Outros" sequence="15"/>
     </menuitem>
 
 </odoo>

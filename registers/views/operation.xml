@@ -73,7 +73,8 @@
                                 <div class="container_button">
                                     <button name="create_operation" class="btnSecondary mybutton"
                                     type="object" string="Salvar"
-                                    confirm="Confimar dados de Operação de Caixa?"/>
+                                    confirm="Confimar dados de Operação de Caixa?"
+                                    invisible="operation_status == '0'"/>
                                 </div>
 
                             </div>
@@ -96,7 +97,7 @@
             <list string="Operação de Caixa">
                 <field class="test" name="operation_status"/>
                 <field class="test" name="operation_date"/>
-                <field class="test" name="total_profit"/>
+                <field class="test" name="total_profit" decoration-success="total_profit >= 0"/>
             </list>
         </field>
     </record>
@@ -109,8 +110,8 @@
     </record>
 
     <menuitem  id="menu_operation_register"
-        parent="menu_financeiro"
+        parent="menu_caixa"
         action="action_register_operation"
         name="Operação de Caixa"
-        sequence="4"/>
+        sequence="1"/>
 </odoo>
