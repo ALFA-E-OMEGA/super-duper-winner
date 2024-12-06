@@ -4,7 +4,7 @@
     --background-inactive: rgb(220, 219, 219);
 }
 
-.container_field .field input, select{
+.field input, select{
     background-color: var(--background-inactive) !important;
     padding: .85rem !important;
     border: 1px solid rgb(219, 219, 219) !important;
@@ -12,9 +12,13 @@
     transition: 500ms;
 }
 
-.container_field .field input:focus, select:focus{
+.field input:focus, select:focus{
     background-color: white !important;
     border-radius: 2px;
+}
+
+.field :not(input, select) :read-only{
+    padding: .85rem;
 }
 
 
