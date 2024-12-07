@@ -17,11 +17,6 @@
     border-radius: 2px;
 }
 
-.field :not(input, select) :read-only{
-    padding: .85rem;
-}
-
-
 .o_wrap_label{
     display: none !important;
 }

@@ -13,12 +13,7 @@
                         <section class="group">
                             <div class="container_field">
                                 <span>Status:</span>
-                                <field class="field" name="operation_status"/>
-                            </div>
-
-                            <div class="container_field">
-                                <span>Editável:</span>
-                                <field class="field" name="is_editable" readonly="1"/>
+                                <field class="field" name="operation_status" readonly="1"/>
                             </div>
 
                             <div class="container_field">
@@ -41,7 +36,7 @@
                         <section class="group">
                             <div class="container_field">
                                 <span>Data de Operação:</span>
-                                <field class="field" name="operation_date"/>
+                                <field class="field" name="operation_date" readonly="1"/>
                             </div>
 
                             <div class="container_field" invisible="is_reopen != True">
@@ -97,7 +92,9 @@
             <list string="Operação de Caixa">
                 <field class="test" name="operation_status"/>
                 <field class="test" name="operation_date"/>
-                <field class="test" name="total_profit" decoration-success="total_profit >= 0"/>
+                <field class="test" name="total_profit"
+                decoration-success="total_profit_positive == True"
+                decoration-danger="total_profit_positive == False"/>
             </list>
         </field>
     </record>

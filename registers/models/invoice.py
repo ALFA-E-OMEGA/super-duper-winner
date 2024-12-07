@@ -229,7 +229,7 @@ class Invoice(models.Model):
     
     def _compute_status_value(self):
         for rec in self:
-            if rec.bill_status == '0':
+            if rec.invoice_status == '0':
                 self.status_value = 'Provisória'
-            elif rec.bill_status == '1':
+            elif rec.invoice_status == '1':
                 self.status_value = 'Faturada'
