@@ -26,9 +26,16 @@
                                 <field name="invoice_ids" widget="one2many" readonly="is_editable == False"/>
                             </div>
 
-                            <div class="container_field">
-                                <span>Lucro Total:</span>
-                                <field class="field" name="total_profit" readonly="1"/>
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Lucro Total:</span>
+                                    <field class="field" name="total_profit" readonly="1"/>
+                                </div>
+
+                                <div class="container_field" invisible="is_reopen != True">
+                                    <span>Razão de Reabertura:</span>
+                                    <field class="field" name="reopen_reason"/>
+                                </div>
                             </div>
 
                         </section>
@@ -37,11 +44,6 @@
                             <div class="container_field">
                                 <span>Data de Operação:</span>
                                 <field class="field" name="operation_date" readonly="1"/>
-                            </div>
-
-                            <div class="container_field" invisible="is_reopen != True">
-                                <span>Razão de Reabertura:</span>
-                                <field class="field" name="reopen_reason"/>
                             </div>
 
                             <div class="container_field">

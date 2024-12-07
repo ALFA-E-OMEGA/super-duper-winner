@@ -40,8 +40,8 @@ class Invoice(models.Model):
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
                                ('other', 'Outro')], string='Fonte', required=True,
                                default='other')
-    invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Faturada'),
-                                       ],string='Status da Conta', default='0')
+    invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Faturada'),
+                                    ], string='Status da Conta', default='0')
     status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
@@ -134,7 +134,7 @@ class Invoice(models.Model):
             },
         }
 
-# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('id_invoice')
     def _validate_rg(self):
@@ -193,12 +193,12 @@ class Invoice(models.Model):
         if self.filename:
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
-            
+
     @api.constrains('external_operation_id')
     def _check_external_operation_id(self):
         for rec in self:
             if rec.external_operation_id:
-                if rec.external_operation_id.is_editable != True:
+                if rec.external_operation_id.is_editable is not True:
                     raise ValidationError(_("O caixa associado está fechado!"))
 
     _sql_constraints = [
@@ -206,7 +206,7 @@ class Invoice(models.Model):
         'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada.')
     ]
 
-# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _compute_display_name(self):
         """Function to generate specific name for any given record from
@@ -217,19 +217,12 @@ class Invoice(models.Model):
             else:
                 name = record.id_invoice + '-parcela-unica'
         record.display_name = name
-    
-    """def _compute_is_clearable(self):
-        \"\"\"Disables removing association if the 'external_operation_id' is
-        no longer editable\"\"\"
-        for rec in self:
-            if rec.external_operation_id:
-                rec.is_clearable = rec.external_operation_id.is_editable
-            else:
-                rec.is_clearable = False"""
-    
+
     def _compute_status_value(self):
         for rec in self:
             if rec.invoice_status == '0':
                 self.status_value = 'Provisória'
             elif rec.invoice_status == '1':
-                self.status_value = 'Faturada'
+                self.status_value = 'Autorizada'
+            elif rec.invoice_status == '2':
+                self.status_value = 'Faturada.'

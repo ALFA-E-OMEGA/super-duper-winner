@@ -107,7 +107,7 @@
                                 <div class="container_field">   
                                     <span>Dia de Recebimento:</span>
                                     <field class="field" name="external_operation_id" widget="selection"
-                                    readonly="invoice_status == '1'"/>
+                                    readonly="invoice_status == '2'"/>
                                 </div>
 
                             </div>

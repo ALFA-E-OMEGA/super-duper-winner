@@ -1,6 +1,6 @@
 """This are the operation template and it's associated functions"""
 from datetime import datetime
-from odoo import models, fields, api, _
+from odoo import models, fields, _
 from odoo.exceptions import ValidationError
 import pytz
 
@@ -15,14 +15,14 @@ class Operation(models.Model):
         user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
         date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
         return date_today.date()
-        
+
     operation_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     operation_status = fields.Selection([('1', 'Aberto'), ('0', 'Fechado')],
                                        string="Status de Caixa", required=True,
                                        default='1')
     reopen_reason = fields.Text(string='Razão de Reabertura', required=False)
     is_editable = fields.Boolean(string='Editável', required=True, compute='_compute_is_editable',
-                                 default=True) 
+                                 default=True)
     is_reopen = fields.Boolean(string='Foi Reaberto', required=False, default=False)
     invoice_ids = fields.One2many('invoice', 'external_operation_id',  string="Contas a Receber")
     bill_ids = fields.One2many('bill', 'external_operation_id',  string="Contas a Pagar")
@@ -34,7 +34,7 @@ class Operation(models.Model):
     def create_operation(self):
         """This is the custom function for saving an 'operation' object"""
 
-        if self.is_reopen == True:
+        if self.is_reopen is True:
             if self.reopen_reason:
                 if len(self.reopen_reason) < 6:
                     raise ValidationError(_('Uma conta reaberta precisa de um motivo'
@@ -70,11 +70,11 @@ class Operation(models.Model):
                 }
             },
         }
-    
+
     def close_operation(self):
         """This function closes the operation status and locks editing the file"""
 
-        if self.is_reopen == True:
+        if self.is_reopen is True:
             if self.reopen_reason:
                 if len(self.reopen_reason) < 6:
                     raise ValidationError(_('Uma conta reaberta precisa de um motivo'
@@ -82,7 +82,7 @@ class Operation(models.Model):
             else:
                 raise ValidationError(_('Uma conta reaberta precisa de um motivo'
                                             ' para a reabertura.'))
-            
+
         self.operation_status = '0'
         for rec in self:
             for bill in rec.bill_ids:
@@ -90,8 +90,8 @@ class Operation(models.Model):
                     bill.bill_status = '2'
 
             for invoice in rec.invoice_ids:
-                if invoice.invoice_status == '0':
-                    invoice.invoice_status = '1'
+                if invoice.invoice_status == '1':
+                    invoice.invoice_status = '2'
 
             rec.total_profit = rec.revenues_sum - rec.expenses_sum
 
@@ -113,7 +113,7 @@ class Operation(models.Model):
                 }
             },
         }
-    
+
     def reopen_operation(self):
         """This function re-opens the operation and updates the 'Reason' field to true"""
         self.operation_status = '1'
@@ -140,7 +140,7 @@ class Operation(models.Model):
          'Já existe um \'Caixa\' nesta \'Data\'.')
     ]
 
-# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _compute_is_editable(self):
         """Function only allows altering the operation in it's current date"""
@@ -153,15 +153,18 @@ class Operation(models.Model):
                     rec.is_editable = False
             else:
                 rec.is_editable = False
-    
+
     def _compute_revenues_sum(self):
         for rec in self:
             total_revenue = 0.0
             for invoice in rec.invoice_ids:
-                revenue = invoice.value
-                total_revenue += revenue
+                if invoice.invoice_status == '0':
+                    self.write({'invoice_ids': [(3, invoice.id)]})
+                else:
+                    revenue = invoice.value
+                    total_revenue += revenue
             rec.revenues_sum = total_revenue
-    
+
     def _compute_expenses_sum(self):
         for rec in self:
             total_expense = 0.0

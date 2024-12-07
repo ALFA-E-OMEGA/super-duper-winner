@@ -137,8 +137,8 @@ class Bill(models.Model):
                 }
             },
         }
-    
-# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('id_bill')
     def _validate_rg(self):
@@ -205,12 +205,12 @@ class Bill(models.Model):
             if self.validation_date < self.register_date:
                 raise ValidationError(_("A 'Data de Validade' é inválida. "
                                         "Ela não pode ser mais antiga que a data de regsitro."))
-            
+
     @api.constrains('external_operation_id')
     def _check_external_operation_id(self):
         for rec in self:
             if rec.external_operation_id:
-                if rec.external_operation_id.is_editable != True:
+                if rec.external_operation_id.is_editable is not True:
                     raise ValidationError(_("O caixa associado está fechado!"))
 
     _sql_constraints = [
@@ -218,7 +218,7 @@ class Bill(models.Model):
         'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada.')
     ]
 
-# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _compute_display_name(self):
         """Function to generate specific name for any given record from
@@ -230,16 +230,7 @@ class Bill(models.Model):
                 name = record.id_bill + '-parcela-unica'
 
         record.display_name = name
-    
-    """def _compute_is_clearable(self):
-        \"\"\"Disables removing association if the 'external_operation_id' is
-        no longer editable\"\"\"
-        for rec in self:
-            if rec.external_operation_id:
-                rec.is_clearable = rec.external_operation_id.is_editable
-            else:
-                rec.is_clearable = False"""
-    
+
     def _compute_status_value(self):
         for rec in self:
             if rec.bill_status == '0':
