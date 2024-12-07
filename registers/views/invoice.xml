@@ -98,9 +98,18 @@
                         </section>
 
                         <section class="group">
-                            <div class="container_field">
-                                <span>Data de Registro:</span>
-                                <field class="field" name="register_date" readonly='1'/>
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Data de Registro:</span>
+                                    <field class="field" name="register_date" readonly='1'/>
+                                </div>
+
+                                <div class="container_field">   
+                                    <span>Dia de Recebimento:</span>
+                                    <field class="field" name="external_operation_id" widget="selection"
+                                    readonly="invoice_status == '1'"/>
+                                </div>
+
                             </div>
                             
                             <div class="subgroup">
@@ -120,15 +129,6 @@
                                 <span>Contrato:</span>
                                 <field class="field" name="external_contract_id" widget="selection"
                                 readonly="invoice_status != '0'"/>
-                            </div>
-
-                            <div class="subgroup">
-                                <div class="container_field">   
-                                    <span>Dia de Recebimento:</span>
-                                    <field class="field" name="external_operation_id" widget="selection"
-                                    readonly="invoice_status == '1'"/>
-                                </div>
-                            
                             </div>
 
                             <div class="container_field">
