@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_operation_form" model="ir.ui.view">
+        <field name="name">operation.form</field>
+        <field name="model">operation</field>
+        <field name="arch" type="xml">
+            <form class="myform" string="Cadastro de Operação de Caixa">
+
+            <div class="container_form operation_form">
+                <h1>Operação de Caixa</h1>
+                    <article class="container_form_contents">
+                        <section class="group">
+                            <div class="container_field">
+                                <span>Status:</span>
+                                <field class="field" name="operation_status" readonly="1"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Receita Total:</span>
+                                <field class="field" name="revenues_sum" readonly="1"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Receitas:</span>
+                                <field name="invoice_ids" widget="one2many" readonly="is_closed == True"/>
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Lucro Total:</span>
+                                    <field class="field" name="total_profit" readonly="1"/>
+                                </div>
+
+                                <div class="container_field" invisible="is_reopen != True">
+                                    <span>Razão de Reabertura:</span>
+                                    <field class="field" name="reopen_reason"/>
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <section class="group">
+                            <div class="container_field">
+                                <span>Data de Operação:</span>
+                                <field class="field" name="operation_date" readonly="0"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Despesa Total:</span>
+                                <field class="field" name="expenses_sum" readonly="1"/>
+                            </div>
+
+                            <div class="container_field">
+                                <span>Despesas:</span>
+                                <field name="bill_ids" widget="one2many" readonly="is_closed == True"/>
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_button">
+                                    <button name="close_operation" class="btnSecondary mybutton" type="object" string="Fechar"
+                                    confirm="Deseja fechar o caixa?" invisible="operation_status == '0'"/>
+                                </div>
+                                
+                                <div class="container_button">
+                                    <button name="reopen_operation" class="btnSecondary mybutton" type="object" string="Reabrir"
+                                    confirm="Deseja re-abrir o caixa?" invisible="operation_status == '1' or is_editable == False"/>
+                                </div>
+
+                                <div class="container_button">
+                                    <button name="create_operation" class="btnSecondary mybutton"
+                                    type="object" string="Salvar"
+                                    confirm="Confimar dados de Operação de Caixa?"
+                                    invisible="operation_status == '0'"/>
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                    </article>
+            </div>
+            </form>
+
+
+        </field>
+
+    </record>
+
+    <record id="view_operation_list" model="ir.ui.view">
+        <field name="name">operation.list</field>
+        <field name="model">operation</field>
+        <field name="arch" type="xml">
+            <list string="Operação de Caixa">
+                <field class="test" name="operation_status"/>
+                <field class="test" name="operation_date"/>
+                <field class="test" name="total_profit"
+                decoration-success="total_profit_positive == True"
+                decoration-danger="total_profit_positive == False"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_register_operation" model="ir.actions.act_window">
+        <field name="name">Operação de Caixa</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">operation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem  id="menu_operation_register"
+        parent="menu_caixa"
+        action="action_register_operation"
+        name="Operação de Caixa"
+        sequence="1"/>
+</odoo>

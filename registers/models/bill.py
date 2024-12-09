@@ -27,7 +27,7 @@ class Bill(models.Model):
     _description = "Registro de Contas a Pagar."
 
     id_bill = fields.Char(string='Código', required=False)
-    fiscal_note = fields.Char(string='Código', required=False)
+    fiscal_note = fields.Char(string='Nota Fiscal', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(18),
                                    string='Parcela', required=True)
     bill_type = fields.Selection([('maintenance', 'Manutenção'),
@@ -41,15 +41,19 @@ class Bill(models.Model):
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
                                ('other', 'Outro')], string='Fonte', required=True,
                                default='other')
-    bill_status = fields.Char(string='Status da Conta', default='Provisória')
+    bill_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Paga'),
+                                    ], string='Status da Conta', default='0')
+    status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_patrimony_id = fields.Many2one(comodel_name='patrimony', string='Patrimônio')
+    external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
     client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
+    #is_clearable = fields.Boolean(string='Limpável', compute='_compute_is_clearable')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -62,7 +66,7 @@ class Bill(models.Model):
             self.pdf_view_status = 0
 
     def create_bill(self):
-        """This is the custom function for saving a 'bill' object"""
+        """This is the custom function for saving a 'bill' record"""
         if self.origin == "is_cpf":
             self.cnpj = ''
         elif self.origin == "is_cnpj":
@@ -92,7 +96,9 @@ class Bill(models.Model):
             'cpf': self.cpf,
             'cnpj': self.cnpj,
             'external_patrimony_id': self.external_patrimony_id,
+            'external_operation_id': self.external_cost_center_id,
             'name': self.display_name,
+            #'is_clearable': self.is_clearable,
         }
 
         self.env['bill'].write(vals)
@@ -113,10 +119,10 @@ class Bill(models.Model):
 
     def update_bill_status(self):
         """This function changes the bill status and locks editing the file"""
-        if self.bill_status == 'Provisória':
-            self.bill_status = 'Autorizada'
-        elif self.bill_status == 'Autorizada':
-            self.bill_status = 'Paga'
+        if self.bill_status == '0':
+            self.bill_status = '1'
+        elif self.bill_status == '1':
+            self.bill_status = '2'
 
         return {
             'type': 'ir.actions.client',
@@ -124,13 +130,15 @@ class Bill(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': _('Status atualizado para ' + self.bill_status + '!'),
+                'message': _('Status atualizado para \'' + self.status_value + '\'!'),
                 'sticky': False,
                 'next': {
                     'type': 'ir.actions.act_window_close',
                 }
             },
         }
+
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('id_bill')
     def _validate_rg(self):
@@ -194,22 +202,40 @@ class Bill(models.Model):
     def _check_validation_date(self):
         """Checks if 'validation_date' is not invalid"""
         if self.validation_date:
-            if self.validation_date <= self.register_date:
+            if self.validation_date < self.register_date:
                 raise ValidationError(_("A 'Data de Validade' é inválida. "
                                         "Ela não pode ser mais antiga que a data de regsitro."))
+
+    @api.constrains('external_operation_id')
+    def _check_external_operation_id(self):
+        for rec in self:
+            if rec.external_operation_id:
+                if rec.external_operation_id.is_editable is not True:
+                    raise ValidationError(_("O caixa associado está fechado!"))
 
     _sql_constraints = [
         ('id_bill_installment_unique', 'UNIQUE(id_bill, installment)',
         'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada.')
     ]
 
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def _compute_display_name(self):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
             if record.installment != '0':
-                name = record.id_bill + '_parcela_' + record.installment
+                name = record.id_bill + '-parcela-' + record.installment
             else:
-                name = record.id_bill + '_parcela_unica'
+                name = record.id_bill + '-parcela-unica'
 
         record.display_name = name
+
+    def _compute_status_value(self):
+        for rec in self:
+            if rec.bill_status == '0':
+                self.status_value = 'Provisória'
+            elif rec.bill_status == '1':
+                self.status_value = 'Autorizada'
+            elif rec.bill_status == '2':
+                self.status_value = 'Paga'

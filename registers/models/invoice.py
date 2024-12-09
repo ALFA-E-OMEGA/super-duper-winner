@@ -6,7 +6,7 @@ from odoo.exceptions import ValidationError
 import pytz
 
 class Invoice(models.Model):
-    """Fields and functions for the invoice object"""
+    """Fields and functions for the invoice record"""
 
     def _generate_register_date(self):
         """Function to generate current date based on user timezone"""
@@ -27,7 +27,7 @@ class Invoice(models.Model):
     _description = "Registro de Contas a Receber."
 
     id_invoice = fields.Char(string='Código', required=False)
-    fiscal_note = fields.Char(string='Código', required=False)
+    fiscal_note = fields.Char(string='Nota Fiscal', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
                                    string='Parcela', required=True)
     invoice_type = fields.Selection([('contract', 'Contrato'),
@@ -35,21 +35,24 @@ class Invoice(models.Model):
                                   string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
-    receiving_date = fields.Date(string='Data de Recebimento', required=True)
     description = fields.Text(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
     origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
                                ('other', 'Outro')], string='Fonte', required=True,
                                default='other')
-    invoice_status = fields.Char(string='Status da Conta', default='Provisória')
+    invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Faturada'),
+                                    ], string='Status da Conta', default='0')
+    status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
+    external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
     client_name = fields.Char(string='Nome', required=False)
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
+    #is_clearable = fields.Boolean(string='Limpável', compute='_compute_is_clearable')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -62,7 +65,7 @@ class Invoice(models.Model):
             self.pdf_view_status = 0
 
     def create_invoice(self):
-        """This is the custom function for saving a 'invoice' object"""
+        """This is the custom function for saving a 'invoice' record"""
         if self.origin == "is_cpf":
             self.cnpj = ''
         elif self.origin == "is_cnpj":
@@ -82,7 +85,6 @@ class Invoice(models.Model):
             'invoice_type': self.invoice_type,
             'register_date': self.register_date,
             'invoice_file': self.invoice_file,
-            'receiveing_date': self.receiving_date,
             'description': self.description,
             'value': self.value,
             'origin': self.origin,
@@ -92,7 +94,9 @@ class Invoice(models.Model):
             'cpf': self.cpf,
             'cnpj': self.cnpj,
             'external_contract_id': self.external_contract_id,
+            'external_opration_id': self.external_operation_id,
             'name':self.display_name,
+            #'is_clearable': self.is_clearable,
         }
 
         self.env['invoice'].write(vals)
@@ -113,8 +117,8 @@ class Invoice(models.Model):
 
     def update_invoice_status(self):
         """This function changes the invoice status and locks editing the file"""
-        if self.invoice_status == 'Provisória':
-            self.invoice_status = 'Recebida'
+        if self.invoice_status == '0':
+            self.invoice_status = '1'
 
         return {
             'type': 'ir.actions.client',
@@ -122,13 +126,15 @@ class Invoice(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': _('Status atualizado para ' + self.invoice_status + '!'),
+                'message': _('Status atualizado para \'' + self.status_value + '\'!'),
                 'sticky': False,
                 'next': {
                     'type': 'ir.actions.act_window_close',
                 }
             },
         }
+
+# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('id_invoice')
     def _validate_rg(self):
@@ -188,17 +194,35 @@ class Invoice(models.Model):
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
 
+    @api.constrains('external_operation_id')
+    def _check_external_operation_id(self):
+        for rec in self:
+            if rec.external_operation_id:
+                if rec.external_operation_id.is_editable is not True:
+                    raise ValidationError(_("O caixa associado está fechado!"))
+
     _sql_constraints = [
         ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
         'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada.')
     ]
+
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _compute_display_name(self):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
             if record.installment != '0':
-                name = record.id_invoice + '_parcela_' + record.installment
+                name = record.id_invoice + '-parcela-' + record.installment
             else:
-                name = record.id_invoice + '_parcela_unica'
+                name = record.id_invoice + '-parcela-unica'
         record.display_name = name
+
+    def _compute_status_value(self):
+        for rec in self:
+            if rec.invoice_status == '0':
+                self.status_value = 'Provisória'
+            elif rec.invoice_status == '1':
+                self.status_value = 'Autorizada'
+            elif rec.invoice_status == '2':
+                self.status_value = 'Faturada.'

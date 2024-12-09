@@ -12,11 +12,10 @@
     transition: 500ms;
 }
 
-.field input:focus{
+.field input:focus, select:focus{
     background-color: white !important;
     border-radius: 2px;
 }
-
 
 .o_wrap_label{
     display: none !important;

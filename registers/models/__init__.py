@@ -6,3 +6,4 @@ from . import cost_center
 from . import service
 from . import invoice
 from . import contract
+from . import operation
