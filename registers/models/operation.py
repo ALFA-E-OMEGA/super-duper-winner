@@ -23,6 +23,8 @@ class Operation(models.Model):
     reopen_reason = fields.Text(string='Razão de Reabertura', required=False)
     is_editable = fields.Boolean(string='Editável', required=True, compute='_compute_is_editable',
                                  default=True)
+    is_closed = fields.Boolean(string='Fechado', required=True, compute='_compute_is_closed',
+                                 default=False)
     is_reopen = fields.Boolean(string='Foi Reaberto', required=False, default=False)
     invoice_ids = fields.One2many('invoice', 'external_operation_id',  string="Contas a Receber")
     bill_ids = fields.One2many('bill', 'external_operation_id',  string="Contas a Pagar")
@@ -48,6 +50,7 @@ class Operation(models.Model):
             'operation_status': self.operation_status,
             'reopen_reason': self.reopen_reason,
             'is_editable': self.is_editable,
+            'is_closed': self.is_closed,
             'is_reopen': self.is_reopen,
             'revenues_sum': self.revenues_sum,
             'expenses_sum': self.expenses_sum,
@@ -147,12 +150,17 @@ class Operation(models.Model):
         current_date = self._generate_register_date()
         for rec in self:
             if rec.operation_date == current_date:
-                if rec.operation_status == '1':
-                    rec.is_editable = True
-                elif rec.operation_status == '0':
-                    rec.is_editable = False
+                rec.is_editable = True
             else:
                 rec.is_editable = False
+
+    def _compute_is_closed(self):
+        """Function only allows altering operation if it's not closed """
+        for rec in self:
+            if rec.operation_status == '1':
+                rec.is_closed = True
+            elif rec.operation_status == '0':
+                rec.is_closed = False
 
     def _compute_revenues_sum(self):
         for rec in self:
