@@ -43,7 +43,7 @@
                         <section class="group">
                             <div class="container_field">
                                 <span>Data de Operação:</span>
-                                <field class="field" name="operation_date" readonly="0"/>
+                                <field class="field" name="operation_date" readonly="1"/>
                             </div>
 
                             <div class="container_field">

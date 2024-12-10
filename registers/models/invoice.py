@@ -25,6 +25,7 @@ class Invoice(models.Model):
 
     _name = "invoice"
     _description = "Registro de Contas a Receber."
+    _rec_name = "display_name"
 
     id_invoice = fields.Char(string='Código', required=False)
     fiscal_note = fields.Char(string='Nota Fiscal', required=False)
@@ -52,7 +53,6 @@ class Invoice(models.Model):
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
-    #is_clearable = fields.Boolean(string='Limpável', compute='_compute_is_clearable')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -94,9 +94,7 @@ class Invoice(models.Model):
             'cpf': self.cpf,
             'cnpj': self.cnpj,
             'external_contract_id': self.external_contract_id,
-            'external_opration_id': self.external_operation_id,
-            'name':self.display_name,
-            #'is_clearable': self.is_clearable,
+            'external_operation_id': self.external_operation_id,
         }
 
         self.env['invoice'].write(vals)
@@ -213,10 +211,9 @@ class Invoice(models.Model):
         this model"""
         for record in self:
             if record.installment != '0':
-                name = record.id_invoice + '-parcela-' + record.installment
+                record.display_name = f"{record.id_invoice}-parcela-{record.installment}"
             else:
-                name = record.id_invoice + '-parcela-unica'
-        record.display_name = name
+                record.display_name = f"{record.id_invoice}-parcela-unica"
 
     def _compute_status_value(self):
         for rec in self:

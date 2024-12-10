@@ -16,6 +16,7 @@ class Contract(models.Model):
 
     _name = "contract"
     _description = "Registro de Contrato."
+    _rec_name = "display_name"
 
     id_contract = fields.Char(string='Código', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
@@ -38,7 +39,6 @@ class Contract(models.Model):
             'contract_date': self.contract_date,
             'status': self.status,
             'client_type': self.client_type,
-            'name': self.display_name,
             'invoice_ids': self.invoice_ids,
         }
 
@@ -71,8 +71,7 @@ class Contract(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            name = record.client_type + '_' + record.id_contract
-        record.display_name = name
+            record.display_name = f"{record.client_type}-{record.id_contract}"
 
     _sql_constraints = [
         ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')

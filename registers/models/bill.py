@@ -25,6 +25,7 @@ class Bill(models.Model):
 
     _name = "bill"
     _description = "Registro de Contas a Pagar."
+    _rec_name = "display_name"
 
     id_bill = fields.Char(string='Código', required=False)
     fiscal_note = fields.Char(string='Nota Fiscal', required=False)
@@ -53,7 +54,6 @@ class Bill(models.Model):
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
-    #is_clearable = fields.Boolean(string='Limpável', compute='_compute_is_clearable')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -97,8 +97,6 @@ class Bill(models.Model):
             'cnpj': self.cnpj,
             'external_patrimony_id': self.external_patrimony_id,
             'external_operation_id': self.external_cost_center_id,
-            'name': self.display_name,
-            #'is_clearable': self.is_clearable,
         }
 
         self.env['bill'].write(vals)
@@ -225,11 +223,9 @@ class Bill(models.Model):
         this model"""
         for record in self:
             if record.installment != '0':
-                name = record.id_bill + '-parcela-' + record.installment
+                record.display_name = f"{record.id_bill}-parcela-{record.installment}"
             else:
-                name = record.id_bill + '-parcela-unica'
-
-        record.display_name = name
+                record.display_name = f"{record.id_bill}-parcela-unica"
 
     def _compute_status_value(self):
         for rec in self:

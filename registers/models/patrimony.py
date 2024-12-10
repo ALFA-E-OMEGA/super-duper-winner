@@ -7,6 +7,7 @@ class Patrimony(models.Model):
     """This are the fields and functions for the 'patrimony' object"""
     _name = "patrimony"
     _description = "Registro de patrimônio."
+    _rec_name = "display_name"
 
     id_patrimony = fields.Char(string='Código', required=True)
 
@@ -54,6 +55,7 @@ class Patrimony(models.Model):
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato Original')
     contract_ids = fields.Many2many('contract', 'contract_patrimony_rel_table',
                                     string='Contratos')
+    bill_ids = fields.One2many('bill', 'external_patrimony_id',  string="Contas a Pagar")
     display_name = fields.Char(compute='_compute_display_name')
 
     pdf_view_status = fields.Integer(default=0)
@@ -96,7 +98,6 @@ class Patrimony(models.Model):
             'heavy_type': self.heavy_type,
             'heavy_number': self.heavy_number,
             'external_contract_id': self.external_contract_id,
-            'name': self.display_name,
         }
 
         self.env['patrimony'].write(vals)
@@ -170,6 +171,4 @@ class Patrimony(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            name = record.vehicle_plate.upper()
-
-        record.display_name = name
+            record.display_name = f"{record.vehicle_plate.upper()}"
