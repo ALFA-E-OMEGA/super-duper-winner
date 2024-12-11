@@ -50,8 +50,8 @@ class Invoice(models.Model):
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
     external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
-    client_name = fields.Char(string='Nome', required=False)
-    cpf = fields.Char(string='CPF', required=False)
+    external_employee_id = fields.Many2one(comodel_name='employee', string='Funcionário')
+    cpf = fields.Char(string='CPF', compute='_compute_employee_cpf')
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
@@ -69,16 +69,15 @@ class Invoice(models.Model):
     def create_invoice(self):
         """This is the custom function for saving a 'invoice' record"""
         if self.origin == "pessoa-fisica":
-            self.cnpj = ''
+            self.cnpj = False
         elif self.origin == "pessoa-juridica":
-            self.cpf = ''
+            self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
         else:
-            self.cpf = ''
-            self.cnpj = ''
-            self.client_name = ''
+            self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
+            self.cnpj = False
 
         if self.invoice_type != 'contract':
-            self.external_contract_id = ''
+            self.write({'external_contract_id': [(3, self.external_contract_id.id)]})
 
         vals = {
             'id_invoice': self.id_invoice,
@@ -92,11 +91,11 @@ class Invoice(models.Model):
             'origin': self.origin,
             'invoice_status': self.invoice_status,
             'external_cost_center_id': self.external_cost_center_id,
-            'client_name': self.client_name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,
             'external_contract_id': self.external_contract_id,
             'external_operation_id': self.external_operation_id,
+            'external_employee_id': self.external_employee_id,
         }
 
         self.env['invoice'].write(vals)
@@ -231,3 +230,10 @@ class Invoice(models.Model):
                 self.status_value = 'Autorizada'
             elif rec.invoice_status == '2':
                 self.status_value = 'Faturada.'
+
+    def _compute_employee_cpf(self):
+        for rec in self:
+            if rec.external_employee_id:
+                rec.cpf = rec.external_employee_id.cpf
+            else:
+                rec.cpf = False

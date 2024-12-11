@@ -48,19 +48,20 @@
                             </div>
 
                               <div class="subgroup">
-                                <div class="container_field" invisible="origin == 'outro'">
+                                <div class="container_field" invisible="origin != 'pessoa-fisica'">
                                     <span>Nome:</span>
-                                    <field class="field" name="client_name" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="external_employee_id" widget="selection"
+                                    readonly="invoice_status != '0'"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'pessoa-fisica'">
                                     <span>CPF:</span>
-                                    <field class="field" name="cpf" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="cpf" readonly="1"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'pessoa-juridica'">
                                     <span>CNPJ:</span>
-                                    <field class="field" name="cnpj" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="cnpj" readonly="1"/>
                                 </div>
 
                             </div>
