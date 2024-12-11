@@ -49,17 +49,17 @@
                             </div>
 
                               <div class="subgroup">
-                                <div class="container_field" invisible="origin == 'other'">
+                                <div class="container_field" invisible="origin == 'outro'">
                                     <span>Nome:</span>
                                     <field class="field" name="client_name" readonly="bill_status != '0'"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'is_cpf'">
+                                <div class="container_field" invisible="origin != 'pessoa-fisica'">
                                     <span>CPF:</span>
                                     <field class="field" name="cpf" readonly="bill_status != '0'"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'is_cnpj'">
+                                <div class="container_field" invisible="origin != 'pessoa-juridica'">
                                     <span>CNPJ:</span>
                                     <field class="field" name="cnpj" readonly="bill_status != '0'"/>
                                 </div>

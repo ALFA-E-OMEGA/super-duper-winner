@@ -31,16 +31,18 @@ class Invoice(models.Model):
     fiscal_note = fields.Char(string='Nota Fiscal', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
                                    string='Parcela', required=True)
-    invoice_type = fields.Selection([('contract', 'Contrato'),
-                                  ('other', 'Outro')],
+    invoice_type = fields.Selection([('fatura-contrato', 'Contrato'), ('venda-veiculo', 'Venda de Veículo'),
+                                     ('juros-recebidos', 'Juros Recebidos'), ('credito-emprestio', 'Crédito de Empréstimos'),
+                                     ('receita-aluguel', 'Receitas com Aluguel'), ('comissao', 'Comissão de Venda'),
+                                     ('devolucao-credito', 'Devolução de Crédito'), ('outro', 'Outro')],
                                   string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
     description = fields.Text(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
-    origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
-                               ('other', 'Outro')], string='Fonte', required=True,
-                               default='other')
+    origin = fields.Selection([('pessoa-fisica', 'Funcionário'), ('pessoa-juridica', 'Empresa'),
+                               ('outro', 'Outro')], string='Fonte', required=True,
+                               default='outro')
     invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Faturada'),
                                     ], string='Status da Conta', default='0')
     status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
@@ -66,9 +68,9 @@ class Invoice(models.Model):
 
     def create_invoice(self):
         """This is the custom function for saving a 'invoice' record"""
-        if self.origin == "is_cpf":
+        if self.origin == "pessoa-fisica":
             self.cnpj = ''
-        elif self.origin == "is_cnpj":
+        elif self.origin == "pessoa-juridica":
             self.cpf = ''
         else:
             self.cpf = ''
@@ -155,13 +157,13 @@ class Invoice(models.Model):
     def _validate_cpf(self):
         """Checks size of the CPF variable to limit different lengths"""
         for rec in self:
-            if rec.cpf and self.origin == "is_cpf":
+            if rec.cpf and self.origin == "pessoa-fisica":
                 if len(rec.cpf) != 11:
                     raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                                            "Precisa de 11 dígitos."))
                 if not (rec.cpf).isnumeric():
                     raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('fiscal_note')
     def _validate_rg(self):
@@ -171,19 +173,19 @@ class Invoice(models.Model):
             if rec.fiscal_note:
                 if not (rec.fiscal_note).isnumeric():
                     raise ValidationError(_("O campo 'Nota Fiscal' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('cnpj')
     def _validate_cnpj(self):
         """Checks size of the CPNJ variable to limit different lengths"""
         for rec in self:
-            if rec.cnpj and self.origin == "is_cnpj":
+            if rec.cnpj and self.origin == "pessoa-juridica":
                 if len(rec.cnpj) != 14:
                     raise ValidationError(_("O campo 'CNPJ' está está com o tamanho incorreto. "
-                                                "Precisa de 8 dígitos"))
+                                                "Precisa de 8 dígitos."))
                 if not (rec.cnpj).isnumeric():
                     raise ValidationError(_("O campo 'CNPJ' contém carácteres inválidos. "
-                                                "O campo deve conter apenas números"))
+                                                "O campo deve conter apenas números."))
 
     @api.constrains('invoice_file')
     def _check_invoice_file(self):
@@ -210,10 +212,16 @@ class Invoice(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            if record.installment != '0':
-                record.display_name = f"{record.id_invoice}-parcela-{record.installment}"
+            if not record.external_operation_id:
+                if record.installment != '0':
+                    record.display_name = f"{record.invoice_type}-parcela-{record.installment}"
+                else:
+                    record.display_name = f"{record.invoice_type}"
             else:
-                record.display_name = f"{record.id_invoice}-parcela-unica"
+                if record.installment != '0':
+                    record.display_name = f"{record.invoice_type}-parcela-{record.installment}-{record.external_operation_id.display_name}"
+                else:
+                    record.display_name = f"{record.invoice_type}-{record.external_operation_id.display_name}"
 
     def _compute_status_value(self):
         for rec in self:

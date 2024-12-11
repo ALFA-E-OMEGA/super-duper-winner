@@ -50,7 +50,6 @@ class Operation(models.Model):
             'operation_status': self.operation_status,
             'reopen_reason': self.reopen_reason,
             'is_editable': self.is_editable,
-            'is_closed': self.is_closed,
             'is_reopen': self.is_reopen,
             'revenues_sum': self.revenues_sum,
             'expenses_sum': self.expenses_sum,
@@ -153,14 +152,6 @@ class Operation(models.Model):
                 rec.is_editable = True
             else:
                 rec.is_editable = False
-
-    def _compute_is_closed(self):
-        """Function only allows altering operation if it's not closed """
-        for rec in self:
-            if rec.operation_status == '1':
-                rec.is_closed = True
-            elif rec.operation_status == '0':
-                rec.is_closed = False
 
     def _compute_revenues_sum(self):
         for rec in self:

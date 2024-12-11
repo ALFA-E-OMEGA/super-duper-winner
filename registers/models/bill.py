@@ -39,9 +39,9 @@ class Bill(models.Model):
     validation_date = fields.Date(string='Data de Vencimento', required=True)
     description = fields.Text(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
-    origin = fields.Selection([('is_cpf', 'Funcionário'), ('is_cnpj', 'Fornecedor'),
-                               ('other', 'Outro')], string='Fonte', required=True,
-                               default='other')
+    origin = fields.Selection([('pessoa-fisica', 'Funcionário'), ('pessoa-juridica', 'Empresa'),
+                               ('outro', 'Outro')], string='Fonte', required=True,
+                               default='outro')
     bill_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Paga'),
                                     ], string='Status da Conta', default='0')
     status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
@@ -67,9 +67,9 @@ class Bill(models.Model):
 
     def create_bill(self):
         """This is the custom function for saving a 'bill' record"""
-        if self.origin == "is_cpf":
+        if self.origin == "pessoa-fisica":
             self.cnpj = ''
-        elif self.origin == "is_cnpj":
+        elif self.origin == "pessoa-juridica":
             self.cpf = ''
         else:
             self.cpf = ''
@@ -159,7 +159,7 @@ class Bill(models.Model):
     def _validate_cpf(self):
         """Checks size of the CPF variable to limit different lengths"""
         for rec in self:
-            if rec.cpf and self.origin == "is_cpf":
+            if rec.cpf and self.origin == "pessoa-fisica":
                 if len(rec.cpf) != 11:
                     raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
                                             "Precisa de 11 dígitos"))
@@ -181,7 +181,7 @@ class Bill(models.Model):
     def _validate_cnpj(self):
         """Checks size of the CPNJ variable to limit different lengths"""
         for rec in self:
-            if rec.cnpj and self.origin == "is_cnpj":
+            if rec.cnpj and self.origin == "pessoa-juridica":
                 if len(rec.cnpj) != 14:
                     raise ValidationError(_("O campo 'CNPJ' está está com o tamanho incorreto. "
                                                 "Precisa de 8 dígitos"))

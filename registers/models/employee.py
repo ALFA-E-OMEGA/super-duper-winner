@@ -5,6 +5,23 @@ from odoo.exceptions import ValidationError
 
 class Employee(models.Model):
     """Fields and functions for the employee object"""
+
+    def _validate_cpf_digits(self, cpf_string):
+        
+        numbers = [int(digit) for digit in cpf_string if digit.isdigit()]
+
+        sum_of_products = sum(a*b for a, b in zip(numbers[0:9], range(10, 1, -1)))
+        expected_digit = (sum_of_products * 10 % 11) % 10
+        if numbers[9] != expected_digit:
+            return False
+        
+        sum_of_products = sum(a*b for a, b in zip(numbers[0:10], range(11, 1, -1)))
+        expected_digit = (sum_of_products * 10 % 11) % 10
+        if numbers[10] != expected_digit:
+            return False
+        
+        return True
+    
     _name = "employee"
     _description = "Registro de funcionários."
 
@@ -60,10 +77,12 @@ class Employee(models.Model):
             if rec.cpf:
                 if len(rec.cpf) != 11:
                     raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                                            "Precisa de 11 dígitos."))
                 if not (rec.cpf).isnumeric():
                     raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
+                if self._validate_cpf_digits(rec.cpf) is False:
+                    raise ValidationError(_("O 'CPF' é inválido."))
 
     @api.constrains('cep')
     def _validate_cep(self):
@@ -86,10 +105,10 @@ class Employee(models.Model):
             if rec.pis_pasep:
                 if len(rec.pis_pasep) != 11:
                     raise ValidationError(_("O campo 'PIS-PASEP' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                                            "Precisa de 11 dígitos."))
                 if not (rec.pis_pasep).isnumeric():
                     raise ValidationError(_("O campo 'PIS-PASEP' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('rg')
     def _validate_rg(self):
@@ -97,12 +116,12 @@ class Employee(models.Model):
         and checks for non-numeric characters"""
         for rec in self:
             if rec.rg:
-                if len(rec.rg) != 9:
+                if len(rec.rg) > 14 or len(rec.rg) < 6:
                     raise ValidationError(_("O campo 'RG' está com o tamanho incorreto. "
-                                            "Precisa de 9 dígitos"))
+                                            "Ele possuí entre 6 e 14 dígitos."))
                 if not (rec.rg).isnumeric():
                     raise ValidationError(_("O campo 'RG' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('cart_trabalho')
     def _validate_cart_trabalho(self):
