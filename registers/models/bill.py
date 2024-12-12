@@ -19,8 +19,7 @@ class Bill(models.Model):
         installment_list.append(('0', 'Não Possui'))
 
         for r in range(1, a+1):
-            b = (r, r)
-            installment_list.append(b)
+            installment_list.append((str(r), str(r)))
         return installment_list
 
     _name = "bill"
@@ -29,11 +28,12 @@ class Bill(models.Model):
 
     id_bill = fields.Char(string='Código', required=False)
     fiscal_note = fields.Char(string='Nota Fiscal', required=False)
-    installment = fields.Selection(selection=lambda self: self._generate_installment_list(18),
-                                   string='Parcela', required=True)
-    bill_type = fields.Selection([('maintenance', 'Manutenção'),
-                                  ('other', 'Outro')],
-                                  string='Tipo de Conta', required=True)
+    installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
+                                   string='Parcela', required=True, store=True)
+    bill_type = fields.Selection([('manutencao-veiculo', 'Manutenção de Veículo'),
+                                  ('manutencao-pesado', 'Manutenção de Veículo Pesado'),
+                                  ('outro', 'Outro')],
+                                  string='Tipo de Conta', required=True, default='outro')
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     bill_file = fields.Binary(string='PDF da Conta', attachment=True)
     validation_date = fields.Date(string='Data de Vencimento', required=True)
@@ -49,7 +49,7 @@ class Bill(models.Model):
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_patrimony_id = fields.Many2one(comodel_name='patrimony', string='Patrimônio')
     external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
-    client_name = fields.Char(string='Nome', required=False)
+    external_employee_id = fields.Many2one(comodel_name='employee', string='Funcionário')
     cpf = fields.Char(string='CPF', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
     filename = fields.Char()
@@ -68,16 +68,16 @@ class Bill(models.Model):
     def create_bill(self):
         """This is the custom function for saving a 'bill' record"""
         if self.origin == "pessoa-fisica":
-            self.cnpj = ''
+            self.cnpj = False
         elif self.origin == "pessoa-juridica":
-            self.cpf = ''
+            self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
         else:
-            self.cpf = ''
-            self.cnpj = ''
-            self.client_name = ''
+            self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
+            self.cnpj = False
 
-        if self.bill_type != 'maintenance':
-            self.external_patrimony_id = ''
+        if self.bill_type != 'manutencao-veiculo' and self.bill_type != 'manutencao-pesado':
+            if self.external_patrimony_id:
+                self.write({'external_contract_id': [(3, self.external_patrimony_id.id)]})
 
         vals = {
             'bill_id': self.id_bill,
@@ -92,11 +92,11 @@ class Bill(models.Model):
             'origin': self.origin,
             'bill_status': self.bill_status,
             'external_cost_center_id': self.external_cost_center_id,
-            'client_name': self.client_name,
             'cpf': self.cpf,
             'cnpj': self.cnpj,
             'external_patrimony_id': self.external_patrimony_id,
             'external_operation_id': self.external_cost_center_id,
+            'external_employee_id': self.external_employee_id,
         }
 
         self.env['bill'].write(vals)
@@ -153,19 +153,7 @@ class Bill(models.Model):
         """Checks if value field is a negative number or zero"""
         for rec in self:
             if rec.value <= 0:
-                raise ValidationError(_("O campo 'valor' precisa ser igual ou maior que zero"))
-
-    @api.constrains('cpf')
-    def _validate_cpf(self):
-        """Checks size of the CPF variable to limit different lengths"""
-        for rec in self:
-            if rec.cpf and self.origin == "pessoa-fisica":
-                if len(rec.cpf) != 11:
-                    raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
-                if not (rec.cpf).isnumeric():
-                    raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                raise ValidationError(_("O campo 'valor' precisa ser igual ou maior que zero."))
 
     @api.constrains('fiscal_note')
     def _validate_rg(self):
@@ -175,7 +163,7 @@ class Bill(models.Model):
             if rec.fiscal_note:
                 if not (rec.fiscal_note).isnumeric():
                     raise ValidationError(_("O campo 'Nota Fiscal' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('cnpj')
     def _validate_cnpj(self):
@@ -184,10 +172,10 @@ class Bill(models.Model):
             if rec.cnpj and self.origin == "pessoa-juridica":
                 if len(rec.cnpj) != 14:
                     raise ValidationError(_("O campo 'CNPJ' está está com o tamanho incorreto. "
-                                                "Precisa de 8 dígitos"))
+                                                "Precisa de 8 dígitos."))
                 if not (rec.cnpj).isnumeric():
                     raise ValidationError(_("O campo 'CNPJ' contém carácteres inválidos. "
-                                                "O campo deve conter apenas números"))
+                                                "O campo deve conter apenas números."))
 
     @api.constrains('bill_file')
     def _check_bill_file(self):
@@ -209,7 +197,7 @@ class Bill(models.Model):
         for rec in self:
             if rec.external_operation_id:
                 if rec.external_operation_id.is_editable is not True:
-                    raise ValidationError(_("O caixa associado está fechado!"))
+                    raise ValidationError(_("O caixa desta data está fechado."))
 
     _sql_constraints = [
         ('id_bill_installment_unique', 'UNIQUE(id_bill, installment)',
@@ -222,10 +210,16 @@ class Bill(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            if record.installment != '0':
-                record.display_name = f"{record.id_bill}-parcela-{record.installment}"
+            if not record.external_operation_id:
+                if record.installment != '0':
+                    record.display_name = f"{record.bill_type}-parcela-{record.installment}"
+                else:
+                    record.display_name = f"{record.bill_type}"
             else:
-                record.display_name = f"{record.id_bill}-parcela-unica"
+                if record.installment != '0':
+                    record.display_name = f"{record.bill_type}-parcela-{record.installment}-{record.external_operation_id.display_name}"
+                else:
+                    record.display_name = f"{record.bill_type}-{record.external_operation_id.display_name}"
 
     def _compute_status_value(self):
         for rec in self:
@@ -235,3 +229,10 @@ class Bill(models.Model):
                 self.status_value = 'Autorizada'
             elif rec.bill_status == '2':
                 self.status_value = 'Paga'
+
+    def _compute_employee_cpf(self):
+        for rec in self:
+            if rec.external_employee_id:
+                rec.cpf = rec.external_employee_id.cpf
+            else:
+                rec.cpf = False

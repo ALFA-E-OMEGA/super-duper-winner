@@ -5,6 +5,15 @@ from odoo.exceptions import ValidationError
 
 class Patrimony(models.Model):
     """This are the fields and functions for the 'patrimony' object"""
+
+    def _generate_tuple_list(self, a):
+        tuple_list = []
+        tuple_list.append(('0', 'Não Possui'))
+
+        for r in range(1, a+1):
+            tuple_list.append((str(r), str(r)))
+        return tuple_list
+    
     _name = "patrimony"
     _description = "Registro de patrimônio."
     _rec_name = "display_name"
@@ -16,16 +25,17 @@ class Patrimony(models.Model):
     vehicle_maker = fields.Char(string='Marca', required=False)
     vehicle_model = fields.Char(string='Modelo', required=False)
 
-    classification = fields.Selection([('vehicles', 'Veículos'),
-                                        ('heavies', 'Equipamento Pesado'),
-                                        ('others', 'Outros')
-                                        ], string = 'Classificação', required=True)
+    classification = fields.Selection([('veiculo', 'Veículo'),
+                                        ('pesado', 'Veículo Pesado'),
+                                        ('outro', 'Outro')
+                                        ], string = 'Classificação', required=True,
+                                        default='outro')
 
     vehicle_type = fields.Selection([('truck', 'Caminhão'),
                                      ('car', 'Carro')
                                      ], string = 'Tipo de Veículo', required=False)
 
-    vehicle_plate = fields.Char(string='Placa do Veículo', required=True)
+    vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
 
     renavan = fields.Char(string='Renavan', required=False)
 
@@ -34,7 +44,7 @@ class Patrimony(models.Model):
                                    ('pa_mecanica', 'Pá Mecânica'),
                                    ('triturador_galhos', 'Triturador de Galhos'),
                                    ('s90', 'S90'),
-                                    ], string='pesado_type', required=False)
+                                    ], string='Tipo de Equipamento', required=False)
 
     heavy_number = fields.Selection([('1', 'Número 1'),
                                      ('2', 'Número 2'),
@@ -46,7 +56,7 @@ class Patrimony(models.Model):
                                      ('8', 'Número 8'),
                                      ('9', 'Número 9'),
                                      ('10', 'Número 10'),
-                                    ], string="pesado_num")
+                                    ], string="Número de Equipamento")
 
     acquisition_date = fields.Date(string='Data de Aquisição', required=False)
 
@@ -72,17 +82,18 @@ class Patrimony(models.Model):
         """This is the custom function for saving an 'patrimony' object,
         clearing fields that are not going to be saves"""
 
-        if self.classification == 'others':
-            self.renavan = ''
-            self.heavy_number = ''
-            self.heavy_type = ''
-            self.vehicle_type = ''
-        elif self.classification == 'vehicles':
-            self.heavy_number = ''
-            self.heavy_type = ''
-        elif self.classification == 'heavies':
-            self.renavan = ''
-            self.vehicle_type = ''
+        if self.classification == 'outro':
+            self.renavan = False
+            self.heavy_number = False
+            self.heavy_type = False
+            self.vehicle_type = False
+        elif self.classification == 'veiculo':
+            self.heavy_number = False
+            self.heavy_type = False
+        elif self.classification == 'pesado':
+            self.renavan = False
+            self.vehicle_type = False
+            self.vehicle_plate = False
 
         vals = {
             'id_patrimony': self.id_patrimony,
@@ -171,4 +182,7 @@ class Patrimony(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            record.display_name = f"{record.vehicle_plate.upper()}"
+            if record.classification == 'veiculo':
+                record.display_name = f"{record.vehicle_plate.upper()}"
+            if record.classification == 'pesado':
+                record.display_name = f"{record.heavy_type}-{record.heavy_number}"

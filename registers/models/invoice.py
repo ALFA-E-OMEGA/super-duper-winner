@@ -19,8 +19,7 @@ class Invoice(models.Model):
         installment_list.append(('0', 'Não Possui'))
 
         for r in range(1, a+1):
-            b = (r, r)
-            installment_list.append(b)
+            installment_list.append((str(r), str(r)))
         return installment_list
 
     _name = "invoice"
@@ -151,18 +150,6 @@ class Invoice(models.Model):
         for rec in self:
             if rec.value <= 0:
                 raise ValidationError(_("O campo 'valor' precisa ser igual ou maior que zero"))
-
-    @api.constrains('cpf')
-    def _validate_cpf(self):
-        """Checks size of the CPF variable to limit different lengths"""
-        for rec in self:
-            if rec.cpf and self.origin == "pessoa-fisica":
-                if len(rec.cpf) != 11:
-                    raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos."))
-                if not (rec.cpf).isnumeric():
-                    raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números."))
 
     @api.constrains('fiscal_note')
     def _validate_rg(self):

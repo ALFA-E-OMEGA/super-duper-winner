@@ -49,9 +49,10 @@
                             </div>
 
                               <div class="subgroup">
-                                <div class="container_field" invisible="origin == 'outro'">
+                                <div class="container_field" invisible="origin != 'pessoa-fisica'">
                                     <span>Nome:</span>
-                                    <field class="field" name="client_name" readonly="bill_status != '0'"/>
+                                    <field class="field" name="external_employee_id" widget="selection"
+                                    readonly="bill_status != '0'"/>
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'pessoa-fisica'">
@@ -126,10 +127,16 @@
                             
                            </div>
 
-                            <div class="container_field" invisible="bill_type != 'maintenance'">
+                            <div class="container_field" invisible="bill_type != 'manutencao-veiculo'">
                                 <span>Patrimônio:</span>
                                 <field class="field" name="external_patrimony_id" widget="selection"
-                                readonly="bill_status != '0'"/>
+                                readonly="bill_status != '0'" domain="[('classification', '=', 'veiculo')]"/>
+                            </div>
+
+                            <div class="container_field" invisible="bill_type != 'manutencao-pesado'">
+                                <span>Patrimônio:</span>
+                                <field class="field" name="external_patrimony_id" widget="selection"
+                                readonly="bill_status != '0'" domain="[('classification', '=', 'pesado')]"/>
                             </div>
 
                             <div class="subgroup">
