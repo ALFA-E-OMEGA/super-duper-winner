@@ -2,6 +2,9 @@
 # pylint: skip-file
 from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
+import re
+
+regex_email = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,})+')
 
 class Employee(models.Model):
     """Fields and functions for the employee object"""
@@ -161,6 +164,15 @@ class Employee(models.Model):
                 if not (rec.tel_two).isnumeric():
                     raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos."
                                             "O campo deve conter apenas números"))
+    
+    @api.constrains('email')
+    def _validate_email(self):
+        """Checks the validity of the
+        email in the record"""
+        for rec in self:
+            if rec.email:
+                if re.fullmatch(regex_email, rec.email) == None:
+                    raise ValidationError(_("O formato do campo 'Email' é inválido."))
 
     _sql_constraints = [
         ('cpf_employee_unique', 'UNIQUE(cpf)', 'Já existe um \'Funcionário\' com esse \'CPF\'.')

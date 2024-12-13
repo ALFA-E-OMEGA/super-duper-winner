@@ -48,21 +48,29 @@
                                 <field class="field" name="origin" readonly="bill_status != '0'"/>
                             </div>
 
-                              <div class="subgroup">
-                                <div class="container_field" invisible="origin != 'pessoa-fisica'">
+                            <div class="subgroup">
+                                <div class="container_field" invisible="origin != 'funcionario'">
                                     <span>Nome:</span>
                                     <field class="field" name="external_employee_id" widget="selection"
                                     readonly="bill_status != '0'"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'pessoa-fisica'">
-                                    <span>CPF:</span>
-                                    <field class="field" name="cpf" readonly="bill_status != '0'"/>
+                                <div class="container_field" invisible="origin != 'cliente'">
+                                    <span>Nome:</span>
+                                    <field class="field" name="external_employee_id" widget="selection"
+                                    readonly="bill_status != '0'"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'pessoa-juridica'">
+                                <div class="container_field" invisible="origin == 'outro'
+                                or origin == 'cliente' and external_client_id.client_type == 'pessoa-juridica'">
+                                    <span>CPF:</span>
+                                    <field class="field" name="cpf" readonly="1"/>
+                                </div>
+
+                                <div class="container_field" invisible="origin != 'cliente'
+                                or external_client_id.client_type != 'pessoa-juridica'">
                                     <span>CNPJ:</span>
-                                    <field class="field" name="cnpj" readonly="bill_status != '0'"/>
+                                    <field class="field" name="cnpj" readonly="1"/>
                                 </div>
 
                             </div>
@@ -127,7 +135,7 @@
                             
                            </div>
 
-                            <div class="container_field" invisible="bill_type != 'manutencao-veiculo'">
+                            <div class="container_field" invisible="bill_type not in ['manutencao-veiculo', 'financiamento']">
                                 <span>Patrimônio:</span>
                                 <field class="field" name="external_patrimony_id" widget="selection"
                                 readonly="bill_status != '0'" domain="[('classification', '=', 'veiculo')]"/>
@@ -137,6 +145,13 @@
                                 <span>Patrimônio:</span>
                                 <field class="field" name="external_patrimony_id" widget="selection"
                                 readonly="bill_status != '0'" domain="[('classification', '=', 'pesado')]"/>
+                            </div>
+
+                            <div class="container_field" invisible="bill_type not in ['material-obra', 'material-escritorio',
+                            'telefone', 'lubrificante']">
+                                <span>Patrimônio:</span>
+                                <field class="field" name="external_patrimony_id" widget="selection"
+                                readonly="bill_status != '0'" domain="[('classification', '=', 'outro')]"/>
                             </div>
 
                             <div class="subgroup">

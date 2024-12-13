@@ -47,19 +47,27 @@
                                 <field class="field" name="origin" readonly="invoice_status != '0'"/>
                             </div>
 
-                              <div class="subgroup">
-                                <div class="container_field" invisible="origin != 'pessoa-fisica'">
+                            <div class="subgroup">
+                                <div class="container_field" invisible="origin != 'funcionario'">
                                     <span>Nome:</span>
                                     <field class="field" name="external_employee_id" widget="selection"
                                     readonly="invoice_status != '0'"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'pessoa-fisica'">
+                                <div class="container_field" invisible="origin != 'cliente'">
+                                    <span>Nome:</span>
+                                    <field class="field" name="external_employee_id" widget="selection"
+                                    readonly="invoice_status != '0'"/>
+                                </div>
+
+                                <div class="container_field" invisible="origin == 'outro'
+                                or origin == 'cliente' and external_client_id.client_type == 'pessoa-juridica'">
                                     <span>CPF:</span>
                                     <field class="field" name="cpf" readonly="1"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'pessoa-juridica'">
+                                <div class="container_field" invisible="origin != 'cliente'
+                                or external_client_id.client_type != 'pessoa-juridica'">
                                     <span>CNPJ:</span>
                                     <field class="field" name="cnpj" readonly="1"/>
                                 </div>

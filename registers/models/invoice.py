@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable, protected-access
+# pylint: disable=undefined-loop-variable, protected-access line-too-long
 """This are the invoice template and it's associated functions"""
 from datetime import datetime
 from odoo import models, fields, api, _
@@ -22,6 +22,8 @@ class Invoice(models.Model):
             installment_list.append((str(r), str(r)))
         return installment_list
 
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     _name = "invoice"
     _description = "Registro de Contas a Receber."
     _rec_name = "display_name"
@@ -30,16 +32,20 @@ class Invoice(models.Model):
     fiscal_note = fields.Char(string='Nota Fiscal', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
                                    string='Parcela', required=True)
-    invoice_type = fields.Selection([('fatura-contrato', 'Contrato'), ('venda-veiculo', 'Venda de Veículo'),
-                                     ('juros-recebidos', 'Juros Recebidos'), ('credito-emprestio', 'Crédito de Empréstimos'),
-                                     ('receita-aluguel', 'Receitas com Aluguel'), ('comissao', 'Comissão de Venda'),
-                                     ('devolucao-credito', 'Devolução de Crédito'), ('outro', 'Outro')],
-                                  string='Tipo de Conta', required=True)
+    invoice_type = fields.Selection([('fatura-contrato', 'Contrato'),
+                                     ('venda-veiculo', 'Venda de Veículo'),
+                                     ('juros-recebidos', 'Juros Recebidos'),
+                                     ('credito-emprestio', 'Crédito de Empréstimos'),
+                                     ('receita-aluguel', 'Receitas com Aluguel'),
+                                     ('comissao', 'Comissão de Venda'),
+                                     ('devolucao-credito', 'Devolução de Crédito'),
+                                     ('outro', 'Outro')],
+                                     string='Tipo de Conta', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
     description = fields.Text(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
-    origin = fields.Selection([('pessoa-fisica', 'Funcionário'), ('pessoa-juridica', 'Empresa'),
+    origin = fields.Selection([('funcionario', 'Funcionário'), ('cliente', 'Cliente'),
                                ('outro', 'Outro')], string='Fonte', required=True,
                                default='outro')
     invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Faturada'),
@@ -50,8 +56,9 @@ class Invoice(models.Model):
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
     external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
     external_employee_id = fields.Many2one(comodel_name='employee', string='Funcionário')
-    cpf = fields.Char(string='CPF', compute='_compute_employee_cpf')
-    cnpj = fields.Char(string='CNPJ', required=False)
+    external_client_id = fields.Many2one(comodel_name='client', string='Cliente')
+    cpf = fields.Char(string='CPF', compute='_compute_cpf')
+    cnpj = fields.Char(string='CNPJ', compute='_compute_cnpj')
     filename = fields.Char()
     display_name = fields.Char(compute='_compute_display_name')
 
@@ -67,13 +74,13 @@ class Invoice(models.Model):
 
     def create_invoice(self):
         """This is the custom function for saving a 'invoice' record"""
-        if self.origin == "pessoa-fisica":
-            self.cnpj = False
-        elif self.origin == "pessoa-juridica":
+        if self.origin == "funcionario":
+            self.write({'external_client_id': [(3, self.external_client_id.id)]})
+        elif self.origin == "cliente":
             self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
         else:
             self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
-            self.cnpj = False
+            self.write({'external_client_id': [(3, self.external_client_id.id)]})
 
         if self.invoice_type != 'contract':
             self.write({'external_contract_id': [(3, self.external_contract_id.id)]})
@@ -95,6 +102,7 @@ class Invoice(models.Model):
             'external_contract_id': self.external_contract_id,
             'external_operation_id': self.external_operation_id,
             'external_employee_id': self.external_employee_id,
+            'external_client_id': self.external_client_id,
         }
 
         self.env['invoice'].write(vals)
@@ -161,18 +169,6 @@ class Invoice(models.Model):
                     raise ValidationError(_("O campo 'Nota Fiscal' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
 
-    @api.constrains('cnpj')
-    def _validate_cnpj(self):
-        """Checks size of the CPNJ variable to limit different lengths"""
-        for rec in self:
-            if rec.cnpj and self.origin == "pessoa-juridica":
-                if len(rec.cnpj) != 14:
-                    raise ValidationError(_("O campo 'CNPJ' está está com o tamanho incorreto. "
-                                                "Precisa de 8 dígitos."))
-                if not (rec.cnpj).isnumeric():
-                    raise ValidationError(_("O campo 'CNPJ' contém carácteres inválidos. "
-                                                "O campo deve conter apenas números."))
-
     @api.constrains('invoice_file')
     def _check_invoice_file(self):
         """Checks if the binary file is a '.pdf' file"""
@@ -180,12 +176,13 @@ class Invoice(models.Model):
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
 
-    @api.constrains('external_operation_id')
     def _check_external_operation_id(self):
         for rec in self:
             if rec.external_operation_id:
                 if rec.external_operation_id.is_editable is not True:
-                    raise ValidationError(_("O caixa associado está fechado!"))
+                    raise ValidationError(_("O caixa desta data não está editável."))
+                if rec.external_operation_id.operation_status == '0':
+                    raise ValidationError(_("O caixa está fechado."))
 
     _sql_constraints = [
         ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
@@ -200,7 +197,7 @@ class Invoice(models.Model):
         for record in self:
             if not record.external_operation_id:
                 if record.installment != '0':
-                    record.display_name = f"{record.invoice_type}-parcela-{record.installment}"
+                    record.display_name =f"{record.invoice_type}-parcela-{record.installment}"
                 else:
                     record.display_name = f"{record.invoice_type}"
             else:
@@ -218,9 +215,18 @@ class Invoice(models.Model):
             elif rec.invoice_status == '2':
                 self.status_value = 'Faturada.'
 
-    def _compute_employee_cpf(self):
+    def _compute_cpf(self):
         for rec in self:
             if rec.external_employee_id:
                 rec.cpf = rec.external_employee_id.cpf
+            elif rec.external_client_id and rec.external_client_id.client_type == 'pessoa-fisica':
+                rec.cpf = rec.external_client_id.cpf
             else:
                 rec.cpf = False
+
+    def _compute_cnpj(self):
+        for rec in self:
+            if rec.external_client_id and rec.external_client_id.client_type == 'pessoa-juridica':
+                rec.cnpj = rec.external_operation_id.cnpj
+            else:
+                rec.cnpj = False

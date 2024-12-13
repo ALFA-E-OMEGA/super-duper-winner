@@ -13,7 +13,9 @@ class Patrimony(models.Model):
         for r in range(1, a+1):
             tuple_list.append((str(r), str(r)))
         return tuple_list
-    
+
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     _name = "patrimony"
     _description = "Registro de patrimônio."
     _rec_name = "display_name"
@@ -67,6 +69,7 @@ class Patrimony(models.Model):
                                     string='Contratos')
     bill_ids = fields.One2many('bill', 'external_patrimony_id',  string="Contas a Pagar")
     display_name = fields.Char(compute='_compute_display_name')
+    value = fields.Float(string='Valor do Patrimônio')
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -109,6 +112,7 @@ class Patrimony(models.Model):
             'heavy_type': self.heavy_type,
             'heavy_number': self.heavy_number,
             'external_contract_id': self.external_contract_id,
+            'value': self.value,
         }
 
         self.env['patrimony'].write(vals)
@@ -170,6 +174,13 @@ class Patrimony(models.Model):
                     raise ValidationError(_("O campo 'Placa do Veículo' contém caracteres"
                                             " inválidos. "
                                             "O campo deve conter apenas letras e números."))
+
+    @api.constrains('value')
+    def _validate_value(self):
+        """Checks if value field is a negative number or zero"""
+        for rec in self:
+            if rec.value <= 0:
+                raise ValidationError(_("O campo 'valor' precisa ser igual ou maior que zero"))
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
