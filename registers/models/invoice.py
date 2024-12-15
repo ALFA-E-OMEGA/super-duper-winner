@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable, protected-access line-too-long
+# pylint: disable=undefined-loop-variable, protected-access line-too-long, pointless-statement
 """This are the invoice template and it's associated functions"""
 from datetime import datetime
 from odoo import models, fields, api, _

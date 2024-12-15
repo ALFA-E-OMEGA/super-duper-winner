@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable, protected-access, line-too-long
+# pylint: disable=undefined-loop-variable, protected-access, line-too-long, pointless-statement
 """This are the bill template and it's associated functions"""
 from datetime import datetime
 from odoo import models, fields, api, _
@@ -267,7 +267,7 @@ class Bill(models.Model):
                 rec.cnpj = rec.external_client_id.cnpj
             else:
                 rec.cnpj = False
-    
+
     def _compute_client_type(self):
         for rec in self:
             if rec.external_client_id:
