@@ -31,7 +31,7 @@
 
                             </div>
 
-                            <div class="container_field">
+                           <div class="container_field">
                                 <span>Contas:</span>
                                 <field name="invoice_ids" widget="many2many" options="{'unlink': False}"/>
                             </div>
@@ -41,7 +41,7 @@
                         <section class="group">
                             <div class="container_field">
                                 <span>Cliente:</span>
-                                <field class="field" name="client_type"/>
+                                <field class="field" name="external_client_id" widget="selection"/>
                             </div>
 
                             <div class="container_field">

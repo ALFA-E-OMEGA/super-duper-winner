@@ -1,11 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="view_client_form" model="ir.ui.view">
+        <field name="name">client.form</field>
+        <field name="model">client</field>
+        <field name="arch" type="xml">
+            <form class="myform" string="Cadastro de Cliente">
+
+                <div class="container_form client_form">
+                    <h1>Cliente</h1>
+                        <article class="container_form_contents">
+                            <section class="group">
+                                <div class="container_field">
+                                    <span>Nome do Cliente:</span>
+                                    <field class="field" name="name"/>
+                                </div>
+                                
+                                <div class="container_field">
+                                    <span>Telefone:</span>
+                                    <field class="field" name="tel_one"/>
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Email:</span>
+                                    <field class="field" name="email"/>
+                                </div>
+
+                                <div class="subgroup">
+                                    <div class="container_field">
+                                        <span>Estado:</span>
+                                        <field class="field" name="address_state"/>
+                                    </div>
+
+                                    <div class="container_field">
+                                        <span>Cidade:</span>
+                                        <field class="field" name="address_city"/>
+                                    </div>
+
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Complemento:</span>
+                                    <field class="field" name="address_complement"/>
+                                </div>
+
+                            </section>
+
+                            <section class="group">
+                                <div class="subgroup">
+                                    <div class="container_field">
+                                        <span>Tipo de Cliente:</span>
+                                        <field class="field" name="client_type"/>
+                                    </div>
+
+                                    <div class="container_field" invisible="client_type != 'pessoa-fisica'">
+                                        <span>Tipo de Pessoa Física:</span>
+                                        <field class="field" name="pf_type"/>
+                                    </div>
+
+                                    <div class="container_field" invisible="client_type != 'pessoa-juridica'">
+                                        <span>Tipo de Pessoa Jurídica:</span>
+                                        <field class="field" name="pj_type"/>
+                                    </div>
+                                
+                                </div>
+
+                            <div class="subgroup">
+                                <div class="container_field" invisible="pf_type != 'nacional'
+                                or client_type == 'pessoa-juridica'">
+                                    <span>CPF:</span>
+                                    <field class="field" name="cpf"
+                                    required="client_type == 'pessoa-fisica' and pf_type == 'nacional'"/>
+                                </div>
+
+                                <div class="container_field" invisible="pf_type != 'nacional'
+                                or client_type == 'pessoa-juridica'">
+                                    <span>RG:</span>
+                                    <field class="field" name="rg"/>
+                                </div>
+
+                                <div class="container_field" invisible="pf_type != 'estrangeiro'
+                                or client_type == 'pessoa-juridica'">
+                                    <span>Documento Estrangeiro:</span>
+                                    <field class="field" name="foreign_doc"
+                                    required="client_type == 'pessoa-fisica' and pf_type == 'estrangeiro'"/>
+                                </div>
+
+                                <div class="container_field" invisible="client_type != 'pessoa-juridica'">
+                                    <span>CNPJ:</span>
+                                    <field class="field" name="cnpj" required="client_type == 'pessoa-juridica'"/>
+                                </div>
+
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_field"
+                                invisible="client_type != 'pessoa-juridica' or pj_type != 'publico'">
+                                    <span>Prefeitura:</span>
+                                    <field class="field" name="city_name"
+                                    required="client_type == 'pessoa-juridica' and pj_type == 'publico'"/>
+                                </div>
+
+                                <div class="container_field"
+                                invisible="client_type != 'pessoa-juridica' or pj_type != 'publico'">
+                                    <span>Secretaria:</span>
+                                    <field class="field" name="city_department"
+                                    required="client_type == 'pessoa-juridica' and pj_type == 'publico'"/>
+                                </div>
+                            </div>
+
+                            <div class="container_field" invisible="client_type != 'pessoa-juridica'">
+                                <span>Nome do Contato:</span>
+                                <field class="field" name="contact_name" required="client_type == 'pessoa-juridica'"/>
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_field" invisible="client_type != 'pessoa-juridica'">
+                                    <span>Telefone do Contato:</span>
+                                    <field class="field" name="contact_tel" required="client_type == 'pessoa-juridica'"/>
+                                </div>
+
+                                <div class="container_field" invisible="client_type != 'pessoa-juridica'">
+                                    <span>Email do Contato:</span>
+                                    <field class="field" name="contact_email" required="client_type == 'pessoa-juridica'"/>
+                                </div>
+
+                            </div>
+                                
+                            <div class="container_button">
+                                    <button name="create_client" class="btnSecondary mybutton"
+                                    type="object" string="Salvar"
+                                    confirm="Confimar dados de Cliente?"/>
+                                </div>
+
+                            </section>
+
+                        </article>
+
+                </div>
+
+            </form>
+        
+        </field>
+
+    </record>
+
+    <record id="view_client_list" model="ir.ui.view">
+        <field name="name">client.list</field>
+        <field name="model">client</field>
+        <field name="arch" type="xml">
+            <list string="Clientes">
+                <field class="test" name="name"/>
+                <field class="test" name="client_type"/>
+                <field class="test" name="tel_one"/>
+            </list>
+        </field>
+    </record>
+
     <record id="action_register_client" model="ir.actions.act_window">
-        <field name="name">Cadastro de Clientes</field>
+        <field name="name">Clientes</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">client</field>
         <field name="view_mode">list,form</field>
     </record>
+
 
     <menuitem  id="menu_clients_register"
             parent="menu_registro"

@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable, wrong-import-order
+# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long
 """This are the contract template and it's associated functions"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -16,16 +16,15 @@ class Contract(models.Model):
 
     _name = "contract"
     _description = "Registro de Contrato."
+    _rec_name = "display_name"
 
     id_contract = fields.Char(string='Código', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     contract_date = fields.Date(string='Data do Contrato', required=True)
     status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
                               string='Status', required=True)
-    client_type = fields.Selection([('estado', 'Estado'), ('cidade', 'Cidade'),
-                                    ('prefeitura', 'Prefeitura'), ('secretaria', 'Secretaria')],
-                                    string="Cliente", required=True)
     display_name = fields.Char(compute='_compute_display_name')
+    external_client_id = fields.Many2one(comodel_name='client', string='Cliente', required=True)
     invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Contas Recebidas")
     patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
                                      string='Patrimônios')
@@ -37,8 +36,7 @@ class Contract(models.Model):
             'register_date': self.register_date,
             'contract_date': self.contract_date,
             'status': self.status,
-            'client_type': self.client_type,
-            'name': self.display_name,
+            'external_client_id': self.external_client_id,
             'invoice_ids': self.invoice_ids,
         }
 
@@ -71,8 +69,7 @@ class Contract(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            name = record.client_type + '_' + record.id_contract
-        record.display_name = name
+            record.display_name = f"{record.id_contract}-{record.external_client_id.name}-{record.contract_date}"
 
     _sql_constraints = [
         ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')

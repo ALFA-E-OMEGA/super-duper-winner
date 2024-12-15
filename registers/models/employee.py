@@ -2,9 +2,29 @@
 # pylint: skip-file
 from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
+import re
+
+regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
 
 class Employee(models.Model):
     """Fields and functions for the employee object"""
+
+    def _validate_cpf_digits(self, cpf_string):
+        
+        numbers = [int(digit) for digit in cpf_string if digit.isdigit()]
+
+        sum_of_products = sum(a*b for a, b in zip(numbers[0:9], range(10, 1, -1)))
+        expected_digit = (sum_of_products * 10 % 11) % 10
+        if numbers[9] != expected_digit:
+            return False
+        
+        sum_of_products = sum(a*b for a, b in zip(numbers[0:10], range(11, 1, -1)))
+        expected_digit = (sum_of_products * 10 % 11) % 10
+        if numbers[10] != expected_digit:
+            return False
+        
+        return True
+    
     _name = "employee"
     _description = "Registro de funcionários."
 
@@ -60,10 +80,12 @@ class Employee(models.Model):
             if rec.cpf:
                 if len(rec.cpf) != 11:
                     raise ValidationError(_("O campo 'CPF' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                                            "Precisa de 11 dígitos."))
                 if not (rec.cpf).isnumeric():
                     raise ValidationError(_("O campo 'CPF' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
+                if self._validate_cpf_digits(rec.cpf) is False:
+                    raise ValidationError(_("O 'CPF' é inválido."))
 
     @api.constrains('cep')
     def _validate_cep(self):
@@ -86,10 +108,10 @@ class Employee(models.Model):
             if rec.pis_pasep:
                 if len(rec.pis_pasep) != 11:
                     raise ValidationError(_("O campo 'PIS-PASEP' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                                            "Precisa de 11 dígitos."))
                 if not (rec.pis_pasep).isnumeric():
                     raise ValidationError(_("O campo 'PIS-PASEP' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('rg')
     def _validate_rg(self):
@@ -97,12 +119,12 @@ class Employee(models.Model):
         and checks for non-numeric characters"""
         for rec in self:
             if rec.rg:
-                if len(rec.rg) != 9:
+                if len(rec.rg) > 14 or len(rec.rg) < 6:
                     raise ValidationError(_("O campo 'RG' está com o tamanho incorreto. "
-                                            "Precisa de 9 dígitos"))
+                                            "Ele possuí entre 6 e 14 dígitos."))
                 if not (rec.rg).isnumeric():
                     raise ValidationError(_("O campo 'RG' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('cart_trabalho')
     def _validate_cart_trabalho(self):
@@ -142,6 +164,15 @@ class Employee(models.Model):
                 if not (rec.tel_two).isnumeric():
                     raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos."
                                             "O campo deve conter apenas números"))
+    
+    @api.constrains('email')
+    def _validate_email(self):
+        """Checks the validity of the
+        email in the record"""
+        for rec in self:
+            if rec.email:
+                if re.fullmatch(regex_email, rec.email) == None:
+                    raise ValidationError(_("O formato do campo 'Email' é inválido."))
 
     _sql_constraints = [
         ('cpf_employee_unique', 'UNIQUE(cpf)', 'Já existe um \'Funcionário\' com esse \'CPF\'.')

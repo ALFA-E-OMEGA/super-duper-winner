@@ -48,20 +48,28 @@
                                 <field class="field" name="origin" readonly="bill_status != '0'"/>
                             </div>
 
-                              <div class="subgroup">
-                                <div class="container_field" invisible="origin == 'other'">
+                            <div class="subgroup">
+                                <div class="container_field" invisible="origin != 'funcionario'">
                                     <span>Nome:</span>
-                                    <field class="field" name="client_name" readonly="bill_status != '0'"/>
+                                    <field class="field" name="external_employee_id" widget="selection"
+                                    readonly="bill_status != '0'"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'is_cpf'">
+                                <div class="container_field" invisible="origin != 'cliente'">
+                                    <span>Nome:</span>
+                                    <field class="field" name="external_client_id" widget="selection"
+                                    readonly="bill_status != '0'"/>
+                                </div>
+
+                                <div class="container_field" invisible="external_client_type == 'pessoa-juridica'
+                                or origin == 'outro'">
                                     <span>CPF:</span>
-                                    <field class="field" name="cpf" readonly="bill_status != '0'"/>
+                                    <field class="field" name="cpf" readonly="1"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'is_cnpj'">
+                                <div class="container_field" invisible="external_client_type != 'pessoa-juridica'">
                                     <span>CNPJ:</span>
-                                    <field class="field" name="cnpj" readonly="bill_status != '0'"/>
+                                    <field class="field" name="cnpj" readonly="1"/>
                                 </div>
 
                             </div>
@@ -84,11 +92,11 @@
                             </div>
 
                             <div class="container_button">
-                                    <div invisible="pdf_view_status == 0">
+                                    <div invisible="pdf_view_status == 1 or bill_file == False">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Ver PDF"/>
                                     </div>
 
-                                    <div invisible="pdf_view_status == 1">
+                                    <div invisible="pdf_view_status == 0 or bill_file == False">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Fechar PDF"/>
                                     </div>
 
@@ -126,10 +134,23 @@
                             
                            </div>
 
-                            <div class="container_field" invisible="bill_type != 'maintenance'">
+                            <div class="container_field" invisible="bill_type not in ['manutencao-veiculo', 'financiamento']">
                                 <span>Patrimônio:</span>
                                 <field class="field" name="external_patrimony_id" widget="selection"
-                                readonly="bill_status != '0'"/>
+                                readonly="bill_status != '0'" domain="[('classification', '=', 'veiculo')]"/>
+                            </div>
+
+                            <div class="container_field" invisible="bill_type != 'manutencao-pesado'">
+                                <span>Patrimônio:</span>
+                                <field class="field" name="external_patrimony_id" widget="selection"
+                                readonly="bill_status != '0'" domain="[('classification', '=', 'pesado')]"/>
+                            </div>
+
+                            <div class="container_field" invisible="bill_type not in ['material-obra', 'material-escritorio',
+                            'telefone', 'lubrificante']">
+                                <span>Patrimônio:</span>
+                                <field class="field" name="external_patrimony_id" widget="selection"
+                                readonly="bill_status != '0'" domain="[('classification', '=', 'outro')]"/>
                             </div>
 
                             <div class="subgroup">

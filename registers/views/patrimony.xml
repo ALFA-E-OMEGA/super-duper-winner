@@ -29,14 +29,18 @@
                             
                             </div>
 
-                            <div class="container_field">
-                                <span>Tipo de Combustível:</span>
-                                <field class="field" name="fuel_type"/>
-                            </div>
+                            <div class="subgroup">
+                                <div class="container_field"
+                                invisible="classification != 'veiculo' and classification != 'pesado'">
+                                    <span>Tipo de Combustível:</span>
+                                    <field class="field" name="fuel_type"/>
+                                </div>
 
-                            <div class="container_field">
-                                <span>Data de Aquisição:</span>
-                                <field class="field" name="acquisition_date"/>
+                                <div class="container_field">
+                                    <span>Data de Aquisição:</span>
+                                    <field class="field" name="acquisition_date"/>
+                                </div>
+
                             </div>
 
                             <div class="subgroup">
@@ -55,11 +59,11 @@
                                 </div>
 
                                 <div class="container_button">
-                                    <div invisible="pdf_view_status == 0">
+                                    <div invisible="pdf_view_status == 1 or patrimony_file == False">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Ver PDF"/>
                                     </div>
 
-                                    <div invisible="pdf_view_status == 1">
+                                    <div invisible="pdf_view_status == 0 or patrimony_file == False">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Fechar PDF"/>
                                     </div>
 
@@ -67,10 +71,17 @@
                                 
                             </div>
 
+                            <div class="container_field"
+                            invisible="classification != 'veiculo' and classification != 'pesado'">
+                                <span>Contratos:</span>
+                                <field name="contract_ids" options="{'unlink': False}"/>
+                            </div>
+
                         </section>
                         <section class="group">
                             <div class="subgroup">
-                                <div class="container_field">
+                                <div class="container_field"
+                                invisible="classification != 'veiculo' and classification != 'pesado'">
                                     <span>Contrato Original:</span>
                                     <field class="field" name="external_contract_id" widget="selection"/>
                                 </div>
@@ -80,30 +91,40 @@
                                 </div>
                             </div>
 
-                            <div class="container_field" invisible="classification != 'vehicles'">
-                                <span>Tipo de Veículo:</span>
-                                <field class="field" name="vehicle_type"/>
+                            <div class="subgroup">
+                                <div class="container_field" invisible="classification != 'veiculo'">
+                                    <span>Tipo de Veículo:</span>
+                                    <field class="field" name="vehicle_type" required="classification == 'veiculo'"/>
+                                </div>
+
+                                <div class="container_field"  invisible="classification != 'veiculo'">
+                                    <span>Renavan:</span>
+                                    <field class="field" name="renavan" required="classification == 'veiculo'"/>
+                                </div>
+                            
                             </div>
 
-                            <div class="container_field"  invisible="classification != 'vehicles'">
-                                <span>Renavan:</span>
-                                <field class="field" name="renavan" />
-                            </div>
-
-                            <div class="container_field" invisible="classification != 'heavies'">
+                            <div class="container_field" invisible="classification != 'pesado'">
                                 <span >Tipo de Veículo:</span>
-                                <field class="field" name="heavy_type"/>
-                            </div>
+                                <field class="field" name="heavy_type" required="classification == 'pesado'"/>
+                            </div>  
 
+                            <div class="subgroup">
+                                <div class="container_field" invisible="classification != 'pesado'">
+                                    <span >Número do equipamento:</span>
+                                    <field class="field" name="heavy_number" required="classification == 'pesado'"/>
+                                </div>
 
-                            <div class="container_field" invisible="classification != 'heavies'">
-                                <span >Número do equipamento:</span>
-                                <field class="field" name="heavy_number"/>
-                            </div>
+                                <div class="container_field" invisible="classification != 'veiculo'">
+                                    <span >Placa do Veículo:</span>
+                                    <field class="field" name="vehicle_plate" required="classification == 'veiculo'"/>
+                                </div>
 
-                            <div class="container_field">
-                                <span >Placa do Veículo:</span>
-                                <field class="field" name="vehicle_plate"/>
+                                <div class="container_field">
+                                    <span>Valor do Patrimômio</span>
+                                    <field class="field" name="value"/>
+                                </div>
+
                             </div>
 
                             <div class="container_button">
@@ -112,14 +133,17 @@
 
                             </div>
 
-                        </section>
-                    </article>
+                            <div class="container_field">
+                                <span>Contas:</span>
+                                <field name="bill_ids" readonly="1"/>
+                            </div>
 
-                    <div class="container_field">
-                        <span>Contratos:</span>
-                        <field name="contract_ids" options="{'unlink': False}"/>
-                    </div>
-            </div>
+                        </section>
+
+                    </article>
+                    
+                </div>
+
             </form>
 
 
@@ -135,7 +159,7 @@
             <field class="test" name="id_patrimony"/>
             <field class="test" name="vehicle_maker"/>
             <field class="test" name="vehicle_model"/>
-            <field class="test" name="classification"/>
+            <field class="test" name="vehicle_plate"/>
             </list>
         </field>
     </record>
