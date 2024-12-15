@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable, wrong-import-order
+# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long
 """This are the contract template and it's associated functions"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -70,7 +70,7 @@ class Contract(models.Model):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            record.display_name = f"{record.client_type}-{record.id_contract}"
+            record.display_name = f"{record.id_contract}-{record.external_client_id.name}-{record.contract_date}"
 
     _sql_constraints = [
         ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')

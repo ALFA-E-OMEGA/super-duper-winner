@@ -60,14 +60,13 @@
                                     readonly="invoice_status != '0'"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin == 'outro'
-                                or origin == 'cliente' and external_client_id.client_type == 'pessoa-juridica'">
+                                <div class="container_field" invisible="external_client_type == 'pessoa-juridica'
+                                or origin == 'outro'">
                                     <span>CPF:</span>
                                     <field class="field" name="cpf" readonly="1"/>
                                 </div>
 
-                                <div class="container_field" invisible="origin != 'cliente'
-                                or external_client_id.client_type != 'pessoa-juridica'">
+                                <div class="container_field" invisible="external_client_type != 'pessoa-juridica'">
                                     <span>CNPJ:</span>
                                     <field class="field" name="cnpj" readonly="1"/>
                                 </div>
@@ -92,11 +91,11 @@
                             </div>
 
                             <div class="container_button">
-                                    <div invisible="pdf_view_status == 1">
+                                    <div invisible="pdf_view_status == 1 or invoice_file == False">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Ver PDF"/>
                                     </div>
 
-                                    <div invisible="pdf_view_status == 0">
+                                    <div invisible="pdf_view_status == 0 or invoice_file == False">
                                         <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Fechar PDF"/>
                                     </div>
 

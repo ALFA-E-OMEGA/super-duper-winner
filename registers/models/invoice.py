@@ -57,6 +57,7 @@ class Invoice(models.Model):
     external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
     external_employee_id = fields.Many2one(comodel_name='employee', string='Funcionário')
     external_client_id = fields.Many2one(comodel_name='client', string='Cliente')
+    external_client_type = fields.Char(string='Tipo de Cliente', compute='_compute_client_type')
     cpf = fields.Char(string='CPF', compute='_compute_cpf')
     cnpj = fields.Char(string='CNPJ', compute='_compute_cnpj')
     filename = fields.Char()
@@ -103,6 +104,7 @@ class Invoice(models.Model):
             'external_operation_id': self.external_operation_id,
             'external_employee_id': self.external_employee_id,
             'external_client_id': self.external_client_id,
+            'external_client_type': self.external_client_type,
         }
 
         self.env['invoice'].write(vals)
@@ -186,7 +188,8 @@ class Invoice(models.Model):
 
     _sql_constraints = [
         ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
-        'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada.')
+        'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada ou'
+        'outra conta com esse código.')
     ]
 
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -227,6 +230,16 @@ class Invoice(models.Model):
     def _compute_cnpj(self):
         for rec in self:
             if rec.external_client_id and rec.external_client_id.client_type == 'pessoa-juridica':
-                rec.cnpj = rec.external_operation_id.cnpj
+                rec.cnpj = rec.external_client_id.cnpj
             else:
                 rec.cnpj = False
+
+    def _compute_client_type(self):
+        for rec in self:
+            if rec.external_client_id:
+                if rec.external_client_id.client_type == 'pessoa-juridica':
+                    rec.external_client_type = rec.external_client_id.client_type
+                elif rec.external_client_id.client_type == 'pessoa-fisica':
+                    rec.external_client_type == rec.external_client_id.client_type
+            else:
+                rec.external_client_type = False

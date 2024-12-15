@@ -187,10 +187,6 @@ class Patrimony(models.Model):
         'Já existe um \'Patrimônio\' com esse \'Código\'.')
     ]
 
-    _sql_constraints = [('vehicle_plate_patrimony_unique', 'UNIQUE(vehicle_plate)',
-                         'Já existe um \'Veículo\' com essa \'Placa\'.')
-    ]
-
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _compute_display_name(self):
@@ -201,3 +197,5 @@ class Patrimony(models.Model):
                 record.display_name = f"{record.vehicle_plate.upper()}"
             if record.classification == 'pesado':
                 record.display_name = f"{record.heavy_type}-{record.heavy_number}"
+            else:
+                record.display_name = f"{record.id_patrimony}"

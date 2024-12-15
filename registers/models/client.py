@@ -208,7 +208,7 @@ class Client(models.Model):
             if rec.cnpj:
                 if len(rec.cnpj) != 14:
                     raise ValidationError(_("O campo 'CNPJ' está está com o tamanho incorreto. "
-                                                "Precisa de 8 dígitos."))
+                                                "Precisa de 14 dígitos."))
                 if not (rec.cnpj).isnumeric():
                     raise ValidationError(_("O campo 'CNPJ' contém carácteres inválidos. "
                                                 "O campo deve conter apenas números."))
