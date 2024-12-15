@@ -70,7 +70,7 @@ class Client(models.Model):
     contact_tel = fields.Char(string='Telefone do Contato', required=False)
     contact_email = fields.Char(string='Email do Contato', required=False)
     city_name = fields.Char(string='Prefeitura', required=False)
-    city_department = fields.Char(string='Secretaria', required=True)
+    city_department = fields.Char(string='Secretaria', required=False)
 
     def create_client(self):
         """This is the custom function for saving an 'client' object"""
