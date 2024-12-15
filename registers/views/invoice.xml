@@ -182,7 +182,7 @@
                 <field class="test" name="id_invoice"/>
                 <field class="test" name="value"/>
                 <field class="test" name="invoice_status" decoration-info="invoice_status == '0'"
-                decoration-success="invoice_status == '1'" />
+                decoration-success="invoice_status == '1'" decoration-primary = "invoice_status == '2'"/>
                 <field class="test" name="invoice_type"/>
             </list>
         </field>

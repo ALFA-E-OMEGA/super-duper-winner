@@ -38,7 +38,7 @@ class Client(models.Model):
                                           ('estrangeiro', 'Estrangeiro'),
                                         ], string='Nacionalidade', required=False)
     pj_type = fields.Selection(selection=[('privado', 'Privado'),
-                                          ('publico', 'Pùblico'),
+                                          ('publico', 'Publico'),
                                         ], string='PJ', required=False)
     tel_one = fields.Char(string='Telefone', required=True)
     email = fields.Char(string='Email', required=False)
@@ -61,6 +61,7 @@ class Client(models.Model):
                                                 string='Estado do Endereço',
                                                 required=True, defaul='rio-de-janeiro')
     address_city = fields.Char(string='Cidade do Endereço', required=True)
+    address_complement = fields.Char(string='Complemento do Endereço', required=True)
     cpf = fields.Char(string='CPF', required=False)
     rg = fields.Char(string='RG', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -68,6 +69,8 @@ class Client(models.Model):
     contact_name = fields.Char(string='Nome do Contato', required=False)
     contact_tel = fields.Char(string='Telefone do Contato', required=False)
     contact_email = fields.Char(string='Email do Contato', required=False)
+    city_name = fields.Char(string='Prefeitura', required=False)
+    city_department = fields.Char(string='Secretaria', required=True)
 
     def create_client(self):
         """This is the custom function for saving an 'client' object"""
@@ -92,7 +95,8 @@ class Client(models.Model):
             'tel_one': self.tel_one,
             'email': self.email,
             'address_state': self.address_state,
-            'address': self.address_city,
+            'address_city': self.address_city,
+            'address_complement': self.address_complement,
             'cpf': self.cpf,
             'rg': self.rg,
             'cnpj': self.cnpj,
@@ -101,6 +105,8 @@ class Client(models.Model):
             'contact_name': self.contact_name,
             'contact_tel': self.contact_tel,
             'contact_email': self.contact_email,
+            'city_name': self.city_name,
+            'city_department':self.city_department,
         }
 
         self.env['client'].write(vals)

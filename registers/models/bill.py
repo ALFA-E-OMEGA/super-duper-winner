@@ -31,7 +31,7 @@ class Bill(models.Model):
     id_bill = fields.Char(string='Código', required=False)
     fiscal_note = fields.Char(string='Nota Fiscal', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
-                                   string='Parcela', required=True, store=True)
+                                   string='Parcela', required=True, default='0')
     bill_type = fields.Selection([('manutencao-veiculo', 'Manutenção de Veículo'),
                                   ('manutencao-pesado', 'Manutenção de Veículo Pesado'),
                                   ('combustivel', 'Combustível'), ('ipva', 'IPVA'),

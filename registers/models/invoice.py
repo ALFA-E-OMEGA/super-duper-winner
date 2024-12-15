@@ -31,7 +31,7 @@ class Invoice(models.Model):
     id_invoice = fields.Char(string='Código', required=False)
     fiscal_note = fields.Char(string='Nota Fiscal', required=False)
     installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
-                                   string='Parcela', required=True)
+                                   string='Parcela', required=True, default='0')
     invoice_type = fields.Selection([('fatura-contrato', 'Contrato'),
                                      ('venda-veiculo', 'Venda de Veículo'),
                                      ('juros-recebidos', 'Juros Recebidos'),

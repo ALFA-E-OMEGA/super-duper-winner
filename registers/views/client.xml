@@ -7,7 +7,7 @@
             <form class="myform" string="Cadastro de Cliente">
 
                 <div class="container_form client_form">
-                    <h1>Serviço</h1>
+                    <h1>Cliente</h1>
                         <article class="container_form_contents">
                             <section class="group">
                                 <div class="container_field">
@@ -36,6 +36,11 @@
                                         <field class="field" name="address_city"/>
                                     </div>
 
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Complemento:</span>
+                                    <field class="field" name="address_complement"/>
                                 </div>
 
                             </section>
@@ -85,13 +90,22 @@
                                     <field class="field" name="cnpj" required="client_type == 'pessoa-juridica'"/>
                                 </div>
 
+                            </div>
+
+                            <div class="subgroup">
                                 <div class="container_field"
                                 invisible="client_type != 'pessoa-juridica' or pj_type != 'publico'">
-                                    <span>Secretaria:</span>
-                                    <field class="field" name="cnpj"
+                                    <span>Prefeitura:</span>
+                                    <field class="field" name="city_name"
                                     required="client_type == 'pessoa-juridica' and pj_type == 'publico'"/>
                                 </div>
 
+                                <div class="container_field"
+                                invisible="client_type != 'pessoa-juridica' or pj_type != 'publico'">
+                                    <span>Secretaria:</span>
+                                    <field class="field" name="city_department"
+                                    required="client_type == 'pessoa-juridica' and pj_type == 'publico'"/>
+                                </div>
                             </div>
 
                             <div class="container_field" invisible="client_type != 'pessoa-juridica'">
@@ -134,7 +148,7 @@
         <field name="name">client.list</field>
         <field name="model">client</field>
         <field name="arch" type="xml">
-            <list string="Serviços">
+            <list string="Clientes">
                 <field class="test" name="name"/>
                 <field class="test" name="client_type"/>
                 <field class="test" name="tel_one"/>
