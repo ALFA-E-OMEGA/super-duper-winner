@@ -56,7 +56,7 @@
 
                                 <div class="container_field" invisible="origin != 'cliente'">
                                     <span>Nome:</span>
-                                    <field class="field" name="external_employee_id" widget="selection"
+                                    <field class="field" name="external_client_id" widget="selection"
                                     readonly="invoice_status != '0'"/>
                                 </div>
 

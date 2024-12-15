@@ -187,6 +187,10 @@ class Patrimony(models.Model):
         'Já existe um \'Patrimônio\' com esse \'Código\'.')
     ]
 
+    _sql_constraints = [('vehicle_plate_patrimony_unique', 'UNIQUE(vehicle_plate)',
+                         'Já existe um \'Veículo\' com essa \'Placa\'.')
+    ]
+
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _compute_display_name(self):

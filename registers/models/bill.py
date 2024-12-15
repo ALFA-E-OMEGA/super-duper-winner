@@ -105,7 +105,7 @@ class Bill(models.Model):
 
         if self.bill_type not in ('manutencao-veiculo', 'manutencao-pesado'):
             if self.external_patrimony_id:
-                self.write({'external_contract_id': [(3, self.external_patrimony_id.id)]})
+                self.write({'external_patrimony_id': [(3, self.external_patrimony_id.id)]})
 
         vals = {
             'bill_id': self.id_bill,
