@@ -3,7 +3,7 @@ import re
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-regex_email = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,})+')
+regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
 
 class Client(models.Model):
     """Fields and functions for the client object"""

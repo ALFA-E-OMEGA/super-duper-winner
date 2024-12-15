@@ -4,7 +4,7 @@ from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
 import re
 
-regex_email = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,})+')
+regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
 
 class Employee(models.Model):
     """Fields and functions for the employee object"""
