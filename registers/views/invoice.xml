@@ -157,7 +157,7 @@
 
                                 <div class="container_button">
                                     <button name="update_invoice_status" class="btnSecondary mybutton" type="object" string="Atualizar"
-                                    confirm="Autalizar o status da conta?" invisible="invoice_status == '1'"/>
+                                    confirm="Autorizar conta?" invisible="invoice_status == '1'"/>
                                 </div>
 
                             </div>

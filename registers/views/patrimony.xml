@@ -74,7 +74,7 @@
                             <div class="container_field"
                             invisible="classification != 'veiculo' and classification != 'pesado'">
                                 <span>Contratos:</span>
-                                <field name="contract_ids" options="{'unlink': False}"/>
+                                <field name="contract_ids" options="{'unlink': False, 'create': False}"/>
                             </div>
 
                         </section>
