@@ -17,9 +17,11 @@
     border-radius: 2px;
 }
 
+/*
 .o_wrap_label{
     display: none !important;
 }
+*/
 
 .container_field{
     display: flex;
