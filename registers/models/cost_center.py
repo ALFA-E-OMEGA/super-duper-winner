@@ -4,12 +4,17 @@ from odoo.exceptions import ValidationError
 
 class CostCenter(models.Model):
     """Fields and functions for the cost_center object"""
+
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     _name = "cost_center"
     _description = "Registro de Centro de Custo."
 
     id_cost_center = fields.Char(string='Código', required=True)
     name = fields.Char(string='Nome', required=True)
     about = fields.Text(string='Descrição', required=False)
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_cost_center(self):
         """This is the custom function for saving an 'cost_center' object"""
@@ -34,6 +39,8 @@ class CostCenter(models.Model):
                 }
             },
         }
+
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('id_cost_center')
     def _validate_id_cost_center(self):

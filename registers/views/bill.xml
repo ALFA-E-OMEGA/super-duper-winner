@@ -78,12 +78,12 @@
 
                                 <div class="container_field">
                                 <span>Arquivo PDF:</span>
-                                <div invisible="pdf_view_status == 1">
+                                <div invisible="pdf_view_status == 0">
                                     <field class="field" name="bill_file" filename="filename" readonly="bill_status != '0'"
                                     widget="pdf_viewer"/>
                                 </div>
 
-                                <div invisible="pdf_view_status == 0">
+                                <div invisible="pdf_view_status == 1">
                                     <field class="field" name="bill_file" filename="filename" readonly="bill_status != '0'"/>
                                 </div>
 

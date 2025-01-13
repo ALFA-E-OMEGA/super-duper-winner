@@ -8,6 +8,8 @@ regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\
 class Client(models.Model):
     """Fields and functions for the client object"""
 
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def _validate_cpf_digits(self, cpf_string):
 
         numbers = [int(digit) for digit in cpf_string if digit.isdigit()]
@@ -71,6 +73,8 @@ class Client(models.Model):
     contact_email = fields.Char(string='Email do Contato', required=False)
     city_name = fields.Char(string='Prefeitura', required=False)
     city_department = fields.Char(string='Secretaria', required=False)
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_client(self):
         """This is the custom function for saving an 'client' object"""

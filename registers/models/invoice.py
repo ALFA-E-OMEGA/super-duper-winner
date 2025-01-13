@@ -8,6 +8,8 @@ import pytz
 class Invoice(models.Model):
     """Fields and functions for the invoice record"""
 
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def _generate_register_date(self):
         """Function to generate current date based on user timezone"""
         user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
@@ -65,13 +67,7 @@ class Invoice(models.Model):
 
     pdf_view_status = fields.Integer(default=0)
 
-    def update_pdf_view(self):
-        """Edits .xml so that the .pdf file is either expanded
-        or reduced in visualization"""
-        if self.pdf_view_status == 0:
-            self.pdf_view_status = 1
-        elif self.pdf_view_status == 1:
-            self.pdf_view_status = 0
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_invoice(self):
         """This is the custom function for saving a 'invoice' record"""
@@ -123,6 +119,8 @@ class Invoice(models.Model):
             },
         }
 
+# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def update_invoice_status(self):
         """This function changes the invoice status and locks editing the file"""
         if self.invoice_status == '0':
@@ -141,6 +139,14 @@ class Invoice(models.Model):
                 }
             },
         }
+
+    def update_pdf_view(self):
+        """Edits .xml so that the .pdf file is either expanded
+        or reduced in visualization"""
+        if self.pdf_view_status == 0:
+            self.pdf_view_status = 1
+        elif self.pdf_view_status == 1:
+            self.pdf_view_status = 0
 
 # Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

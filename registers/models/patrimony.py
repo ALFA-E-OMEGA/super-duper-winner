@@ -6,6 +6,8 @@ from odoo.exceptions import ValidationError
 class Patrimony(models.Model):
     """This are the fields and functions for the 'patrimony' object"""
 
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def _generate_tuple_list(self, a):
         tuple_list = []
         tuple_list.append(('0', 'Não Possui'))
@@ -73,6 +75,8 @@ class Patrimony(models.Model):
 
     pdf_view_status = fields.Integer(default=0)
 
+# Onchange functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     @api.onchange('vehicle_plate')
     def set_upper_plate(self): 
         if self.vehicle_plate:   
@@ -81,6 +85,8 @@ class Patrimony(models.Model):
             self.vehicle_plate = False
         return
 
+# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def update_pdf_view(self):
         """Edits .xml so that the .pdf file is either expanded
         or reduced in visualization"""
@@ -88,6 +94,8 @@ class Patrimony(models.Model):
             self.pdf_view_status = 1
         elif self.pdf_view_status == 1:
             self.pdf_view_status = 0
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_patrimony(self):
         """This is the custom function for saving an 'patrimony' object,
@@ -139,7 +147,7 @@ class Patrimony(models.Model):
             },
         }
 
-# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('renavan')
     def _validate_renavan(self):

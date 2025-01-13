@@ -9,6 +9,8 @@ regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\
 class Employee(models.Model):
     """Fields and functions for the employee object"""
 
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def _validate_cpf_digits(self, cpf_string):
         
         numbers = [int(digit) for digit in cpf_string if digit.isdigit()]
@@ -24,7 +26,9 @@ class Employee(models.Model):
             return False
         
         return True
-    
+
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+ 
     _name = "employee"
     _description = "Registro de funcionários."
 
@@ -39,6 +43,8 @@ class Employee(models.Model):
     cart_trabalho = fields.Char(string='Carteira de Trabalho', required=False)
     rg = fields.Char(string='RG', required=True)
     status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')], required=True)
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_employee(self):
         """This is the custom function for saving an 'employee' object"""
@@ -71,6 +77,8 @@ class Employee(models.Model):
                 }
             },
         }
+
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('cpf')
     def _validate_cpf(self):

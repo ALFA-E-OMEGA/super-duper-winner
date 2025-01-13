@@ -6,9 +6,8 @@ import pytz
 
 class Operation(models.Model):
     """Fields and functions for the operation object"""
-    _name = "operation"
-    _description = "Registro de Caixa."
-    _rec_name = "operation_date"
+
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _generate_register_date(self):
         """Function to generate current date based on user timezone"""
@@ -17,6 +16,10 @@ class Operation(models.Model):
         return date_today.date()
 
 # Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    _name = "operation"
+    _description = "Registro de Caixa."
+    _rec_name = "operation_date"
 
     operation_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     operation_status = fields.Selection([('1', 'Aberto'), ('0', 'Fechado')],
@@ -34,6 +37,8 @@ class Operation(models.Model):
     expenses_sum = fields.Float(string='Despesa Total', compute='_compute_expenses_sum')
     total_profit = fields.Float(string='Lucro Total', default=0.0)
     total_profit_positive = fields.Boolean(string='Lucro', defaut=True)
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_operation(self):
         """This is the custom function for saving an 'operation' object"""
@@ -77,6 +82,8 @@ class Operation(models.Model):
                 }
             },
         }
+
+# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def close_operation(self):
         """This function closes the operation status and locks editing the file"""
@@ -140,7 +147,7 @@ class Operation(models.Model):
             },
         }
 
-# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _sql_constraints = [
         ('operation_date_unique', 'UNIQUE(operation_date)',

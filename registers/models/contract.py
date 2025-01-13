@@ -8,11 +8,15 @@ import pytz
 class Contract(models.Model):
     """Fields and functions for the contract object"""
 
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def _generate_register_date(self):
         """Function to generate current date based on user timezone"""
         user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
         date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
         return date_today.date()
+
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _name = "contract"
     _description = "Registro de Contrato."
@@ -28,6 +32,8 @@ class Contract(models.Model):
     invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Contas Recebidas")
     patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
                                      string='Patrimônios')
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_contract(self):
         """This is the custom function for saving an 'contract' object"""
@@ -55,6 +61,8 @@ class Contract(models.Model):
                 }
             },
         }
+
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('id_contract')
     def _validate_id_contract(self):
