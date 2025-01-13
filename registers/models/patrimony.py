@@ -73,6 +73,14 @@ class Patrimony(models.Model):
 
     pdf_view_status = fields.Integer(default=0)
 
+    @api.onchange('vehicle_plate')
+    def set_upper_plate(self): 
+        if self.vehicle_plate:   
+            self.vehicle_plate = str(self.vehicle_plate).upper()   
+        else:
+            self.vehicle_plate = False
+        return
+
     def update_pdf_view(self):
         """Edits .xml so that the .pdf file is either expanded
         or reduced in visualization"""
@@ -194,7 +202,7 @@ class Patrimony(models.Model):
         this model"""
         for record in self:
             if record.classification == 'veiculo':
-                record.display_name = f"{record.vehicle_plate.upper()}"
+                record.display_name = f"{record.vehicle_plate}"
             if record.classification == 'pesado':
                 record.display_name = f"{record.heavy_type}-{record.heavy_number}"
             else:

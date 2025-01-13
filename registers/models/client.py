@@ -134,7 +134,8 @@ class Client(models.Model):
         for rec in self:
             if rec.email:
                 if re.fullmatch(regex_email, rec.email) is None:
-                    raise ValidationError(_("O formato do campo 'Email' é inválido."))
+                    raise ValidationError(_("O formato do campo 'Email' é inválido. " 
+                                            "O correto é \'email@provedor.terminação\'"))
 
     @api.constrains('tel_one')
     def _validate_tel_one(self):
@@ -143,8 +144,10 @@ class Client(models.Model):
         for rec in self:
             if rec.tel_one:
                 if len(rec.tel_one) != 11:
-                    raise ValidationError(_("O campo 'Telefone' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                    raise ValidationError(_("O campo 'Telefone' está com o tamanho "
+                                            "incorreto. Precisa de 11 dígitos."
+                                            "\n 2 dígitos do "
+                                            "DDD e 9 dígitos."))
                 if not (rec.tel_one).isnumeric():
                     raise ValidationError(_("O campo 'Telefone' contém carácteres inválidos. "
                                             "O campo deve conter apenas números"))
@@ -165,13 +168,14 @@ class Client(models.Model):
         for rec in self:
             if rec.contact_tel:
                 if len(rec.contact_tel) != 11:
-                    raise ValidationError(_("O campo 'Telefone do Contato' está com o tamanho"
-                                            "incorreto. "
-                                            "Precisa de 11 dígitos"))
+                    raise ValidationError(_("O campo 'Telefone do Contato' está com o tamanho "
+                                            "incorreto. Precisa de 11 dígitos."
+                                            "\n 2 dígitos do "
+                                            "DDD e 9 dígitos."))
                 if not (rec.contact_tel).isnumeric():
-                    raise ValidationError(_("O campo 'Telefone do Contato' contém carácteres"
+                    raise ValidationError(_("O campo 'Telefone do Contato' contém carácteres "
                                             "inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('rg')
     def _validate_rg(self):

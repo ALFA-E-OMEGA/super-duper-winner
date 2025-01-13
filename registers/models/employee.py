@@ -146,11 +146,13 @@ class Employee(models.Model):
         for rec in self:
             if rec.tel_one:
                 if len(rec.tel_one) != 11:
-                    raise ValidationError(_("O campo 'Telefone 1' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                    raise ValidationError(_("O campo 'Telefone 1' está com o tamanho "
+                                            "incorreto. Precisa de 11 dígitos."
+                                            "\n 2 dígitos do "
+                                            "DDD e 9 dígitos."))
                 if not (rec.tel_one).isnumeric():
                     raise ValidationError(_("O campo 'Telefone 1' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('tel_two')
     def _validate_tel_two(self):
@@ -159,11 +161,13 @@ class Employee(models.Model):
         for rec in self:
             if rec.tel_two:
                 if len(rec.tel_two) != 11:
-                    raise ValidationError(_("O campo 'Telefone 2' está com o tamanho incorreto."
-                                            "Precisa de 11 dígitos"))
+                    raise ValidationError(_("O campo 'Telefone 2' está com o tamanho "
+                                            "incorreto. Precisa de 11 dígitos."
+                                            "\n 2 dígitos do "
+                                            "DDD e 9 dígitos."))
                 if not (rec.tel_two).isnumeric():
-                    raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos."
-                                            "O campo deve conter apenas números"))
+                    raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números."))
     
     @api.constrains('email')
     def _validate_email(self):
@@ -172,7 +176,8 @@ class Employee(models.Model):
         for rec in self:
             if rec.email:
                 if re.fullmatch(regex_email, rec.email) == None:
-                    raise ValidationError(_("O formato do campo 'Email' é inválido."))
+                    raise ValidationError(_("O formato do campo 'Email' é inválido. " 
+                                            "O correto é \'email@provedor.terminação\'"))
 
     _sql_constraints = [
         ('cpf_employee_unique', 'UNIQUE(cpf)', 'Já existe um \'Funcionário\' com esse \'CPF\'.')

@@ -159,7 +159,7 @@ class Bill(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': _('Status atualizado para \'' + self.status_value + '\'!'),
+                'message': _('Conta foi autorizada!'),
                 'sticky': False,
                 'next': {
                     'type': 'ir.actions.act_window_close',
