@@ -165,7 +165,7 @@
     </record>
 
     <record id="action_register_patrimony" model="ir.actions.act_window">
-        <field name="name">Listagem de Patrimônio</field>
+        <field name="name">Patrimônios</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">patrimony</field>
         <field name="view_mode">list,form</field>
