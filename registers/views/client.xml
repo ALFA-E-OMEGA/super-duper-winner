@@ -163,10 +163,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-
-    <menuitem  id="menu_clients_register"
-            parent="menu_registro"
-            action="action_register_client"
-            name="Clientes"
-            sequence="2"/>
 </odoo>

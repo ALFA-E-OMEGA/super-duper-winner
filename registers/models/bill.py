@@ -190,7 +190,7 @@ class Bill(models.Model):
         """Checks if value field is a negative number or zero"""
         for rec in self:
             if rec.value <= 0:
-                raise ValidationError(_("O campo 'valor' precisa ser igual ou maior que zero."))
+                raise ValidationError(_("O campo 'valor' precisa ser maior que zero."))
 
     @api.constrains('fiscal_note')
     def _validate_rg(self):

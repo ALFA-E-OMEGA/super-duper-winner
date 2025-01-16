@@ -196,7 +196,7 @@ class Patrimony(models.Model):
         """Checks if value field is a negative number or zero"""
         for rec in self:
             if rec.value <= 0:
-                raise ValidationError(_("O campo 'valor' precisa ser igual ou maior que zero"))
+                raise ValidationError(_("O campo 'valor' precisa ser maior que zero"))
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',

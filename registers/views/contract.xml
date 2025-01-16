@@ -92,9 +92,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem  id="menu_contract_register"
-            parent="menu_financeiro"
-            action="action_register_contract"
-            name="Contratos"
-            sequence="3"/>
 </odoo>

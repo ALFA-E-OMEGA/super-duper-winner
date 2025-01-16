@@ -218,9 +218,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_bill_register"
-            parent="menu_financeiro"
-            action="action_register_bill"
-            name="Contas a Pagar"
-            sequence="1"/>
 </odoo>

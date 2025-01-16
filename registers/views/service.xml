@@ -69,9 +69,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem  id="menu_service_register"
-            parent="menu_outros"
-            action="action_register_service"
-            name="Serviços"
-            sequence="2"/>
 </odoo>

@@ -115,9 +115,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem  id="menu_employees_register"
-            parent="menu_registro"
-            action="action_register_employee"
-            name="Funcionários"
-            sequence="4"/>
 </odoo>

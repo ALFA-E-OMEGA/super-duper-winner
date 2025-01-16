@@ -171,9 +171,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_patrimony_register"
-            parent="menu_registro"
-            action="action_register_patrimony"
-            name="Patrimônio"
-            sequence="3"/>
 </odoo>
