@@ -7,66 +7,72 @@
         <field name="arch" type="xml">
             <form class="myform" string="Cadastro de Contrato">
 
-            <div class="container_form contract_form">
-                <h1>Contrato</h1>
+                <div class="container_form contract_form">
+                    <h1>Contrato</h1>
                     <article class="container_form_contents">
                         <section class="group">
                             <div class="container_field">
                                 <span>Código:</span>
-                                <field class="field" name="id_contract"/>
+                                <field class="field" name="id_contract" />
 
                             </div>
 
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Data de Registro:</span>
-                                    <field class="field" name="register_date" readonly="1"/>
+                                    <field class="field" name="register_date" readonly="1" />
                                 </div>
-                                
+
                                 <div class="container_field">
                                     <span>Status:</span>
-                                    <field class="field" name="status"/>
-                                    
+                                    <field class="field" name="status" />
+
                                 </div>
 
                             </div>
 
-                           <div class="container_field">
+                            <div class="container_field">
                                 <span>Receitas:</span>
                                 <field name="invoice_ids" widget="many2many"
-                                options="{'unlink': False, 'create':false}"/>
+                                    options="{'unlink': False, 'create':false}" />
                             </div>
-                                
+
 
                         </section>
                         <section class="group">
                             <div class="container_field">
                                 <span>Cliente:</span>
-                                <field class="field" name="external_client_id" widget="selection"/>
+                                <field class="field" name="external_client_id" widget="selection" />
                             </div>
 
                             <div class="container_field">
                                 <span>Data do Contrato:</span>
-                                <field class="field" name="contract_date"/>    
+                                <field class="field" name="contract_date" />
                             </div>
 
                             <div class="container_field">
-                                <span>Patrimônios:</span>
-                                <field name="patrimony_ids"
-                                options="{'unlink': False, 'create':False}"/>
-                            </div>
-
-                            <div class="container_button">
-                                <button name="create_contract" class="btnSecondary mybutton"
-                                type="object" string="Salvar"
-                                confirm="Confimar dados de Contrato?"/>
+                                <span>Despesas:</span>
+                                <field name="bill_ids" widget="many2many"
+                                    options="{'unlink': False, 'create':false}" />
                             </div>
 
                         </section>
 
-                    </article>  
-                    
-            </div>
+                    </article>
+
+                    <div class="container_field">
+                        <span>Patrimônios:</span>
+                        <field name="patrimony_ids"
+                            options="{'unlink': False, 'create':False}" />
+                    </div>
+
+                    <div class="container_button">
+                        <button name="create_contract" class="btnSecondary mybutton"
+                            type="object" string="Salvar"
+                            confirm="Confimar dados de Contrato?" />
+                    </div>
+
+                </div>
             </form>
 
 
@@ -79,8 +85,8 @@
         <field name="model">contract</field>
         <field name="arch" type="xml">
             <list string="Contrato">
-                <field class="test" name="id_contract"/>
-                <field class="test" name="status"/>
+                <field class="test" name="id_contract" />
+                <field class="test" name="status" />
             </list>
         </field>
     </record>

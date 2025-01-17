@@ -25,6 +25,7 @@ access_bill_r,access.bill.r,registers.model_bill,registers.group_registers_bill_
 access_bill_employee_r, access.bill.employee.r,registers.model_employee,registers.group_registers_bill_r,1,0,0,0
 access_bill_client_,access.bill.client.r,registers.model_client,registers.group_registers_bill_r,1,0,0,0
 access_bill_patrimony_r,access.bill.patrimony.r,registers.model_patrimony,registers.group_registers_bill_r,1,0,0,0
+access_bill_contract_r,access.bill.contract.r,registers.model_contract,registers.group_registers_bill_r,1,0,0,0
 access_bill_operation_r,access.bill.operation.r,registers.model_operation,registers.group_registers_bill_r,1,0,0,0
 access_bill_cost_center_r,access.bill.cost_center.r,registers.model_cost_center,registers.group_registers_bill_r,1,0,0,0
 access_bill_rw,access.bill.rw,registers.model_bill,registers.group_registers_bill_rw,1,1,1,0
@@ -40,6 +41,7 @@ access_invoice_rw,access.invoice.rw,registers.model_invoice,registers.group_regi
 access_contract_r,access.contract.r,registers.model_contract,registers.group_registers_contract_r,1,0,0,0
 access_contract_client_r,access.contract.client.r,registers.model_client,registers.group_registers_contract_r,1,0,0,0
 access_contract_invoice_r,access.contract.invoice.r,registers.model_invoice,registers.group_registers_contract_r,1,0,0,0
+access_contract_bill_r,access.contract.bill.r,registers.model_bill,registers.group_registers_bill_r,1,0,0,0
 access_contract_patrimony_r,access.contract.patrimony.r,registers.model_patrimony,registers.group_registers_contract_r,1,0,0,0
 access_contract_rw,access.contract.rw,registers.model_contract,registers.group_registers_contract_rw,1,1,1,0
 

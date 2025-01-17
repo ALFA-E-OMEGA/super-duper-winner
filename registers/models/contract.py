@@ -15,6 +15,14 @@ class Contract(models.Model):
         user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
         date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
         return date_today.date()
+    
+    def _generate_installment_list(self, a):
+        installment_list = []
+        installment_list.append(('0', 'Não Possui'))
+
+        for r in range(1, a+1):
+            installment_list.append((str(r), str(r)))
+        return installment_list
 
 # Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -25,11 +33,15 @@ class Contract(models.Model):
     id_contract = fields.Char(string='Código', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     contract_date = fields.Date(string='Data do Contrato', required=True)
+    installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
+                                   string='Parcela', required=True, default='0')
     status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
                               string='Status', required=True)
     display_name = fields.Char(compute='_compute_display_name')
     external_client_id = fields.Many2one(comodel_name='client', string='Cliente', required=True)
-    invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Contas Recebidas")
+    external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
+    invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Receitas")
+    bill_ids = fields.One2many('bill', 'external_contract_id',  string="Despesas")
     patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
                                      string='Patrimônios')
 
@@ -41,9 +53,12 @@ class Contract(models.Model):
             'id_contract': self.id_contract,
             'register_date': self.register_date,
             'contract_date': self.contract_date,
+            'installment': self.installment,
             'status': self.status,
             'external_client_id': self.external_client_id,
+            'external_cost_center_id': self.external_cost_center_id,
             'invoice_ids': self.invoice_ids,
+            'bill_ids': self.bill_ids,
         }
 
         self.env['contract'].write(vals)

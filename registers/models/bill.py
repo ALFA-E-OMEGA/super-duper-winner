@@ -27,7 +27,7 @@ class Bill(models.Model):
 # Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _name = "bill"
-    _description = "Registro de Contas a Pagar."
+    _description = "Registro de Despesas."
     _rec_name = "display_name"
 
     id_bill = fields.Char(string='Código', required=False)
@@ -76,6 +76,7 @@ class Bill(models.Model):
     status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
+    external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
     external_patrimony_id = fields.Many2one(comodel_name='patrimony', string='Patrimônio')
     external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
     external_employee_id = fields.Many2one(comodel_name='employee', string='Funcionário')
@@ -100,9 +101,11 @@ class Bill(models.Model):
             self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
             self.write({'external_client_id': [(3, self.external_client_id.id)]})
 
-        if self.bill_type not in ('manutencao-veiculo', 'manutencao-pesado'):
+        if self.bill_type not in ('manutencao-veiculo', 'manutencao-pesado', 'financiamento',
+                                  'combustivel', 'locacao-veiculo', 'multa'):
             if self.external_patrimony_id:
                 self.write({'external_patrimony_id': [(3, self.external_patrimony_id.id)]})
+                self.write({'external_contract_id': [(3, self.external_contract_id.id)]})
 
         vals = {
             'bill_id': self.id_bill,

@@ -53,14 +53,14 @@
     <menuitem id="menu_bill_register"
         parent="menu_financeiro"
         action="action_register_bill"
-        name="Contas a Pagar"
+        name="Despesas"
         groups="registers.group_registers_bill_r,registers.group_registers_superuser"
         sequence="1" />
 
     <menuitem id="menu_invoice_register"
         parent="menu_financeiro"
         action="action_register_invoice"
-        name="Contas a Receber"
+        name="Receitas"
         groups="registers.group_registers_invoice_r,registers.group_registers_superuser"
         sequence="2" />
 

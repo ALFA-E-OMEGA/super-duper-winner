@@ -27,7 +27,7 @@ class Invoice(models.Model):
 # Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _name = "invoice"
-    _description = "Registro de Contas a Receber."
+    _description = "Registro de  a Receitas."
     _rec_name = "display_name"
 
     id_invoice = fields.Char(string='Código', required=False)

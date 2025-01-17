@@ -8,7 +8,7 @@
             <form class="myform" string="Cadastro de Conta">
 
             <div class="container_form invoice_form">
-                <h1>Conta</h1>
+                <h1>Receita</h1>
                     <article class="container_form_contents">
                         <section class="group">
                             <div class="subgroup">
@@ -177,7 +177,7 @@
         <field name="name">invoice.list</field>
         <field name="model">invoice</field>
         <field name="arch" type="xml">
-            <list string="Contas a Receber">
+            <list string="Receitas">
                 <field class="test" name="id_invoice"/>
                 <field class="test" name="value"/>
                 <field class="test" name="invoice_status" decoration-info="invoice_status == '0'"
@@ -188,15 +188,10 @@
     </record>
 
     <record id="action_register_invoice" model="ir.actions.act_window">
-        <field name="name">Conta a Receber</field>
+        <field name="name">Receitas</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">invoice</field>
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_invoice_register"
-            parent="menu_financeiro"
-            action="action_register_invoice"
-            name="Contas a Receber"
-            sequence="2"/>
 </odoo>
