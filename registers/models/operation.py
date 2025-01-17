@@ -166,6 +166,7 @@ class Operation(models.Model):
                 rec.is_editable = False
 
     def _compute_revenues_sum(self):
+        """Function to calculate revenue and remove 'Provisória' invoices"""
         for rec in self:
             total_revenue = 0.0
             for invoice in rec.invoice_ids:
@@ -177,6 +178,7 @@ class Operation(models.Model):
             rec.revenues_sum = total_revenue
 
     def _compute_expenses_sum(self):
+        """Function to calculate revenue and remove 'Provisória' bills"""
         for rec in self:
             total_expense = 0.0
             for bill in rec.bill_ids:

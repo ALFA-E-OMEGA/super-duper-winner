@@ -35,8 +35,9 @@ class Patrimony(models.Model):
                                         ], string = 'Classificação', required=True,
                                         default='outro')
 
-    vehicle_type = fields.Selection([('truck', 'Caminhão'),
-                                     ('car', 'Carro')
+    vehicle_type = fields.Selection([('caminhao', 'Caminhão'),
+                                     ('carro', 'Carro'),
+                                     ('transporte', 'Transporte')
                                      ], string = 'Tipo de Veículo', required=False)
 
     vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
@@ -81,9 +82,7 @@ class Patrimony(models.Model):
     @api.onchange('vehicle_plate')
     def set_upper_plate(self): 
         if self.vehicle_plate:   
-            self.vehicle_plate = str(self.vehicle_plate).upper()   
-        else:
-            self.vehicle_plate = False
+            self.vehicle_plate = str(self.vehicle_plate).upper()
         return
 
 # Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -107,6 +106,7 @@ class Patrimony(models.Model):
             self.heavy_number = False
             self.heavy_type = False
             self.vehicle_type = False
+            self.vehicle_plate = False
         elif self.classification == 'veiculo':
             self.heavy_number = False
             self.heavy_type = False
@@ -148,6 +148,13 @@ class Patrimony(models.Model):
                 }
             },
         }
+
+# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def remove_last_contract(self):
+        """Function to remove association between patrimony and latest contract"""
+        for rec in self:
+                self.write({'contract_ids': [(3, rec.contract_ids[len(rec.contract_ids)-1].id)]})
 
 # Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -213,7 +220,7 @@ class Patrimony(models.Model):
         for record in self:
             if record.classification == 'veiculo':
                 record.display_name = f"{record.vehicle_plate}"
-            if record.classification == 'pesado':
+            elif record.classification == 'pesado':
                 record.display_name = f"{record.heavy_type}-{record.heavy_number}"
             else:
                 record.display_name = f"{record.id_patrimony}"

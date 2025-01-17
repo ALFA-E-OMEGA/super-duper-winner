@@ -146,14 +146,24 @@
                                 </div>
 
                             </div>
+                            
+                            <div class="subgroup">
+                                <div class="container_button">
+                                    <button name="create_patrimony" class="btnSecondary mybutton"
+                                        type="object" string="Salvar"
+                                        groups="registers.group__registers_patrimony_rw,registers.group_registers_superuser"
+                                        confirm="Confimar dados de patrimônio?" />
 
-                            <div class="container_button">
+                                </div>
 
-                                <button name="create_patrimony" class="btnSecondary mybutton"
-                                    type="object" string="Salvar"
-                                    groups="registers.group__registers_patrimony_rw,registers.group_registers_superuser"
-                                    confirm="Confimar dados de patrimônio?" />
+                                <div class="container_button">
+                                    <button name="remove_last_contract" class="btnSecondary mybutton"
+                                        type="object" string="Limpar Contrato"
+                                        groups="registers.group__registers_patrimony_rw,registers.group_registers_superuser"
+                                        confirm="Remover patrimônio do último contrato?" />
 
+                                </div>
+                            
                             </div>
 
                             <div class="container_field">
