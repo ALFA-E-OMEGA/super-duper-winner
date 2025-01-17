@@ -7,68 +7,76 @@
         <field name="arch" type="xml">
             <form class="myform" string="Cadastro de Conta">
 
-            <div class="container_form invoice_form">
-                <h1>Receita</h1>
+                <div class="container_form invoice_form">
+                    <h1>Receita</h1>
                     <article class="container_form_contents">
                         <section class="group">
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Código:</span>
-                                    <field class="field" name="id_invoice" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="id_invoice"
+                                        readonly="invoice_status != '0'" />
                                 </div>
 
                                 <div class="container_field">
                                     <span>Nota Fiscal:</span>
-                                    <field class="field" name="fiscal_note" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="fiscal_note"
+                                        readonly="invoice_status != '0'" />
                                 </div>
 
                             </div>
 
                             <div class="container_field">
                                 <span>Valor da conta:</span>
-                                <field class="field" name="value" readonly="invoice_status != '0'"/>
+                                <field class="field" name="value" readonly="invoice_status != '0'" />
                             </div>
 
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Centro de Custo:</span>
-                                    <field class="field" name="external_cost_center_id" widget="selection" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="external_cost_center_id"
+                                        widget="selection" readonly="invoice_status != '0'" />
                                 </div>
 
                                 <div class="container_field">
                                     <span>Parcela:</span>
-                                    <field class="field" name="installment" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="installment"
+                                        readonly="invoice_status != '0'" />
                                 </div>
-                            
+
                             </div>
 
                             <div class="container_field">
                                 <span>Origem:</span>
-                                <field class="field" name="origin" readonly="invoice_status != '0'"/>
+                                <field class="field" name="origin" readonly="invoice_status != '0'" />
                             </div>
 
                             <div class="subgroup">
                                 <div class="container_field" invisible="origin != 'funcionario'">
                                     <span>Nome:</span>
-                                    <field class="field" name="external_employee_id" widget="selection"
-                                    readonly="invoice_status != '0'"/>
+                                    <field class="field" name="external_employee_id"
+                                        widget="selection"
+                                        readonly="invoice_status != '0'" />
                                 </div>
 
                                 <div class="container_field" invisible="origin != 'cliente'">
                                     <span>Nome:</span>
-                                    <field class="field" name="external_client_id" widget="selection"
-                                    readonly="invoice_status != '0'"/>
+                                    <field class="field" name="external_client_id"
+                                        widget="selection"
+                                        readonly="invoice_status != '0'" />
                                 </div>
 
-                                <div class="container_field" invisible="external_client_type == 'pessoa-juridica'
+                                <div class="container_field"
+                                    invisible="external_client_type == 'pessoa-juridica'
                                 or origin == 'outro'">
                                     <span>CPF:</span>
-                                    <field class="field" name="cpf" readonly="1"/>
+                                    <field class="field" name="cpf" readonly="1" />
                                 </div>
 
-                                <div class="container_field" invisible="external_client_type != 'pessoa-juridica'">
+                                <div class="container_field"
+                                    invisible="external_client_type != 'pessoa-juridica'">
                                     <span>CNPJ:</span>
-                                    <field class="field" name="cnpj" readonly="1"/>
+                                    <field class="field" name="cnpj" readonly="1" />
                                 </div>
 
                             </div>
@@ -76,27 +84,32 @@
                             <div class="subgroup">
 
                                 <div class="container_field">
-                                <span>Arquivo PDF:</span>
-                                <div invisible="pdf_view_status == 0">
-                                    <field class="field" name="invoice_file" filename="filename" readonly="invoice_status != '0'"
-                                    widget="pdf_viewer"/>
+                                    <span>Arquivo PDF:</span>
+                                    <div invisible="pdf_view_status == 0">
+                                        <field class="field" name="invoice_file" filename="filename"
+                                            readonly="invoice_status != '0'"
+                                            widget="pdf_viewer" />
+                                    </div>
+
+                                    <div invisible="pdf_view_status == 1">
+                                        <field class="field" name="invoice_file" filename="filename"
+                                            readonly="invoice_status != '0'" />
+                                    </div>
+
+                                    <field class="field" name="filename" invisible="1"
+                                        readonly="invoice_status != '0'" />
+
                                 </div>
 
-                                <div invisible="pdf_view_status == 1">
-                                    <field class="field" name="invoice_file" filename="filename" readonly="invoice_status != '0'"/>
-                                </div>
-
-                                <field class="field" name="filename" invisible="1" readonly="invoice_status != '0'"/>
-
-                            </div>
-
-                            <div class="container_button">
+                                <div class="container_button">
                                     <div invisible="pdf_view_status == 1 or invoice_file == False">
-                                        <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Ver PDF"/>
+                                        <button name="update_pdf_view" class="btnSecondary mybutton"
+                                            type="object" string="Ver PDF" />
                                     </div>
 
                                     <div invisible="pdf_view_status == 0 or invoice_file == False">
-                                        <button name="update_pdf_view" class="btnSecondary mybutton" type="object" string="Fechar PDF"/>
+                                        <button name="update_pdf_view" class="btnSecondary mybutton"
+                                            type="object" string="Fechar PDF" />
                                     </div>
 
                                 </div>
@@ -109,55 +122,65 @@
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Data de Registro:</span>
-                                    <field class="field" name="register_date" readonly='1'/>
+                                    <field class="field" name="register_date" readonly='1' />
                                 </div>
 
-                                <div class="container_field">   
+                                <div class="container_field">
                                     <span>Dia de Recebimento:</span>
-                                    <field class="field" name="external_operation_id" widget="selection"
-                                    readonly="invoice_status == '2'"/>
+                                    <field class="field" name="external_operation_id"
+                                        widget="selection"
+                                        domain="[('is_closed', '=', 'False')]"
+                                        readonly="invoice_status == '2'" />
                                 </div>
 
                             </div>
-                            
+
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Tipo de Conta:</span>
-                                    <field class="field" name="invoice_type" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="invoice_type"
+                                        readonly="invoice_status != '0'" />
                                 </div>
 
                                 <div class="container_field">
                                     <span>Descrição:</span>
-                                    <field class="field" name="description" readonly="invoice_status != '0'"/>
+                                    <field class="field" name="description"
+                                        readonly="invoice_status != '0'" />
                                 </div>
-                            
+
                             </div>
 
-                            <div class="container_field" invisible="invoice_type != 'fatura-contrato'">
+                            <div class="container_field"
+                                invisible="invoice_type != 'fatura-contrato'">
                                 <span>Contrato:</span>
                                 <field class="field" name="external_contract_id" widget="selection"
-                                readonly="invoice_status != '0'"/>
+                                    readonly="invoice_status != '0'" />
                             </div>
 
                             <div class="container_field">
                                 <span>Assinatura:</span>
-                                <field class="field" name="signature" widget="signature" readonly="invoice_status != '0'"/>
+                                <field class="field" name="signature" widget="signature"
+                                    readonly="invoice_status != '0'" />
                             </div>
 
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>Status:</span>
-                                    <field class="field" name="invoice_status" readonly='1'/>
+                                    <field class="field" name="invoice_status" readonly='1' />
                                 </div>
 
                                 <div class="container_button">
-                                    <button name="create_invoice" class="btnSecondary mybutton" type="object" string="Salvar"
-                                    confirm="Confimar dados de conta?" invisible="invoice_status != '0'"/>
+                                    <button name="create_invoice" class="btnSecondary mybutton"
+                                        type="object" string="Salvar"
+                                        confirm="Confimar dados de conta?"
+                                        invisible="invoice_status != '0'" />
                                 </div>
 
                                 <div class="container_button">
-                                    <button name="update_invoice_status" class="btnSecondary mybutton" type="object" string="Atualizar"
-                                    confirm="Autorizar conta?" invisible="invoice_status == '1'"/>
+                                    <button name="update_invoice_status"
+                                        class="btnSecondary mybutton" type="object"
+                                        string="Atualizar"
+                                        confirm="Autorizar conta?" invisible="invoice_status == '1'" />
                                 </div>
 
                             </div>
@@ -165,7 +188,7 @@
                         </section>
 
                     </article>
-            </div>
+                </div>
             </form>
 
 
@@ -178,11 +201,12 @@
         <field name="model">invoice</field>
         <field name="arch" type="xml">
             <list string="Receitas">
-                <field class="test" name="id_invoice"/>
-                <field class="test" name="value"/>
+                <field class="test" name="id_invoice" />
+                <field class="test" name="value" />
                 <field class="test" name="invoice_status" decoration-info="invoice_status == '0'"
-                decoration-success="invoice_status == '1'" decoration-primary = "invoice_status == '2'"/>
-                <field class="test" name="invoice_type"/>
+                    decoration-success="invoice_status == '1'"
+                    decoration-primary="invoice_status == '2'" />
+                <field class="test" name="invoice_type" />
             </list>
         </field>
     </record>

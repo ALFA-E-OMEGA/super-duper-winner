@@ -102,9 +102,10 @@ class Bill(models.Model):
             self.write({'external_client_id': [(3, self.external_client_id.id)]})
 
         if self.bill_type not in ('manutencao-veiculo', 'manutencao-pesado', 'financiamento',
-                                  'combustivel', 'locacao-veiculo', 'multa'):
+                                  'combustivel', 'locacao-veiculo', 'multa', 'ipva'):
             if self.external_patrimony_id:
                 self.write({'external_patrimony_id': [(3, self.external_patrimony_id.id)]})
+            if self.external_contract_id:
                 self.write({'external_contract_id': [(3, self.external_contract_id.id)]})
 
         vals = {
@@ -222,6 +223,7 @@ class Bill(models.Model):
 
     @api.constrains('external_operation_id')
     def _check_external_operation_id(self):
+        """Checks if the 'enxternal_operation_id' is valid."""
         for rec in self:
             if rec.external_operation_id:
                 if rec.external_operation_id.is_editable is not True:
@@ -262,6 +264,8 @@ class Bill(models.Model):
                 self.status_value = 'Paga'
 
     def _compute_cpf(self):
+        """Generates 'CPF' based on external_'employee'_id or
+        external_'client'_id."""
         for rec in self:
             if rec.external_employee_id:
                 rec.cpf = rec.external_employee_id.cpf
@@ -271,6 +275,7 @@ class Bill(models.Model):
                 rec.cpf = False
 
     def _compute_cnpj(self):
+        """Generates 'CNPJ' based on external_'client'_id."""
         for rec in self:
             if rec.external_client_id and rec.external_client_id.client_type == 'pessoa-juridica':
                 rec.cnpj = rec.external_client_id.cnpj
@@ -278,6 +283,7 @@ class Bill(models.Model):
                 rec.cnpj = False
 
     def _compute_client_type(self):
+        """Is used showing diferent fields in the 'xml' file"""
         for rec in self:
             if rec.external_client_id:
                 if rec.external_client_id.client_type == 'pessoa-juridica':

@@ -27,9 +27,9 @@ class Operation(models.Model):
                                        default='1')
     reopen_reason = fields.Text(string='Razão de Reabertura', required=False)
     is_editable = fields.Boolean(string='Editável', required=True, compute='_compute_is_editable',
-                                 default=True)
+                                 default=True, store=True)
     is_closed = fields.Boolean(string='Fechado', required=True, compute='_compute_is_closed',
-                                 default=False)
+                                 default=False, store=True)
     is_reopen = fields.Boolean(string='Foi Reaberto', required=False, default=False)
     invoice_ids = fields.One2many('invoice', 'external_operation_id',  string="Contas a Receber")
     bill_ids = fields.One2many('bill', 'external_operation_id',  string="Contas a Pagar")

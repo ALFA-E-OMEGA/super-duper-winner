@@ -11,16 +11,11 @@
                     <h1>Contrato</h1>
                     <article class="container_form_contents">
                         <section class="group">
-                            <div class="container_field">
-                                <span>Código:</span>
-                                <field class="field" name="id_contract" />
-
-                            </div>
-
                             <div class="subgroup">
                                 <div class="container_field">
-                                    <span>Data de Registro:</span>
-                                    <field class="field" name="register_date" readonly="1" />
+                                    <span>Código:</span>
+                                    <field class="field" name="id_contract" />
+
                                 </div>
 
                                 <div class="container_field">
@@ -31,10 +26,24 @@
 
                             </div>
 
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Data de Registro:</span>
+                                    <field class="field" name="register_date" readonly="1" />
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Número de Parcelas:</span>
+                                    <field class="field" name="installments" widget="selection" />
+                                </div>
+
+                            </div>
+
                             <div class="container_field">
                                 <span>Receitas:</span>
                                 <field name="invoice_ids" widget="many2many"
-                                    options="{'unlink': False, 'create':false}" />
+                                    options="{'unlink': False, 'create':false}"
+                                    readonly="1" />
                             </div>
 
 
@@ -53,7 +62,8 @@
                             <div class="container_field">
                                 <span>Despesas:</span>
                                 <field name="bill_ids" widget="many2many"
-                                    options="{'unlink': False, 'create':false}" />
+                                    options="{'unlink': False, 'create':false}"
+                                    readonly="1" />
                             </div>
 
                         </section>
@@ -63,7 +73,8 @@
                     <div class="container_field">
                         <span>Patrimônios:</span>
                         <field name="patrimony_ids"
-                            options="{'unlink': False, 'create':False}" />
+                            options="{'unlink': False, 'create':False, 'edit': False}"
+                            domain="[('status', '=', 'ativo')]" />
                     </div>
 
                     <div class="container_button">

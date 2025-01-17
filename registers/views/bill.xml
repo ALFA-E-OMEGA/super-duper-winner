@@ -186,13 +186,13 @@
 
                                 <div class="container_field"
                                     invisible="bill_type not in ['manutencao-veiculo', 'financiamento', 'manutencao-pesado',
-                                    'combustivel', 'locacao-veiculo', 'multa']">
+                                    'combustivel', 'locacao-veiculo', 'multa', 'ipva']">
                                     <span>Contrato:</span>
                                     <field class="field" name="external_contract_id"
                                         widget="selection"
                                         readonly="bill_status != '0'"
                                         required="bill_type in ['manutencao-veiculo', 'financiamento', 'manutencao-pesado',
-                                    'combustivel', 'locacao-veiculo', 'multa']" 
+                                    'combustivel', 'locacao-veiculo', 'multa', 'ipva']" 
                                         domain="[('status', '=', 'ativo')]"/>
                                 </div>
 
@@ -212,6 +212,7 @@
                                     <span>Dia de Pagamento:</span>
                                     <field class="field" name="external_operation_id"
                                         widget="selection"
+                                        domain="[('is_closed', '=', 'False')]"
                                         readonly="bill_status == '2'" />
                                 </div>
 

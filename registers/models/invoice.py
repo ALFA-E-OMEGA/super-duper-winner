@@ -184,7 +184,9 @@ class Invoice(models.Model):
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
 
+    @api.constrains('external_operation_id')
     def _check_external_operation_id(self):
+        """Checks if the 'enxternal_operation_id' is valid."""
         for rec in self:
             if rec.external_operation_id:
                 if rec.external_operation_id.is_editable is not True:

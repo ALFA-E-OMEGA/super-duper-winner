@@ -63,14 +63,15 @@ class Patrimony(models.Model):
                                     ], string="Número de Equipamento")
 
     acquisition_date = fields.Date(string='Data de Aquisição', required=False)
-
+    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
+                              string='Status', required=True)
     patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
     filename = fields.Char()
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato Original')
     contract_ids = fields.Many2many('contract', 'contract_patrimony_rel_table',
                                     string='Contratos')
-    bill_ids = fields.One2many('bill', 'external_patrimony_id',  string="Contas a Pagar")
-    display_name = fields.Char(compute='_compute_display_name')
+    bill_ids = fields.One2many('bill', 'external_patrimony_id', string="Contas a Pagar")
+    display_name = fields.Char(compute='_compute_display_name', store=True)
     value = fields.Float(string='Valor do Patrimônio')
 
     pdf_view_status = fields.Integer(default=0)
@@ -129,6 +130,7 @@ class Patrimony(models.Model):
             'heavy_number': self.heavy_number,
             'external_contract_id': self.external_contract_id,
             'value': self.value,
+            'status': self.status,
         }
 
         self.env['patrimony'].write(vals)

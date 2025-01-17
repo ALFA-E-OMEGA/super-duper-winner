@@ -18,7 +18,6 @@ class Contract(models.Model):
     
     def _generate_installment_list(self, a):
         installment_list = []
-        installment_list.append(('0', 'Não Possui'))
 
         for r in range(1, a+1):
             installment_list.append((str(r), str(r)))
@@ -33,8 +32,8 @@ class Contract(models.Model):
     id_contract = fields.Char(string='Código', required=True)
     register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
     contract_date = fields.Date(string='Data do Contrato', required=True)
-    installment = fields.Selection(selection=lambda self: self._generate_installment_list(48),
-                                   string='Parcela', required=True, default='0')
+    installments = fields.Selection(selection=lambda self: self._generate_installment_list(48),
+                                   string='Parcela', required=True, default='1')
     status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
                               string='Status', required=True)
     display_name = fields.Char(compute='_compute_display_name')
@@ -53,7 +52,7 @@ class Contract(models.Model):
             'id_contract': self.id_contract,
             'register_date': self.register_date,
             'contract_date': self.contract_date,
-            'installment': self.installment,
+            'installments': self.installment,
             'status': self.status,
             'external_client_id': self.external_client_id,
             'external_cost_center_id': self.external_cost_center_id,
@@ -88,12 +87,14 @@ class Contract(models.Model):
                 raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
 
+    _sql_constraints = [
+        ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')
+    ]
+
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def _compute_display_name(self):
         """Function to generate specific name for any given record from
         this model"""
         for record in self:
-            record.display_name = f"{record.id_contract}-{record.external_client_id.name}-{record.contract_date}"
-
-    _sql_constraints = [
-        ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')
-    ]
+            record.display_name = f"{record.id_contract} | {record.external_client_id.name} | {record.contract_date}"
