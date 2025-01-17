@@ -32,6 +32,7 @@
                             <div class="container_button">
                                 <button name="create_cost_center" class="btnSecondary mybutton"
                                 type="object" string="Salvar"
+                                groups="registers.group__registers_cost_center_rw,registers.group_registers_superuser"
                                 confirm="Confimar dados de Centro de Custo?"/>
                             </div>
 

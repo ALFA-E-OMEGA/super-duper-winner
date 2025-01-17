@@ -192,8 +192,8 @@
                                         widget="selection"
                                         readonly="bill_status != '0'"
                                         required="bill_type in ['manutencao-veiculo', 'financiamento', 'manutencao-pesado',
-                                    'combustivel', 'locacao-veiculo', 'multa', 'ipva']" 
-                                        domain="[('status', '=', 'ativo')]"/>
+                                    'combustivel', 'locacao-veiculo', 'multa', 'ipva']"
+                                        domain="[('status', '=', 'ativo')]" />
                                 </div>
 
                             </div>
@@ -233,6 +233,7 @@
                                 <div class="container_button">
                                     <button name="create_bill" class="btnSecondary mybutton"
                                         type="object" string="Salvar"
+                                        groups="registers.group__registers_bill_rw,registers.group_registers_superuser"
                                         confirm="Confimar dados de conta?"
                                         invisible="bill_status != '0'" />
                                 </div>
@@ -240,6 +241,7 @@
                                 <div class="container_button">
                                     <button name="update_bill_status" class="btnSecondary mybutton"
                                         type="object" string="Atualizar"
+                                        groups="registers.group_registers_superuser"
                                         confirm="Autorizar conta?" invisible="bill_status != '0'" />
                                 </div>
 

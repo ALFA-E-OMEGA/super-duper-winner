@@ -80,10 +80,12 @@
                     <div class="container_button">
                         <button name="create_contract" class="btnSecondary mybutton"
                             type="object" string="Salvar"
+                            groups="registers.group__registers_contract_rw,registers.group_registers_superuser"
                             confirm="Confimar dados de Contrato?" />
                     </div>
 
                 </div>
+
             </form>
 
 

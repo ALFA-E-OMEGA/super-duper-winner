@@ -173,6 +173,7 @@
                                     <button name="create_invoice" class="btnSecondary mybutton"
                                         type="object" string="Salvar"
                                         confirm="Confimar dados de conta?"
+                                        groups="registers.group__registers_invoice_rw,registers.group_registers_superuser"
                                         invisible="invoice_status != '0'" />
                                 </div>
 
@@ -180,6 +181,7 @@
                                     <button name="update_invoice_status"
                                         class="btnSecondary mybutton" type="object"
                                         string="Atualizar"
+                                        groups="registers.group_registers_superuser"
                                         confirm="Autorizar conta?" invisible="invoice_status == '1'" />
                                 </div>
 

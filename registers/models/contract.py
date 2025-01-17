@@ -34,7 +34,8 @@ class Contract(models.Model):
     contract_date = fields.Date(string='Data do Contrato', required=True)
     installments = fields.Selection(selection=lambda self: self._generate_installment_list(48),
                                    string='Parcela', required=True, default='1')
-    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
+    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo'),
+                               ('faturado', 'Faturado')],
                               string='Status', required=True)
     display_name = fields.Char(compute='_compute_display_name')
     external_client_id = fields.Many2one(comodel_name='client', string='Cliente', required=True)
@@ -52,7 +53,7 @@ class Contract(models.Model):
             'id_contract': self.id_contract,
             'register_date': self.register_date,
             'contract_date': self.contract_date,
-            'installments': self.installment,
+            'installments': self.installments,
             'status': self.status,
             'external_client_id': self.external_client_id,
             'external_cost_center_id': self.external_cost_center_id,
@@ -86,6 +87,17 @@ class Contract(models.Model):
             if not (rec.id_contract).isnumeric():
                 raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
+    
+    @api.constrains('status')
+    def _validate_status(self):
+        """Checks if the contract is ready for 'faturado'
+        status"""
+        for rec in self:
+            if rec.status == 'faturado' and len(rec.invoice_ids) != int(rec.installments):
+                raise ValidationError(_("O contrato ainda não tem o número de" 
+                                        "parcelas total.\n" +
+                                        str(len(rec.invoice_ids)) + "/" + rec.installments))
+
 
     _sql_constraints = [
         ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')

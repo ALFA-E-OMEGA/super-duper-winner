@@ -82,6 +82,7 @@
 
                                 <button class="btnSecondary mybutton" name="create_employee"
                                     type="object" string="Salvar"
+                                    groups="registers.group__registers_employee_rw,registers.group_registers_superuser"
                                     confirm="Confimar dados de funcionário?" />
 
                             </div>

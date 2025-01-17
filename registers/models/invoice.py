@@ -52,7 +52,6 @@ class Invoice(models.Model):
                                default='outro')
     invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Faturada'),
                                     ], string='Status da Conta', default='0')
-    status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
@@ -79,7 +78,7 @@ class Invoice(models.Model):
             self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
             self.write({'external_client_id': [(3, self.external_client_id.id)]})
 
-        if self.invoice_type != 'contract':
+        if self.invoice_type != 'fatura-contrato':
             self.write({'external_contract_id': [(3, self.external_contract_id.id)]})
 
         vals = {
@@ -193,6 +192,18 @@ class Invoice(models.Model):
                     raise ValidationError(_("O caixa desta data não está editável."))
                 if rec.external_operation_id.operation_status == '0':
                     raise ValidationError(_("O caixa está fechado."))
+    
+    @api.constrains('external_contract_id')
+    def _check_maximum_installment(self):
+        for rec in self:
+            if rec.external_contract_id:
+                if int(rec.installment) > int(rec.external_contract_id.installments):
+                    raise ValidationError (_("O contrato não possui tantas parcelas.\n"
+                                             "A parcela máxima é "
+                                             + rec.external_contract_id.installments + "."))
+                if rec.installment == '0':
+                    raise ValidationError(_("Contratos precisam de pelo menos 1 parcela."))
+
 
     _sql_constraints = [
         ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
@@ -217,16 +228,9 @@ class Invoice(models.Model):
                 else:
                     record.display_name = f"{record.invoice_type}-{record.external_operation_id.display_name}"
 
-    def _compute_status_value(self):
-        for rec in self:
-            if rec.invoice_status == '0':
-                self.status_value = 'Provisória'
-            elif rec.invoice_status == '1':
-                self.status_value = 'Autorizada'
-            elif rec.invoice_status == '2':
-                self.status_value = 'Faturada.'
-
     def _compute_cpf(self):
+        """Generates 'CPF' based on external_'employee'_id or
+        external_'client'_id."""
         for rec in self:
             if rec.external_employee_id:
                 rec.cpf = rec.external_employee_id.cpf
@@ -236,6 +240,7 @@ class Invoice(models.Model):
                 rec.cpf = False
 
     def _compute_cnpj(self):
+        """Generates 'CNPJ' based on external_'client'_id."""
         for rec in self:
             if rec.external_client_id and rec.external_client_id.client_type == 'pessoa-juridica':
                 rec.cnpj = rec.external_client_id.cnpj
@@ -243,6 +248,7 @@ class Invoice(models.Model):
                 rec.cnpj = False
 
     def _compute_client_type(self):
+        """Is used showing diferent fields in the 'xml' file"""
         for rec in self:
             if rec.external_client_id:
                 if rec.external_client_id.client_type == 'pessoa-juridica':

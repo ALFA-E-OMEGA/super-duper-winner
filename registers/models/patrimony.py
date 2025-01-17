@@ -71,7 +71,7 @@ class Patrimony(models.Model):
     contract_ids = fields.Many2many('contract', 'contract_patrimony_rel_table',
                                     string='Contratos')
     bill_ids = fields.One2many('bill', 'external_patrimony_id', string="Contas a Pagar")
-    display_name = fields.Char(compute='_compute_display_name', store=True)
+    display_name = fields.Char(compute='_compute_display_name')
     value = fields.Float(string='Valor do Patrimônio')
 
     pdf_view_status = fields.Integer(default=0)
@@ -157,9 +157,9 @@ class Patrimony(models.Model):
         and checks for non-numeric characters"""
         for rec in self:
             if rec.renavan and self.classification == 'vehicles':
-                if len(rec.renavan) != 9:
+                if len(rec.renavan) != 11:
                     raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto. "
-                                            "Precisa de 9 dígitos"))
+                                            "Precisa de 11 dígitos"))
                 if not (rec.renavan).isnumeric():
                     raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))

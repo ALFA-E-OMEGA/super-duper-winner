@@ -73,7 +73,6 @@ class Bill(models.Model):
                                default='outro')
     bill_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Paga'),
                                     ], string='Status da Conta', default='0')
-    status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
@@ -253,15 +252,6 @@ class Bill(models.Model):
                     record.display_name = f"{record.bill_type}-parcela-{record.installment}-{record.external_operation_id.display_name}"
                 else:
                     record.display_name = f"{record.bill_type}-{record.external_operation_id.display_name}"
-
-    def _compute_status_value(self):
-        for rec in self:
-            if rec.bill_status == '0':
-                self.status_value = 'Provisória'
-            elif rec.bill_status == '1':
-                self.status_value = 'Autorizada'
-            elif rec.bill_status == '2':
-                self.status_value = 'Paga'
 
     def _compute_cpf(self):
         """Generates 'CPF' based on external_'employee'_id or
