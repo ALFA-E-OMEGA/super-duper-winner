@@ -56,6 +56,7 @@
                                     <span>Nome:</span>
                                     <field class="field" name="external_employee_id"
                                         widget="selection"
+                                        domain="[('status', '=', 'ativo')]"
                                         readonly="invoice_status != '0'" />
                                 </div>
 

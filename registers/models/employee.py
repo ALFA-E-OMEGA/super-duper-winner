@@ -63,7 +63,7 @@ class Employee(models.Model):
     pis_pasep = fields.Char(string='PIS-PASEP', required=False)
     cart_trabalho = fields.Char(string='Carteira de Trabalho', required=False)
     rg = fields.Char(string='RG', required=True)
-    status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')], required=True,
+    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')], required=True,
                               tracking=True)
 
 # Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

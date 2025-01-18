@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long,
 """This are the client template and it's associated functions"""
 import re
 from odoo import models, fields, api, _

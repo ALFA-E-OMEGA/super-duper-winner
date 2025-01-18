@@ -1,12 +1,21 @@
 # pylint: disable=undefined-loop-variable, useless-return
 """This is the file for the 'patrimony' object"""
+from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+import pytz
 
 class Patrimony(models.Model):
     """This are the fields and functions for the 'patrimony' object"""
 
 # Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def _generate_register_date(self):
+        """Function to generate current date based on user timezone"""
+        now_time = datetime.now()
+        user = self.env['res.users'].browse([2])
+        tz = pytz.timezone(user.tz) or pytz.utc
+        return pytz.utc.localize(now_time).astimezone(tz)
 
     def _generate_tuple_list(self, a):
         tuple_list = []
@@ -42,7 +51,6 @@ class Patrimony(models.Model):
                                      ], string = 'Tipo de Veículo', required=False)
 
     vehicle_plate = fields.Char(string='Placa do Veículo', required=False, tracking=True)
-
     renavan = fields.Char(string='Renavan', required=False)
 
     heavy_type = fields.Selection([('escavadeira', 'Escavadeira'),
@@ -75,6 +83,7 @@ class Patrimony(models.Model):
     bill_ids = fields.One2many('bill', 'external_patrimony_id', string="Contas a Pagar")
     display_name = fields.Char(compute='_compute_display_name')
     value = fields.Float(string='Valor do Patrimônio')
+    current_date = fields.Date(string='Data de Registro', default=_generate_register_date)
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -133,6 +142,7 @@ class Patrimony(models.Model):
             'external_contract_id': self.external_contract_id,
             'value': self.value,
             'status': self.status,
+            'current_date': self.current_date,
         }
 
         self.env['patrimony'].write(vals)
@@ -167,10 +177,10 @@ class Patrimony(models.Model):
         for rec in self:
             if rec.renavan and self.classification == 'vehicles':
                 if len(rec.renavan) != 11:
-                    raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto. "
+                    raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto.\n "
                                             "Precisa de 11 dígitos"))
                 if not (rec.renavan).isnumeric():
-                    raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos. "
+                    raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos.\n "
                                             "O campo deve conter apenas números."))
 
     @api.constrains('id_patrimony')
@@ -179,7 +189,7 @@ class Patrimony(models.Model):
         for non-numeric characters"""
         for rec in self:
             if not (rec.id_patrimony).isnumeric():
-                raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
+                raise ValidationError(_("O campo 'ID' contém carácteres inválidos.\n "
                                             "O campo deve conter apenas números."))
 
     @api.constrains('patrimony_file')
@@ -193,13 +203,13 @@ class Patrimony(models.Model):
     def _validate_vehicle_plate(self):
         """Checks size of the 'vehicle_plate' variable to limit different lengths"""
         for rec in self:
-            if rec.vehicle_plate and self.classification == 'vehicles':
+            if rec.vehicle_plate and self.classification == 'veiculo':
                 if len(rec.vehicle_plate) != 7:
                     raise ValidationError(_("O campo 'Placa do Veículo' está com o tamanho"
                                             "incorreto. Precisa de 7 dígitos"))
                 if not (rec.vehicle_plate).isalnum():
                     raise ValidationError(_("O campo 'Placa do Veículo' contém caracteres"
-                                            " inválidos. "
+                                            " inválidos.\n "
                                             "O campo deve conter apenas letras e números."))
 
     @api.constrains('value')
@@ -208,6 +218,14 @@ class Patrimony(models.Model):
         for rec in self:
             if rec.value <= 0:
                 raise ValidationError(_("O campo 'valor' precisa ser maior que zero"))
+
+    @api.constrains('acquisition_date')
+    def _check_acquisition_date(self):
+        """Checks if 'validation_date' is not invalid"""
+        if self.acquisition_date:
+            if self.acquisition_date > self.current_date:
+                raise ValidationError(_("A 'Data de Aquisição' é inválida.\n "
+                                        "Ela não pode ser mais antiga que a data atual."))
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
