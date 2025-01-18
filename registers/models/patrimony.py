@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable
+# pylint: disable=undefined-loop-variable, useless-return
 """This is the file for the 'patrimony' object"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -81,8 +81,9 @@ class Patrimony(models.Model):
 # Onchange functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.onchange('vehicle_plate')
-    def set_upper_plate(self): 
-        if self.vehicle_plate:   
+    def set_upper_plate(self):
+        """Function to turn the 'vehicle_plate' into all uppercase"""
+        if self.vehicle_plate:
             self.vehicle_plate = str(self.vehicle_plate).upper()
         return
 
@@ -155,7 +156,7 @@ class Patrimony(models.Model):
     def remove_last_contract(self):
         """Function to remove association between patrimony and latest contract"""
         for rec in self:
-                self.write({'contract_ids': [(3, rec.contract_ids[len(rec.contract_ids)-1].id)]})
+            self.write({'contract_ids': [(3, rec.contract_ids[len(rec.contract_ids)-1].id)]})
 
 # Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

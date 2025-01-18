@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long
+# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long, protected-access
 """This are the contract template and it's associated functions"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -15,7 +15,7 @@ class Contract(models.Model):
         user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
         date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
         return date_today.date()
-    
+
     def _generate_installment_list(self, a):
         installment_list = []
 
@@ -88,14 +88,14 @@ class Contract(models.Model):
             if not (rec.id_contract).isnumeric():
                 raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
-    
+
     @api.constrains('status')
     def _validate_status(self):
         """Checks if the contract is ready for 'faturado'
         status"""
         for rec in self:
             if rec.status == 'faturado' and len(rec.invoice_ids) != int(rec.installments):
-                raise ValidationError(_("O contrato ainda não tem o número de" 
+                raise ValidationError(_("O contrato ainda não tem o número de"
                                         "parcelas total.\n" +
                                         str(len(rec.invoice_ids)) + "/" + rec.installments))
 

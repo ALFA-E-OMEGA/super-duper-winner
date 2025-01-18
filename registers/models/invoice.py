@@ -192,7 +192,7 @@ class Invoice(models.Model):
                     raise ValidationError(_("O caixa desta data não está editável."))
                 if rec.external_operation_id.operation_status == '0':
                     raise ValidationError(_("O caixa está fechado."))
-    
+
     @api.constrains('external_contract_id')
     def _check_maximum_installment(self):
         for rec in self:

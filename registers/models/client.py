@@ -138,7 +138,7 @@ class Client(models.Model):
         for rec in self:
             if rec.email:
                 if re.fullmatch(regex_email, rec.email) is None:
-                    raise ValidationError(_("O formato do campo 'Email' é inválido. " 
+                    raise ValidationError(_("O formato do campo 'Email' é inválido. "
                                             "O correto é \'email@provedor.terminação\'"))
 
     @api.constrains('tel_one')
