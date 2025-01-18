@@ -1,6 +1,7 @@
+# pylint: disable=line-too-long, super-with-arguments, no-else-raise
 """This are the operation template and it's associated functions"""
 from odoo import models, fields, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 class Operation(models.Model):
     """Fields and functions for the operation object"""
@@ -77,6 +78,17 @@ class Operation(models.Model):
                 }
             },
         }
+
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'patrimony' module"""
+        for rec in self:
+            if len(rec.bill_ids) > 0 or len(rec.invoice_ids) > 0:
+                raise UserError(_("Caixas com despesas ou receitas "
+                                  "associados não podem ser excluídos."))
+            else:
+                return super(Operation, self).unlink()
 
 # Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
