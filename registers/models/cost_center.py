@@ -1,6 +1,7 @@
+# pylint: disable=line-too-long, super-with-arguments, no-else-raise
 """This are the cost_center template and it's associated functions"""
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 class CostCenter(models.Model):
     """Fields and functions for the cost_center object"""
@@ -39,6 +40,20 @@ class CostCenter(models.Model):
                 }
             },
         }
+
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'cost_center' module"""
+        bill_count=self.env['bill'].search_count([('external_cost_center_id','=', self.id)])
+        invoice_count=self.env['invoice'].search_count([('external_cost_center_id','=', self.id)])
+        contract_count=self.env['contract'].search_count([('external_cost_center_id','=', self.id)])
+        if bill_count > 0 or invoice_count > 0 or contract_count > 0:
+            raise UserError(_("Esse Centro de Custo tem despesas, "
+                                "receitas ou contratos associados "
+                                "e não pode ser excluído."))
+        else:
+            return super(CostCenter, self).unlink()
 
 # Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

@@ -1,8 +1,8 @@
-# pylint: disable=line-too-long,
+# pylint: disable=line-too-long, super-with-arguments, no-else-raise
 """This are the client template and it's associated functions"""
 import re
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]{0,18}+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
 
@@ -129,6 +129,20 @@ class Client(models.Model):
                 }
             },
         }
+
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'client' module"""
+        bill_count=self.env['bill'].search_count([('external_client_id','=', self.id)])
+        invoice_count=self.env['invoice'].search_count([('external_client_id','=', self.id)])
+        contract_count=self.env['contract'].search_count([('external_client_id','=', self.id)])
+        if bill_count > 0 or invoice_count > 0 or contract_count > 0:
+            raise UserError(_("Esse \'Cliente\' tem despesas, "
+                                "receitas ou contratos associados "
+                                "e não pode ser excluído."))
+        else:
+            return super(Client, self).unlink()
 
 # Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

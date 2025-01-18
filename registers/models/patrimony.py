@@ -1,9 +1,7 @@
-# pylint: disable=undefined-loop-variable, useless-return, line-too-long
+# pylint: disable=undefined-loop-variable, useless-return, line-too-long, super-with-arguments, no-else-raise
 """This is the file for the 'patrimony' object"""
-from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-import pytz
 
 class Patrimony(models.Model):
     """This are the fields and functions for the 'patrimony' object"""
@@ -150,6 +148,7 @@ class Patrimony(models.Model):
 # Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def unlink(self):
+        """Custom unlink function for 'patrimony' module"""
         for rec in self:
             if len(rec.bill_ids) > 0 or len(rec.contract_ids) > 0 or rec.external_contract_id:
                 raise UserError(_("Patrimônios com despesas ou contratos "

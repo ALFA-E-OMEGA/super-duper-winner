@@ -1,9 +1,7 @@
-# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long, protected-access
+# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long, protected-access, super-with-arguments, no-else-raise
 """This are the contract template and it's associated functions"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from datetime import datetime
-import pytz
 
 class Contract(models.Model):
     """Fields and functions for the contract object"""
@@ -78,6 +76,7 @@ class Contract(models.Model):
 # Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def unlink(self):
+        """Custom unlink function for 'contract' module"""
         for rec in self:
             if len(rec.invoice_ids) > 0:
                 raise UserError(_("Contratos com 1 ou mais parcelas não podem "

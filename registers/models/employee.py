@@ -1,7 +1,7 @@
 """This are the employee template and it's associated functions"""
 # pylint: skip-file
 from odoo import api, models, fields, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 import re
 
 regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]{0,18}+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
@@ -101,6 +101,19 @@ class Employee(models.Model):
                 }
             },
         }
+
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'employee' module"""
+        bill_count=self.env['bill'].search_count([('external_employee_id','=', self.id)])
+        invoice_count=self.env['invoice'].search_count([('external_employee_id','=', self.id)])
+        if bill_count > 0 or invoice_count > 0:
+            raise UserError(_("Esse \'Funcionário\' tem despesas, "
+                                "receitas ou contratos associados "
+                                "e não pode ser excluído."))
+        else:
+            return super(Employee, self).unlink()
 
 # Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

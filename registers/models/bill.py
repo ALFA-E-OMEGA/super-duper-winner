@@ -1,9 +1,7 @@
-# pylint: disable=undefined-loop-variable, protected-access, line-too-long, pointless-statement
+# pylint: disable=undefined-loop-variable, protected-access, line-too-long, pointless-statement, super-with-arguments, no-else-raise
 """This are the bill template and it's associated functions"""
-from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-import pytz
 
 class Bill(models.Model):
     """Fields and functions for the bill object"""
@@ -145,6 +143,7 @@ class Bill(models.Model):
 # Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def unlink(self):
+        """Custom unlink function for 'bill' module"""
         for rec in self:
             if rec.bill_status == '2':
                 raise UserError(_("Despesas ja faturadas não podem "

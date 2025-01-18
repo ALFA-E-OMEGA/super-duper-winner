@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable, protected-access line-too-long, pointless-statement
+# pylint: disable=undefined-loop-variable, protected-access line-too-long, pointless-statement, super-with-arguments, no-else-raise
 """This are the invoice template and it's associated functions"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
@@ -116,6 +116,7 @@ class Invoice(models.Model):
 # Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def unlink(self):
+        """Custom unlink function for 'invoice' module"""
         for rec in self:
             if rec.invoice_status == '2':
                 raise UserError(_("Receitas ja faturadas não podem "
