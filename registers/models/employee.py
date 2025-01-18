@@ -4,7 +4,7 @@ from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
 import re
 
-regex_email = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]){1,48}')
+regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]{0,18}+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
 
 class Employee(models.Model):
     """Fields and functions for the employee object"""
@@ -39,7 +39,26 @@ class Employee(models.Model):
                           tracking=True)
     tel_two = fields.Char(string='Telefone 2', required=False)
     cpf = fields.Char(string='CPF', required=True)
-    address = fields.Char(string='Endereço', required=False)
+    address_state = fields.Selection(selection=[('acre', 'AC'), ('alagoas', 'AL'),
+                                                ('amapa', 'AP'), ('amazonas', 'AM'),
+                                                ('bahia', 'BA'), ('ceara', 'CE'),
+                                                ('espirito-santo', 'ES'), ('goias', 'GO'),
+                                                ('maranhao', 'MA'), ('mato-grosso', 'MT'),
+                                                ('mato-grosso-do-sul', 'MS'),
+                                                ('minas-gerais', 'MG'),
+                                                ('para', 'PA'), ('paraiba', 'PB'),
+                                                ('parana', 'PR'), ('pernambuco', 'PE'),
+                                                ('piaui', 'PI'), ('rio-de-janeiro', 'RJ'),
+                                                ('rio-grande-do-norte', 'RN'),
+                                                ('rio-grande-do-sul', 'RS'),
+                                                ('rondonia', 'RO'), ('roraima', 'RR'),
+                                                ('santa-catarina', 'SC'), ('sao-paulo', 'SO'),
+                                                ('sergipe', 'SE'), ('tocantins', 'TO'),
+                                                ('distrito-federal', 'DF')],
+                                                string='Estado do Endereço',
+                                                required=True, defaul='rio-de-janeiro')
+    address_city = fields.Char(string='Cidade do Endereço', required=True)
+    address_complement = fields.Char(string='Complemento do Endereço', required=False)
     cep = fields.Char(string='CEP', required=False)
     pis_pasep = fields.Char(string='PIS-PASEP', required=False)
     cart_trabalho = fields.Char(string='Carteira de Trabalho', required=False)
@@ -57,7 +76,9 @@ class Employee(models.Model):
             'tel_one': self.tel_one,
             'tel_two': self.tel_two,
             'cpf': self.cpf,
-            'address': self.address,
+            'address_state': self.address_state,
+            'address_city': self.address_city,
+            'address_complement': self.address_complement,
             'cep': self.cep,
             'status': self.status,
             'pis_pasep': self.pis_pasep,
@@ -167,7 +188,7 @@ class Employee(models.Model):
 
     @api.constrains('tel_two')
     def _validate_tel_two(self):
-        """Checks size of the PIS-PASEP variable to limit different lengths
+        """Checks size of the 'tel_two' variable to limit different lengths
         and checks for non-numeric characters"""
         for rec in self:
             if rec.tel_two:

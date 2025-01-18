@@ -49,9 +49,17 @@
 
                         </section>
                         <section class="group">
-                            <div class="container_field">
-                                <span>Cliente:</span>
-                                <field class="field" name="external_client_id" widget="selection" />
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Cliente:</span>
+                                    <field class="field" name="external_client_id" widget="selection" />
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Centro de Custo:</span>
+                                    <field class="field" name="external_cost_center_id" widget="selection" />
+                                </div>
+
                             </div>
 
                             <div class="container_field">

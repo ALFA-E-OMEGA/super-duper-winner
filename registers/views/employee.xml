@@ -11,9 +11,17 @@
                     <h1>Cadastro de Funcionários</h1>
                     <article class="container_form_contents">
                         <section class="group">
-                            <div class="container_field">
-                                <span>Nome:</span>
-                                <field class="field" name="name" />
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Nome:</span>
+                                    <field class="field" name="name" />
+                                </div>
+                                
+                                <div class="container_field">
+                                    <span>Status:</span>
+                                    <field class="field" name="status" />
+                                </div>
+
                             </div>
 
                             <div class="container_field">
@@ -23,28 +31,36 @@
 
                             <div class="subgroup">
                                 <div class="container_field">
+                                    <span>Estado:</span>
+                                    <field class="field" name="address_state" />
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Cidade:</span>
+                                    <field class="field" name="address_city" />
+                                </div>
+
+                            </div>
+
+                            <div class="container_field">
+                                <span>Complemento:</span>
+                                <field class="field" name="address_complement" />
+                            </div>
+
+                        </section>
+
+                        <section class="group">
+                            <div class="subgroup">
+                                <div class="container_field">
                                     <span>Telefone 1:</span>
                                     <field class="field" name="tel_one" />
                                 </div>
 
                                 <div class="container_field">
                                     <span>Telefone 2:</span>
-                                    <field class="field" name="tel_two" widget="phone" />
+                                    <field class="field" name="tel_two" />
                                 </div>
 
-                            </div>
-
-                            <div class="container_field">
-                                <span>Status:</span>
-                                <field class="field" name="status" />
-                            </div>
-
-                        </section>
-
-                        <section class="group">
-                            <div class="container_field">
-                                <span>Endereço:</span>
-                                <field class="field" name="address" />
                             </div>
 
                             <div class="subgroup">

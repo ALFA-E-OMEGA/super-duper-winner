@@ -3,7 +3,7 @@ import re
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
+regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]{0,18}+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
 
 class Client(models.Model):
     """Fields and functions for the client object"""
@@ -63,7 +63,7 @@ class Client(models.Model):
                                                 string='Estado do Endereço',
                                                 required=True, defaul='rio-de-janeiro')
     address_city = fields.Char(string='Cidade do Endereço', required=True)
-    address_complement = fields.Char(string='Complemento do Endereço', required=True)
+    address_complement = fields.Char(string='Complemento do Endereço', required=False)
     cpf = fields.Char(string='CPF', required=False)
     rg = fields.Char(string='RG', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)

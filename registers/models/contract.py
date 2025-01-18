@@ -42,9 +42,9 @@ class Contract(models.Model):
     external_client_id = fields.Many2one(comodel_name='client', string='Cliente', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Receitas")
-    bill_ids = fields.One2many('bill', 'external_contract_id',  string="Despesas", tracking=True)
+    bill_ids = fields.One2many('bill', 'external_contract_id',  string="Despesas")
     patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
-                                     string='Patrimônios', tracking=True)
+                                     string='Patrimônios')
 
 # Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
