@@ -229,7 +229,9 @@ class Patrimony(models.Model):
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
-        'Já existe um \'Patrimônio\' com esse \'Código\'.')
+        'Já existe um \'Patrimônio\' com esse \'Código\'.'),
+        ('vehicle_plate_unique', 'UNIQUE(vehicle_plate)',
+         'Já existe um veículo com esta placa.')
     ]
 
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

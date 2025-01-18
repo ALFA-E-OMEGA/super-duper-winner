@@ -221,3 +221,8 @@ class Client(models.Model):
                 if not (rec.cnpj).isnumeric():
                     raise ValidationError(_("O campo 'CNPJ' contém carácteres inválidos. "
                                                 "O campo deve conter apenas números."))
+
+    _sql_constraints = [
+        ('cpf_client_unique', 'UNIQUE(cpf)', 'Já existe um \'Cliente\' com esse \'CPF\'.'),
+        ('cnpj_client_unique', 'UNIQUE(cnpj)', 'Já existe um \'Cliente\' com esse \'CNPJ\'.')
+    ]
