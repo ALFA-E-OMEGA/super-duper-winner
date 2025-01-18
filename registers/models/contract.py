@@ -95,7 +95,7 @@ class Contract(models.Model):
         status"""
         for rec in self:
             if rec.status == 'faturado' and len(rec.invoice_ids) != int(rec.installments):
-                raise ValidationError(_("O contrato ainda não tem o número de"
+                raise ValidationError(_("O contrato ainda não tem o número de "
                                         "parcelas total.\n" +
                                         str(len(rec.invoice_ids)) + "/" + rec.installments))
 
