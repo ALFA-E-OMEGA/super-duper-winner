@@ -234,8 +234,6 @@ class Bill(models.Model):
         ('id_bill_installment_unique', 'UNIQUE(id_bill, installment)',
         'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada ou'
         'outra conta com esse código.'),
-        ('contract_installment_unique', 'UNIQUE(installment, external_contract_id)',
-         'Este contrato já têm esta parcela associada.')
     ]
 
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

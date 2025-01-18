@@ -209,6 +209,8 @@ class Invoice(models.Model):
         ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
         'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada ou'
         'outra conta com esse código.')
+        ('invoice_contract_installment_unique', 'UNIQUE(installment, external_contract_id)',
+         'Esta \'Parcela\' deste \'Contrato\' já esta associada.')
     ]
 
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

@@ -113,6 +113,7 @@
         <field name="arch" type="xml">
             <list string="Contrato">
                 <field class="test" name="id_contract" />
+                <field class="test" name="external_client_id" />
                 <field class="test" name="status" />
             </list>
         </field>

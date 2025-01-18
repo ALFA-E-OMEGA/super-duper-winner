@@ -157,7 +157,7 @@
                                 <field class="field" name="external_contract_id"
                                     widget="selection"
                                     readonly="invoice_status != '0'"
-                                    domain="[('status, '=', 'ativo')]" />
+                                    domain="[('status', '=', 'ativo')]" />
                             </div>
 
                             <div class="container_field">
