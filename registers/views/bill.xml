@@ -213,8 +213,7 @@
                                     <span>Dia de Pagamento:</span>
                                     <field class="field" name="external_operation_id"
                                         widget="selection"
-                                        domain="[('is_closed', '=', 'False')]"
-                                        readonly="bill_status == '2'" />
+                                        readonly="1" />
                                 </div>
 
                             </div>
@@ -237,6 +236,15 @@
                                         groups="registers.group__registers_bill_rw,registers.group_registers_superuser"
                                         confirm="Confimar dados de conta?"
                                         invisible="bill_status != '0'" />
+                                </div>
+
+                                <div class="container_button">
+                                    <button name="remove_external_operation_id" class="btnSecondary mybutton"
+                                        type="object" string="Limpar Dia de Pagamento"
+                                        groups="registers.group_registers_bill_rw,registers.group_registers_superuser"
+                                        confirm="Remover data de pagamento da conta?"
+                                        invisible="bill_status != '1'"/>
+
                                 </div>
 
                                 <div class="container_button">

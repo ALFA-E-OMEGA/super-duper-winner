@@ -1,7 +1,7 @@
 # pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long, protected-access
 """This are the contract template and it's associated functions"""
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from datetime import datetime
 import pytz
 
@@ -10,11 +10,8 @@ class Contract(models.Model):
 
 # Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
-        date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-        return date_today.date()
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
 
     def _generate_installment_list(self, a):
         installment_list = []
@@ -31,7 +28,7 @@ class Contract(models.Model):
     _rec_name = "display_name"
 
     id_contract = fields.Char(string='Código', required=True)
-    register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    register_date = fields.Date(string='Data de Registro', default=_default_current_date)
     contract_date = fields.Date(string='Data do Contrato', required=True)
     installments = fields.Selection(selection=lambda self: self._generate_installment_list(48),
                                    string='Parcela', required=True, default='1')
@@ -77,6 +74,16 @@ class Contract(models.Model):
                 }
             },
         }
+
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        for rec in self:
+            if len(rec.invoice_ids) > 0:
+                raise UserError(_("Contratos com 1 ou mais parcelas não podem "
+                                "deletados"))
+            else:
+                return super(Contract, self).unlink()
 
 # Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

@@ -1,19 +1,14 @@
 """This are the operation template and it's associated functions"""
-from datetime import datetime
 from odoo import models, fields, _
 from odoo.exceptions import ValidationError
-import pytz
 
 class Operation(models.Model):
     """Fields and functions for the operation object"""
 
 # Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
-        date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-        return date_today.date()
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
 
 # Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -21,7 +16,7 @@ class Operation(models.Model):
     _description = "Registro de Caixa."
     _rec_name = "operation_date"
 
-    operation_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    operation_date = fields.Date(string='Data de Registro', default=_default_current_date)
     operation_status = fields.Selection([('1', 'Aberto'), ('0', 'Fechado')],
                                        string="Status de Caixa", required=True,
                                        default='1')
@@ -29,7 +24,7 @@ class Operation(models.Model):
     is_editable = fields.Boolean(string='Editável', required=True, compute='_compute_is_editable',
                                  default=True, store=True)
     is_closed = fields.Boolean(string='Fechado', required=True, compute='_compute_is_closed',
-                                 default=False, store=True)
+                                 default=False)
     is_reopen = fields.Boolean(string='Foi Reaberto', required=False, default=False)
     invoice_ids = fields.One2many('invoice', 'external_operation_id',  string="Contas a Receber")
     bill_ids = fields.One2many('bill', 'external_operation_id',  string="Contas a Pagar")
@@ -158,7 +153,7 @@ class Operation(models.Model):
 
     def _compute_is_editable(self):
         """Function only allows altering the operation in it's current date"""
-        current_date = self._generate_register_date()
+        current_date = self._default_current_date()
         for rec in self:
             if rec.operation_date == current_date:
                 rec.is_editable = True

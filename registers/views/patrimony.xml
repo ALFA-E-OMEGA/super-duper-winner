@@ -159,7 +159,7 @@
                                 <div class="container_button">
                                     <button name="remove_last_contract" class="btnSecondary mybutton"
                                         type="object" string="Limpar Contrato"
-                                        groups="registers.group__registers_patrimony_rw,registers.group_registers_superuser"
+                                        groups="registers.group_registers_patrimony_rw,registers.group_registers_superuser"
                                         confirm="Remover patrimônio do último contrato?" />
 
                                 </div>

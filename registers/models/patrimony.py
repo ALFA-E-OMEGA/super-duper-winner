@@ -1,8 +1,8 @@
-# pylint: disable=undefined-loop-variable, useless-return
+# pylint: disable=undefined-loop-variable, useless-return, line-too-long
 """This is the file for the 'patrimony' object"""
 from datetime import datetime
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 import pytz
 
 class Patrimony(models.Model):
@@ -10,12 +10,8 @@ class Patrimony(models.Model):
 
 # Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        now_time = datetime.now()
-        user = self.env['res.users'].browse([2])
-        tz = pytz.timezone(user.tz) or pytz.utc
-        return pytz.utc.localize(now_time).astimezone(tz)
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
 
     def _generate_tuple_list(self, a):
         tuple_list = []
@@ -83,7 +79,7 @@ class Patrimony(models.Model):
     bill_ids = fields.One2many('bill', 'external_patrimony_id', string="Contas a Pagar")
     display_name = fields.Char(compute='_compute_display_name')
     value = fields.Float(string='Valor do Patrimônio')
-    current_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    current_date = fields.Date(string='Data de Registro', default=_default_current_date)
 
     pdf_view_status = fields.Integer(default=0)
 
@@ -95,16 +91,6 @@ class Patrimony(models.Model):
         if self.vehicle_plate:
             self.vehicle_plate = str(self.vehicle_plate).upper()
         return
-
-# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
-    def update_pdf_view(self):
-        """Edits .xml so that the .pdf file is either expanded
-        or reduced in visualization"""
-        if self.pdf_view_status == 0:
-            self.pdf_view_status = 1
-        elif self.pdf_view_status == 1:
-            self.pdf_view_status = 0
 
 # Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -161,12 +147,30 @@ class Patrimony(models.Model):
             },
         }
 
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        for rec in self:
+            if len(rec.bill_ids) > 0 or len(rec.contract_ids) > 0 or rec.external_contract_id:
+                raise UserError(_("Patrimônios com despesas ou contratos "
+                                  "associados não podem ser excluídos."))
+            else:
+                return super(Patrimony, self).unlink()
+
 # Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def remove_last_contract(self):
         """Function to remove association between patrimony and latest contract"""
         for rec in self:
             self.write({'contract_ids': [(3, rec.contract_ids[len(rec.contract_ids)-1].id)]})
+
+    def update_pdf_view(self):
+        """Edits .xml so that the .pdf file is either expanded
+        or reduced in visualization"""
+        if self.pdf_view_status == 0:
+            self.pdf_view_status = 1
+        elif self.pdf_view_status == 1:
+            self.pdf_view_status = 0
 
 # Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

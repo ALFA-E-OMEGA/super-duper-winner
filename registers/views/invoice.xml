@@ -130,8 +130,7 @@
                                     <span>Dia de Recebimento:</span>
                                     <field class="field" name="external_operation_id"
                                         widget="selection"
-                                        domain="[('is_closed', '=', 'False')]"
-                                        readonly="invoice_status == '2'" />
+                                        readonly="1" />
                                 </div>
 
                             </div>
@@ -178,6 +177,15 @@
                                         confirm="Confimar dados de conta?"
                                         groups="registers.group__registers_invoice_rw,registers.group_registers_superuser"
                                         invisible="invoice_status != '0'" />
+                                </div>
+
+                                <div class="container_button">
+                                    <button name="remove_external_operation_id" class="btnSecondary mybutton"
+                                        type="object" string="Limpar Dia de Recebimento"
+                                        groups="registers.group_registers_invoice_rw,registers.group_registers_superuser"
+                                        confirm="Remover data de pagamento da conta?"
+                                        invisible="invoice_status != '1'"/>
+
                                 </div>
 
                                 <div class="container_button">

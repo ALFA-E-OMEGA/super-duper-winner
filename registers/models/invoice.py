@@ -1,20 +1,15 @@
 # pylint: disable=undefined-loop-variable, protected-access line-too-long, pointless-statement
 """This are the invoice template and it's associated functions"""
-from datetime import datetime
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
-import pytz
+from odoo.exceptions import ValidationError, UserError
 
 class Invoice(models.Model):
     """Fields and functions for the invoice record"""
 
 # Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
-        date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-        return date_today.date()
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
 
     def _generate_installment_list(self, a):
         installment_list = []
@@ -43,7 +38,7 @@ class Invoice(models.Model):
                                      ('devolucao-credito', 'Devolução de Crédito'),
                                      ('outro', 'Outro')],
                                      string='Tipo de Conta', required=True)
-    register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    register_date = fields.Date(string='Data de Registro', default=_default_current_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
     description = fields.Text(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
@@ -118,6 +113,16 @@ class Invoice(models.Model):
             },
         }
 
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        for rec in self:
+            if rec.invoice_status == '2':
+                raise UserError(_("Receitas ja faturadas não podem "
+                                  "ser deletadas"))
+            else:
+                return super(Invoice, self).unlink()
+
 # Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def update_invoice_status(self):
@@ -146,6 +151,11 @@ class Invoice(models.Model):
             self.pdf_view_status = 1
         elif self.pdf_view_status == 1:
             self.pdf_view_status = 0
+
+    def remove_external_operation_id(self):
+        """Function to remove association between patrimony and latest contract"""
+        for rec in self:
+            self.write({'external_operation_id': [(3, rec.external_operation_id.id)]})
 
 # Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -188,7 +198,7 @@ class Invoice(models.Model):
         """Checks if the 'enxternal_operation_id' is valid."""
         for rec in self:
             if rec.external_operation_id:
-                if rec.external_operation_id.is_editable is not True:
+                if rec.external_operation_id.is_editable is False:
                     raise ValidationError(_("O caixa desta data não está editável."))
                 if rec.external_operation_id.operation_status == '0':
                     raise ValidationError(_("O caixa está fechado."))

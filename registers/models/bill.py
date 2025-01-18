@@ -2,7 +2,7 @@
 """This are the bill template and it's associated functions"""
 from datetime import datetime
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 import pytz
 
 class Bill(models.Model):
@@ -10,11 +10,8 @@ class Bill(models.Model):
 
 # Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
-        date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-        return date_today.date()
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
 
     def _generate_installment_list(self, a):
         installment_list = []
@@ -63,7 +60,7 @@ class Bill(models.Model):
                                   ('taxa', 'Taxas e Emolumentos'),
                                   ('outro', 'Outro')],
                                   string='Tipo de Conta', required=True, default='outro')
-    register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    register_date = fields.Date(string='Data de Registro', default=_default_current_date)
     bill_file = fields.Binary(string='PDF da Conta', attachment=True)
     validation_date = fields.Date(string='Data de Vencimento', required=True)
     description = fields.Text(string='Descrição', required=False)
@@ -145,6 +142,16 @@ class Bill(models.Model):
             },
         }
 
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        for rec in self:
+            if rec.bill_status == '2':
+                raise UserError(_("Despesas ja faturadas não podem "
+                                  "ser deletadas"))
+            else:
+                return super(Bill, self).unlink()
+
 # Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def update_bill_status(self):
@@ -175,6 +182,11 @@ class Bill(models.Model):
             self.pdf_view_status = 1
         elif self.pdf_view_status == 1:
             self.pdf_view_status = 0
+
+    def remove_external_operation_id(self):
+        """Function to remove association between patrimony and latest contract"""
+        for rec in self:
+            self.write({'external_operation_id': [(3, rec.external_operation_id.id)]})
 
 # Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
