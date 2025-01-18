@@ -8,7 +8,7 @@
     'sequence': -1,
     'description': """Este é o módulo que lida com os cadastros.""",
     'category': 'JP',
-    'depends' : ['base', 'web',],
+    'depends' : ['base', 'web','mail'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

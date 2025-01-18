@@ -27,6 +27,7 @@ class Contract(models.Model):
 
     _name = "contract"
     _description = "Registro de Contrato."
+    _inherit = ["mail.thread"]
     _rec_name = "display_name"
 
     id_contract = fields.Char(string='Código', required=True)
@@ -36,14 +37,14 @@ class Contract(models.Model):
                                    string='Parcela', required=True, default='1')
     status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo'),
                                ('faturado', 'Faturado')],
-                              string='Status', required=True)
+                              string='Status', required=True, tracking=True)
     display_name = fields.Char(compute='_compute_display_name')
     external_client_id = fields.Many2one(comodel_name='client', string='Cliente', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Receitas")
-    bill_ids = fields.One2many('bill', 'external_contract_id',  string="Despesas")
+    bill_ids = fields.One2many('bill', 'external_contract_id',  string="Despesas", tracking=True)
     patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
-                                     string='Patrimônios')
+                                     string='Patrimônios', tracking=True)
 
 # Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

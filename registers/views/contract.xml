@@ -86,6 +86,12 @@
 
                 </div>
 
+                <div class="oe_chatter"
+                groups="registers.group_registers_superuser">
+                    <field name="message_ids" widget="mail.thread"
+                    readonly="1"/> 
+                </div>
+
             </form>
 
 

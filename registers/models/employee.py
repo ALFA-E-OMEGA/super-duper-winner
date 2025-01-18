@@ -31,10 +31,12 @@ class Employee(models.Model):
  
     _name = "employee"
     _description = "Registro de funcionários."
+    _inherit = ["mail.thread"]
 
     name = fields.Char(string='Nome', required=True)
     email = fields.Char(string='Email', required=False)
-    tel_one = fields.Char(string='Telefone 1', required=True)
+    tel_one = fields.Char(string='Telefone 1', required=True,
+                          tracking=True)
     tel_two = fields.Char(string='Telefone 2', required=False)
     cpf = fields.Char(string='CPF', required=True)
     address = fields.Char(string='Endereço', required=False)
@@ -42,7 +44,8 @@ class Employee(models.Model):
     pis_pasep = fields.Char(string='PIS-PASEP', required=False)
     cart_trabalho = fields.Char(string='Carteira de Trabalho', required=False)
     rg = fields.Char(string='RG', required=True)
-    status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')], required=True)
+    status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')], required=True,
+                              tracking=True)
 
 # Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

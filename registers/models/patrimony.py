@@ -20,6 +20,7 @@ class Patrimony(models.Model):
 
     _name = "patrimony"
     _description = "Registro de patrimônio."
+    _inherit = ["mail.thread"]
     _rec_name = "display_name"
 
     id_patrimony = fields.Char(string='Código', required=True)
@@ -40,7 +41,7 @@ class Patrimony(models.Model):
                                      ('transporte', 'Transporte')
                                      ], string = 'Tipo de Veículo', required=False)
 
-    vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
+    vehicle_plate = fields.Char(string='Placa do Veículo', required=False, tracking=True)
 
     renavan = fields.Char(string='Renavan', required=False)
 
@@ -65,7 +66,7 @@ class Patrimony(models.Model):
 
     acquisition_date = fields.Date(string='Data de Aquisição', required=False)
     status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
-                              string='Status', required=True)
+                              string='Status', required=True, tracking=True)
     patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
     filename = fields.Char()
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato Original')
