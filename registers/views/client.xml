@@ -142,7 +142,7 @@
                             <div class="container_button">
                                 <button name="create_client" class="btnSecondary mybutton"
                                     type="object" string="Salvar"
-                                    groups="registers.group__registers_client_rw,registers.group_registers_superuser"
+                                    groups="registers.group_registers_client_rw,registers.group_registers_superuser"
                                     confirm="Confimar dados de Cliente?" />
                             </div>
 

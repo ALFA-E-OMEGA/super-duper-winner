@@ -3,6 +3,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_employee_superuser,access.employee.superuser,registers.model_employee,registers.group_registers_superuser,1,1,1,1
 access_client_superuser,access.client.superuser,registers.model_client,registers.group_registers_superuser,1,1,1,1
 access_patrimony_superuser,access.patrimony.superuser,registers.model_patrimony,registers.group_registers_superuser,1,1,1,1
+access_supplier_superuser,access.supplier.superuser,registers.model_supplier,registers.group_registers_superuser,1,1,1,1
 access_bill_superuser,access.bill.superuser,registers.model_bill,registers.group_registers_superuser,1,1,1,1
 access_invoice_superuser,access.invoice.superuser,registers.model_invoice,registers.group_registers_superuser,1,1,1,1
 access_contract_superuser,access.contract.superuser,registers.model_contract,registers.group_registers_superuser,1,1,1,1
@@ -20,6 +21,9 @@ access_patrimony_r,access.patrimony.r,registers.model_patrimony,registers.group_
 access_patrimony_contract_r,access.patrimony.contract.r,registers.model_contract,registers.group_registers_patrimony_r,1,0,0,0
 access_patrimony_bill_r,access.patrimony.bill.r,registers.model_bill,registers.group_registers_patrimony_r,1,0,0,0
 access_patrimony_rw,access.patrimony.rw,registers.model_patrimony,registers.group_registers_patrimony_rw,1,1,1,0
+
+access_supplier_r,access.supplier.r,registers.model_supplier,registers.group_registers_supplier_r,1,0,0,0
+access_supplier_rw,access.supplier.rw,registers.model_supplier,registers.group_registers_supplier_rw,1,1,1,0
 
 access_bill_r,access.bill.r,registers.model_bill,registers.group_registers_bill_r,1,0,0,0
 access_bill_employee_r, access.bill.employee.r,registers.model_employee,registers.group_registers_bill_r,1,0,0,0

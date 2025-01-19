@@ -76,7 +76,7 @@
                                 <div class="container_button">
                                     <button name="create_operation" class="btnSecondary mybutton"
                                     type="object" string="Salvar"
-                                    groups="registers.group__registers_operation_rw,registers.group_registers_superuser"
+                                    groups="registers.group_registers_operation_rw,registers.group_registers_superuser"
                                     confirm="Confimar dados de Operação de Caixa?"
                                     invisible="operation_status == '0'"/>
                                 </div>

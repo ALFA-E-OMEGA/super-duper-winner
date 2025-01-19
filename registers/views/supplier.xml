@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_supplier_form" model="ir.ui.view">
+        <field name="name">supplier.form</field>
+        <field name="model">supplier</field>
+        <field name="arch" type="xml">
+            <form class="myform" string="Cadastro de Fornecedor">
+
+            <div class="container_form supplier_form">
+                <h1>Fornecedor</h1>
+                    <article class="container_form_contents">
+                        <section class="group">
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Nome:</span>
+                                    <field class="field" name="name"/>
+                                </div>
+
+                                <div class="container_field">
+                                    <span>CNPJ:</span>
+                                    <field class="field" name="cnpj"/>
+                                </div>
+                            
+                            </div>
+
+                            <div class="container_field">
+                                <span>Área de Fornecimento:</span>
+                                <field class="field" name="supplier_area"/>
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Telefone:</span>
+                                    <field class="field" name="tel_one"/>
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Email:</span>
+                                    <field class="field" name="email"/>
+                                </div>
+                            
+                            </div>
+
+                        </section>
+
+                        <section class="group">
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Estado:</span>
+                                    <field class="field" name="address_state" />
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Cidade:</span>
+                                    <field class="field" name="address_city" />
+                                </div>
+
+                            </div>
+
+                            <div class="container_field">
+                                <span>Complemento:</span>
+                                <field class="field" name="address_complement" />
+                            </div>
+
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Chave PIX:</span>
+                                    <field class="field" name="pix_key" />
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Tipo de Chave:</span>
+                                    <field class="field" name="pix_key_type"
+                                        widget="selection" />
+                                </div>
+
+                            </div>
+
+                            <div class="container_button">
+                                <button name="create_supplier" class="btnSecondary mybutton"
+                                type="object" string="Salvar"
+                                groups="registers.group_registers_supplier_rw,registers.group_registers_superuser"
+                                confirm="Confimar dados de Fornecedor?"/>
+                            </div>
+
+                        </section>
+
+                    </article>
+            </div>
+            </form>
+
+
+        </field>
+
+    </record>
+
+    <record id="view_supplier_list" model="ir.ui.view">
+        <field name="name">supplier.list</field>
+        <field name="model">supplier</field>
+        <field name="arch" type="xml">
+            <list string="Fornecedores">
+                <field class="test" name="name" />
+                <field class="test" name="supplier_area" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_register_supplier" model="ir.actions.act_window">
+        <field name="name">Fornecedores</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">supplier</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

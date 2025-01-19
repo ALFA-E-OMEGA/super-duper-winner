@@ -7,3 +7,4 @@ from . import service
 from . import invoice
 from . import contract
 from . import operation
+from . import supplier

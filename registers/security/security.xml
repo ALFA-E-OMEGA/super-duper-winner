@@ -64,6 +64,21 @@ rw -> 'read' and 'write' permission
             <field name="comment">Acesso à leitura e modificação do modelo "Patrimônios".</field>
         </record>
 
+        <!-- 'supplier' groups and access rights -->
+        <record id="group_registers_supplier_r" model="res.groups">
+            <field name="name">Fornecedores (Leitura)</field>
+            <field name="category_id" ref="registers.model_category_registers" />
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
+            <field name="comment">Acesso apenas à leitura do modelo "Fornecedores".</field>
+        </record>
+
+        <record id="group_registers_supplier_rw" model="res.groups">
+            <field name="name">Fornecedores (Edição)</field>
+            <field name="category_id" ref="registers.model_category_registers" />
+            <field name="implied_ids" eval="[(4, ref('registers.group_registers_supplier_r'))]" />
+            <field name="comment">Acesso à leitura e modificação do modelo "Fornecedores".</field>
+        </record>
+
         <!-- 'bill' groups and access rights -->
         <record id="group_registers_bill_r" model="res.groups">
             <field name="name">Despesas (Leitura)</field>

@@ -49,6 +49,13 @@
         groups="registers.group_registers_employee_r,registers.group_registers_superuser"
         sequence="4" />
 
+    <menuitem id="menu_supplier_register"
+        parent="menu_registro"
+        action="action_register_supplier"
+        name="Fornecedores"
+        groups="registers.group_registers_supplier_r,registers.group_registers_superuser"
+        sequence="5" />
+
     <!-- "Financeiro" submenu-->
     <menuitem id="menu_bill_register"
         parent="menu_financeiro"

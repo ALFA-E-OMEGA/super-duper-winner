@@ -8,7 +8,7 @@ class Service(models.Model):
 # Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _name = "service"
-    _description = "Registro de Centro de Custo."
+    _description = "Registro de Serviço."
 
     id_service = fields.Char(string='Código', required=True)
     type = fields.Char(string='Tipo', required=False)

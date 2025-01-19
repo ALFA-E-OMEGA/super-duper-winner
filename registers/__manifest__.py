@@ -12,7 +12,6 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
-        'views/menu.xml',
         'views/employee.xml',
         'views/client.xml',
         'views/patrimony.xml',
@@ -22,6 +21,8 @@
         'views/service.xml',
         'views/contract.xml',
         'views/operation.xml',
+        'views/supplier.xml',
+        'views/menu.xml',
 
     ],
     'demo': [
