@@ -40,6 +40,7 @@ class Contract(models.Model):
     bill_ids = fields.One2many('bill', 'external_contract_id',  string="Despesas")
     patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
                                      string='Patrimônios')
+    contract_type = fields.Char(string="Tipo de Contrato", required=False, compute="_compute_contract_type")
 
 # Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -55,6 +56,7 @@ class Contract(models.Model):
             'external_cost_center_id': self.external_cost_center_id,
             'invoice_ids': self.invoice_ids,
             'bill_ids': self.bill_ids,
+            'contract_type': self.contract_type,
         }
 
         self.env['contract'].write(vals)
@@ -117,3 +119,11 @@ class Contract(models.Model):
         this model"""
         for record in self:
             record.display_name = f"{record.id_contract} | {record.external_client_id.name} | {record.contract_date}"
+
+    def _compute_contract_type(self):
+        """Function to limit vehicle types shown"""
+        for rec in self:
+            if len(rec.patrimony_ids) > 0:
+                rec.contract_type = rec.patrimony_ids[0].classification
+            else:
+                rec.contract_type = False
