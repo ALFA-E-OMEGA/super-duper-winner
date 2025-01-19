@@ -82,7 +82,7 @@
                         <span>Patrimônios:</span>
                         <field name="patrimony_ids"
                             options="{'unlink': False, 'create':False, 'edit': False}"
-                            domain="[('status', '=', 'ativo')]" />
+                            domain="[('status', '=', 'ativo'), ('classification', '!=', 'outro')]" />
                     </div>
 
                     <div class="container_field" invisible="contract_type != 'veiculo'">
