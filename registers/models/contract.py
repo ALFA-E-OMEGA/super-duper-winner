@@ -1,4 +1,4 @@
-# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long, protected-access, super-with-arguments, no-else-raise
+# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long, protected-access, super-with-arguments, no-else-raise, useless-return
 """This are the contract template and it's associated functions"""
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
@@ -41,6 +41,15 @@ class Contract(models.Model):
     patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
                                      string='Patrimônios')
     contract_type = fields.Char(string="Tipo de Contrato", required=False, compute="_compute_contract_type")
+
+# Onchange functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    @api.onchange('patrimony_ids')
+    def change_contract_type(self):
+        """Function to turn set contract_type while user is choosing"""
+        if len(self.patrimony_ids) > 0:
+            self.contract_type = self.patrimony_ids[0].classification
+        return
 
 # Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
