@@ -7,55 +7,71 @@
         <field name="arch" type="xml">
             <form class="myform" string="Cadastramento de Funcionários">
 
-            <div class="container_form">
-                <h1>Cadastro de Funcionários</h1>
+                <div class="container_form">
+                    <h1>Cadastro de Funcionários</h1>
                     <article class="container_form_contents">
                         <section class="group">
-                            <div  class="container_field">
-                                <span>Nome:</span>
-                                <field class="field" name="name"/>
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Nome:</span>
+                                    <field class="field" name="name" />
+                                </div>
+                                
+                                <div class="container_field">
+                                    <span>Status:</span>
+                                    <field class="field" name="status" />
+                                </div>
+
                             </div>
 
                             <div class="container_field">
                                 <span>Email:</span>
-                                <field class="field" name="email"/>
+                                <field class="field" name="email" />
                             </div>
 
                             <div class="subgroup">
                                 <div class="container_field">
-                                    <span>Telefone 1:</span>
-                                    <field class="field" name="tel_one"/>
+                                    <span>Estado:</span>
+                                    <field class="field" name="address_state" />
                                 </div>
 
                                 <div class="container_field">
-                                    <span>Telefone 2:</span>
-                                    <field class="field" name="tel_two" widget="phone"/>
+                                    <span>Cidade:</span>
+                                    <field class="field" name="address_city" />
                                 </div>
 
                             </div>
 
                             <div class="container_field">
-                                <span>Status:</span>
-                                <field class="field" name="status"/>
+                                <span>Complemento:</span>
+                                <field class="field" name="address_complement" />
                             </div>
 
                         </section>
 
                         <section class="group">
-                             <div class="container_field">
-                                <span>Endereço:</span>
-                                <field class="field" name="address"/>
+                            <div class="subgroup">
+                                <div class="container_field">
+                                    <span>Telefone 1:</span>
+                                    <field class="field" name="tel_one" />
+                                </div>
+
+                                <div class="container_field">
+                                    <span>Telefone 2:</span>
+                                    <field class="field" name="tel_two" />
+                                </div>
+
                             </div>
 
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>CEP:</span>
-                                    <field class="field" name="cep"/>
+                                    <field class="field" name="cep" />
                                 </div>
 
                                 <div class="container_field">
                                     <span>CPF:</span>
-                                    <field class="field" name="cpf"/>
+                                    <field class="field" name="cpf" />
                                 </div>
 
                             </div>
@@ -63,31 +79,42 @@
                             <div class="subgroup">
                                 <div class="container_field">
                                     <span>PIS-PASEP:</span>
-                                    <field class="field" name="pis_pasep"/>
+                                    <field class="field" name="pis_pasep" />
                                 </div>
 
                                 <div class="container_field">
                                     <span>N° Carteira de Trabalho:</span>
-                                    <field class="field" name="cart_trabalho"/>
+                                    <field class="field" name="cart_trabalho" />
                                 </div>
 
                             </div>
 
                             <div class="container_field">
                                 <span>RG:</span>
-                                <field class="field" name="rg"/>
+                                <field class="field" name="rg" />
                             </div>
 
                             <div class="container_button">
 
-                                <button class="btnSecondary mybutton" name="create_employee" type="object" string="Salvar" confirm="Confimar dados de funcionário?"/>
+                                <button class="btnSecondary mybutton" name="create_employee"
+                                    type="object" string="Salvar"
+                                    groups="registers.group_registers_employee_rw,registers.group_registers_superuser"
+                                    confirm="Confimar dados de funcionário?" />
 
                             </div>
 
                         </section>
 
                     </article>
-            </div>
+
+                </div>
+
+                <div class="oe_chatter"
+                groups="registers.group_registers_superuser">
+                    <field name="message_ids" widget="mail.thread"
+                    readonly="1"/> 
+                </div>
+
             </form>
 
 
@@ -100,10 +127,10 @@
         <field name="model">employee</field>
         <field name="arch" type="xml">
             <list string="Funcionários">
-                <field class="test" name="name"/>
-                <field class="test" name="cpf"/>
+                <field class="test" name="name" />
+                <field class="test" name="cpf" />
                 <field class="test" name="status" decoration-success="status == 'ativo'"
-                decoration-danger="status == 'desligado'"/>
+                    decoration-danger="status == 'desligado'" />
             </list>
         </field>
     </record>
@@ -115,9 +142,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem  id="menu_employees_register"
-            parent="menu_registro"
-            action="action_register_employee"
-            name="Funcionários"
-            sequence="4"/>
 </odoo>

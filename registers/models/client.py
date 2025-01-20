@@ -1,12 +1,15 @@
+# pylint: disable=line-too-long, super-with-arguments, no-else-raise
 """This are the client template and it's associated functions"""
 import re
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
-regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
+regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]{0,18}+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
 
 class Client(models.Model):
     """Fields and functions for the client object"""
+
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _validate_cpf_digits(self, cpf_string):
 
@@ -61,7 +64,7 @@ class Client(models.Model):
                                                 string='Estado do Endereço',
                                                 required=True, defaul='rio-de-janeiro')
     address_city = fields.Char(string='Cidade do Endereço', required=True)
-    address_complement = fields.Char(string='Complemento do Endereço', required=True)
+    address_complement = fields.Char(string='Complemento do Endereço', required=False)
     cpf = fields.Char(string='CPF', required=False)
     rg = fields.Char(string='RG', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -71,6 +74,8 @@ class Client(models.Model):
     contact_email = fields.Char(string='Email do Contato', required=False)
     city_name = fields.Char(string='Prefeitura', required=False)
     city_department = fields.Char(string='Secretaria', required=False)
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_client(self):
         """This is the custom function for saving an 'client' object"""
@@ -125,6 +130,20 @@ class Client(models.Model):
             },
         }
 
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'client' module"""
+        bill_count=self.env['bill'].search_count([('external_client_id','=', self.id)])
+        invoice_count=self.env['invoice'].search_count([('external_client_id','=', self.id)])
+        contract_count=self.env['contract'].search_count([('external_client_id','=', self.id)])
+        if bill_count > 0 or invoice_count > 0 or contract_count > 0:
+            raise UserError(_("Esse \'Cliente\' tem despesas, "
+                                "receitas ou contratos associados "
+                                "e não pode ser excluído."))
+        else:
+            return super(Client, self).unlink()
+
 # Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('email')
@@ -134,7 +153,8 @@ class Client(models.Model):
         for rec in self:
             if rec.email:
                 if re.fullmatch(regex_email, rec.email) is None:
-                    raise ValidationError(_("O formato do campo 'Email' é inválido."))
+                    raise ValidationError(_("O formato do campo 'Email' é inválido. "
+                                            "O correto é \'email@provedor.terminação\'"))
 
     @api.constrains('tel_one')
     def _validate_tel_one(self):
@@ -143,8 +163,10 @@ class Client(models.Model):
         for rec in self:
             if rec.tel_one:
                 if len(rec.tel_one) != 11:
-                    raise ValidationError(_("O campo 'Telefone' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                    raise ValidationError(_("O campo 'Telefone' está com o tamanho "
+                                            "incorreto. Precisa de 11 dígitos."
+                                            "\n 2 dígitos do "
+                                            "DDD e 9 dígitos."))
                 if not (rec.tel_one).isnumeric():
                     raise ValidationError(_("O campo 'Telefone' contém carácteres inválidos. "
                                             "O campo deve conter apenas números"))
@@ -165,13 +187,14 @@ class Client(models.Model):
         for rec in self:
             if rec.contact_tel:
                 if len(rec.contact_tel) != 11:
-                    raise ValidationError(_("O campo 'Telefone do Contato' está com o tamanho"
-                                            "incorreto. "
-                                            "Precisa de 11 dígitos"))
+                    raise ValidationError(_("O campo 'Telefone do Contato' está com o tamanho "
+                                            "incorreto. Precisa de 11 dígitos."
+                                            "\n 2 dígitos do "
+                                            "DDD e 9 dígitos."))
                 if not (rec.contact_tel).isnumeric():
-                    raise ValidationError(_("O campo 'Telefone do Contato' contém carácteres"
+                    raise ValidationError(_("O campo 'Telefone do Contato' contém carácteres "
                                             "inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('rg')
     def _validate_rg(self):
@@ -212,3 +235,8 @@ class Client(models.Model):
                 if not (rec.cnpj).isnumeric():
                     raise ValidationError(_("O campo 'CNPJ' contém carácteres inválidos. "
                                                 "O campo deve conter apenas números."))
+
+    _sql_constraints = [
+        ('cpf_client_unique', 'UNIQUE(cpf)', 'Já existe um \'Cliente\' com esse \'CPF\'.'),
+        ('cnpj_client_unique', 'UNIQUE(cnpj)', 'Já existe um \'Cliente\' com esse \'CNPJ\'.')
+    ]

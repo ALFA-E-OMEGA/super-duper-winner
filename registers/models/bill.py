@@ -1,18 +1,15 @@
-# pylint: disable=undefined-loop-variable, protected-access, line-too-long, pointless-statement
+# pylint: disable=undefined-loop-variable, protected-access, line-too-long, pointless-statement, super-with-arguments, no-else-raise
 """This are the bill template and it's associated functions"""
-from datetime import datetime
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
-import pytz
+from odoo.exceptions import ValidationError, UserError
 
 class Bill(models.Model):
     """Fields and functions for the bill object"""
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
-        date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-        return date_today.date()
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
 
     def _generate_installment_list(self, a):
         installment_list = []
@@ -25,7 +22,7 @@ class Bill(models.Model):
 # Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _name = "bill"
-    _description = "Registro de Contas a Pagar."
+    _description = "Registro de Despesas."
     _rec_name = "display_name"
 
     id_bill = fields.Char(string='Código', required=False)
@@ -61,7 +58,7 @@ class Bill(models.Model):
                                   ('taxa', 'Taxas e Emolumentos'),
                                   ('outro', 'Outro')],
                                   string='Tipo de Conta', required=True, default='outro')
-    register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    register_date = fields.Date(string='Data de Registro', default=_default_current_date)
     bill_file = fields.Binary(string='PDF da Conta', attachment=True)
     validation_date = fields.Date(string='Data de Vencimento', required=True)
     description = fields.Text(string='Descrição', required=False)
@@ -71,9 +68,9 @@ class Bill(models.Model):
                                default='outro')
     bill_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Paga'),
                                     ], string='Status da Conta', default='0')
-    status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
+    external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
     external_patrimony_id = fields.Many2one(comodel_name='patrimony', string='Patrimônio')
     external_operation_id = fields.Many2one(comodel_name='operation', string='Operação de Caixa')
     external_employee_id = fields.Many2one(comodel_name='employee', string='Funcionário')
@@ -86,13 +83,7 @@ class Bill(models.Model):
 
     pdf_view_status = fields.Integer(default=0)
 
-    def update_pdf_view(self):
-        """Edits .xml so that the .pdf file is either expanded
-        or reduced in visualization"""
-        if self.pdf_view_status == 0:
-            self.pdf_view_status = 1
-        elif self.pdf_view_status == 1:
-            self.pdf_view_status = 0
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_bill(self):
         """This is the custom function for saving a 'bill' record"""
@@ -104,9 +95,12 @@ class Bill(models.Model):
             self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
             self.write({'external_client_id': [(3, self.external_client_id.id)]})
 
-        if self.bill_type not in ('manutencao-veiculo', 'manutencao-pesado'):
+        if self.bill_type not in ('manutencao-veiculo', 'manutencao-pesado', 'financiamento',
+                                  'combustivel', 'locacao-veiculo', 'multa', 'ipva'):
             if self.external_patrimony_id:
                 self.write({'external_patrimony_id': [(3, self.external_patrimony_id.id)]})
+            if self.external_contract_id:
+                self.write({'external_contract_id': [(3, self.external_contract_id.id)]})
 
         vals = {
             'bill_id': self.id_bill,
@@ -146,6 +140,19 @@ class Bill(models.Model):
             },
         }
 
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'bill' module"""
+        for rec in self:
+            if rec.bill_status == '2':
+                raise UserError(_("Despesas ja faturadas não podem "
+                                  "ser deletadas"))
+            else:
+                return super(Bill, self).unlink()
+
+# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def update_bill_status(self):
         """This function changes the bill status and locks editing the file"""
         if self.bill_status == '0':
@@ -159,13 +166,26 @@ class Bill(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': _('Status atualizado para \'' + self.status_value + '\'!'),
+                'message': _('Conta foi autorizada!'),
                 'sticky': False,
                 'next': {
                     'type': 'ir.actions.act_window_close',
                 }
             },
         }
+
+    def update_pdf_view(self):
+        """Edits .xml so that the .pdf file is either expanded
+        or reduced in visualization"""
+        if self.pdf_view_status == 0:
+            self.pdf_view_status = 1
+        elif self.pdf_view_status == 1:
+            self.pdf_view_status = 0
+
+    def remove_external_operation_id(self):
+        """Function to remove association between patrimony and latest contract"""
+        for rec in self:
+            self.write({'external_operation_id': [(3, rec.external_operation_id.id)]})
 
 # Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -184,7 +204,7 @@ class Bill(models.Model):
         """Checks if value field is a negative number or zero"""
         for rec in self:
             if rec.value <= 0:
-                raise ValidationError(_("O campo 'valor' precisa ser igual ou maior que zero."))
+                raise ValidationError(_("O campo 'valor' precisa ser maior que zero."))
 
     @api.constrains('fiscal_note')
     def _validate_rg(self):
@@ -213,6 +233,7 @@ class Bill(models.Model):
 
     @api.constrains('external_operation_id')
     def _check_external_operation_id(self):
+        """Checks if the 'enxternal_operation_id' is valid."""
         for rec in self:
             if rec.external_operation_id:
                 if rec.external_operation_id.is_editable is not True:
@@ -223,7 +244,7 @@ class Bill(models.Model):
     _sql_constraints = [
         ('id_bill_installment_unique', 'UNIQUE(id_bill, installment)',
         'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada ou'
-        'outra conta com esse código.')
+        'outra conta com esse código.'),
     ]
 
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -243,16 +264,9 @@ class Bill(models.Model):
                 else:
                     record.display_name = f"{record.bill_type}-{record.external_operation_id.display_name}"
 
-    def _compute_status_value(self):
-        for rec in self:
-            if rec.bill_status == '0':
-                self.status_value = 'Provisória'
-            elif rec.bill_status == '1':
-                self.status_value = 'Autorizada'
-            elif rec.bill_status == '2':
-                self.status_value = 'Paga'
-
     def _compute_cpf(self):
+        """Generates 'CPF' based on external_'employee'_id or
+        external_'client'_id."""
         for rec in self:
             if rec.external_employee_id:
                 rec.cpf = rec.external_employee_id.cpf
@@ -262,6 +276,7 @@ class Bill(models.Model):
                 rec.cpf = False
 
     def _compute_cnpj(self):
+        """Generates 'CNPJ' based on external_'client'_id."""
         for rec in self:
             if rec.external_client_id and rec.external_client_id.client_type == 'pessoa-juridica':
                 rec.cnpj = rec.external_client_id.cnpj
@@ -269,6 +284,7 @@ class Bill(models.Model):
                 rec.cnpj = False
 
     def _compute_client_type(self):
+        """Is used showing diferent fields in the 'xml' file"""
         for rec in self:
             if rec.external_client_id:
                 if rec.external_client_id.client_type == 'pessoa-juridica':

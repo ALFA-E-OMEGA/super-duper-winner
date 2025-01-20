@@ -1,10 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem  id="main_menu" name="Sistema" sequence="10">
-        <menuitem id="menu_registro" name="Registros" sequence="12"/>
-        <menuitem id="menu_financeiro" name="Financeiro" sequence="13"/>
-        <menuitem id="menu_caixa" name="Caixa" sequence="14"/>
-        <menuitem id="menu_outros" name="Outros" sequence="15"/>
-    </menuitem>
+    <menuitem id="main_menu"
+        name="Sistema"
+        sequence="10" />
+
+    <!-- Menus on the navbar -->
+    <menuitem id="menu_registro"
+        name="Registros"
+        sequence="12"
+        parent="main_menu" />
+
+    <menuitem id="menu_financeiro"
+        name="Financeiro"
+        sequence="13"
+        parent="main_menu" />
+
+    <menuitem id="menu_caixa"
+        name="Caixa"
+        sequence="14"
+        parent="main_menu" />
+
+    <menuitem id="menu_outros"
+        name="Outros"
+        sequence="15"
+        parent="main_menu" />
+
+    <!-- Submenus for the models -->
+
+    <!-- "Registros" submenu -->
+    <menuitem id="menu_clients_register"
+        parent="menu_registro"
+        action="action_register_client"
+        name="Clientes"
+        groups="registers.group_registers_client_r,registers.group_registers_superuser"
+        sequence="2" />
+
+    <menuitem id="menu_patrimony_register"
+        parent="menu_registro"
+        action="action_register_patrimony"
+        name="Patrimônios"
+        groups="registers.group_registers_patrimony_r,registers.group_registers_superuser"
+        sequence="3" />
+
+    <menuitem id="menu_employees_register"
+        parent="menu_registro"
+        action="action_register_employee"
+        name="Funcionários"
+        groups="registers.group_registers_employee_r,registers.group_registers_superuser"
+        sequence="4" />
+
+    <menuitem id="menu_supplier_register"
+        parent="menu_registro"
+        action="action_register_supplier"
+        name="Fornecedores"
+        groups="registers.group_registers_supplier_r,registers.group_registers_superuser"
+        sequence="5" />
+
+    <!-- "Financeiro" submenu-->
+    <menuitem id="menu_bill_register"
+        parent="menu_financeiro"
+        action="action_register_bill"
+        name="Despesas"
+        groups="registers.group_registers_bill_r,registers.group_registers_superuser"
+        sequence="1" />
+
+    <menuitem id="menu_invoice_register"
+        parent="menu_financeiro"
+        action="action_register_invoice"
+        name="Receitas"
+        groups="registers.group_registers_invoice_r,registers.group_registers_superuser"
+        sequence="2" />
+
+    <menuitem id="menu_contract_register"
+        parent="menu_financeiro"
+        action="action_register_contract"
+        name="Contratos"
+        groups="registers.group_registers_contract_r,registers.group_registers_superuser"
+        sequence="3" />
+
+    <!-- "Caixa" submenu-->
+    <menuitem id="menu_operation_register"
+        parent="menu_caixa"
+        action="action_register_operation"
+        name="Operações de Caixa"
+        groups="registers.group_registers_operation_r,registers.group_registers_superuser"
+        sequence="1" />
+
+    <!-- "Outros" submenu-->
+    <menuitem id="menu_cost_center_register"
+        parent="menu_outros"
+        action="action_register_cost_center"
+        name="Centro de Custo"
+        groups="registers.group_registers_cost_center_r,registers.group_registers_superuser"
+        sequence="1" />
+
+    <menuitem id="menu_service_register"
+        parent="menu_outros"
+        action="action_register_service"
+        name="Serviços"
+        groups="registers.group_registers_service_r,registers.group_registers_superuser"
+        sequence="2" />
 
 </odoo>

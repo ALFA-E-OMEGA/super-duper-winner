@@ -1,10 +1,15 @@
-# pylint: disable=undefined-loop-variable
+# pylint: disable=undefined-loop-variable, useless-return, line-too-long, super-with-arguments, no-else-raise
 """This is the file for the 'patrimony' object"""
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 class Patrimony(models.Model):
     """This are the fields and functions for the 'patrimony' object"""
+
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
 
     def _generate_tuple_list(self, a):
         tuple_list = []
@@ -18,6 +23,7 @@ class Patrimony(models.Model):
 
     _name = "patrimony"
     _description = "Registro de patrimônio."
+    _inherit = ["mail.thread"]
     _rec_name = "display_name"
 
     id_patrimony = fields.Char(string='Código', required=True)
@@ -33,12 +39,12 @@ class Patrimony(models.Model):
                                         ], string = 'Classificação', required=True,
                                         default='outro')
 
-    vehicle_type = fields.Selection([('truck', 'Caminhão'),
-                                     ('car', 'Carro')
+    vehicle_type = fields.Selection([('caminhao', 'Caminhão'),
+                                     ('carro', 'Carro'),
+                                     ('transporte', 'Transporte')
                                      ], string = 'Tipo de Veículo', required=False)
 
-    vehicle_plate = fields.Char(string='Placa do Veículo', required=False)
-
+    vehicle_plate = fields.Char(string='Placa do Veículo', required=False, tracking=True)
     renavan = fields.Char(string='Renavan', required=False)
 
     heavy_type = fields.Selection([('escavadeira', 'Escavadeira'),
@@ -61,25 +67,30 @@ class Patrimony(models.Model):
                                     ], string="Número de Equipamento")
 
     acquisition_date = fields.Date(string='Data de Aquisição', required=False)
-
+    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
+                              string='Status', required=True, tracking=True)
     patrimony_file = fields.Binary(string='PDF do Patrimônio', attachment=True)
     filename = fields.Char()
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato Original')
     contract_ids = fields.Many2many('contract', 'contract_patrimony_rel_table',
                                     string='Contratos')
-    bill_ids = fields.One2many('bill', 'external_patrimony_id',  string="Contas a Pagar")
+    bill_ids = fields.One2many('bill', 'external_patrimony_id', string="Contas a Pagar")
     display_name = fields.Char(compute='_compute_display_name')
     value = fields.Float(string='Valor do Patrimônio')
+    current_date = fields.Date(string='Data de Registro', default=_default_current_date)
 
     pdf_view_status = fields.Integer(default=0)
 
-    def update_pdf_view(self):
-        """Edits .xml so that the .pdf file is either expanded
-        or reduced in visualization"""
-        if self.pdf_view_status == 0:
-            self.pdf_view_status = 1
-        elif self.pdf_view_status == 1:
-            self.pdf_view_status = 0
+# Onchange functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    @api.onchange('vehicle_plate')
+    def set_upper_plate(self):
+        """Function to turn the 'vehicle_plate' into all uppercase"""
+        if self.vehicle_plate:
+            self.vehicle_plate = str(self.vehicle_plate).upper()
+        return
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_patrimony(self):
         """This is the custom function for saving an 'patrimony' object,
@@ -90,6 +101,7 @@ class Patrimony(models.Model):
             self.heavy_number = False
             self.heavy_type = False
             self.vehicle_type = False
+            self.vehicle_plate = False
         elif self.classification == 'veiculo':
             self.heavy_number = False
             self.heavy_type = False
@@ -113,6 +125,8 @@ class Patrimony(models.Model):
             'heavy_number': self.heavy_number,
             'external_contract_id': self.external_contract_id,
             'value': self.value,
+            'status': self.status,
+            'current_date': self.current_date,
         }
 
         self.env['patrimony'].write(vals)
@@ -131,7 +145,33 @@ class Patrimony(models.Model):
             },
         }
 
-# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'patrimony' module"""
+        for rec in self:
+            if len(rec.bill_ids) > 0 or len(rec.contract_ids) > 0 or rec.external_contract_id:
+                raise UserError(_("Patrimônios com despesas ou contratos "
+                                  "associados não podem ser excluídos."))
+            else:
+                return super(Patrimony, self).unlink()
+
+# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def remove_last_contract(self):
+        """Function to remove association between patrimony and latest contract"""
+        for rec in self:
+            self.write({'contract_ids': [(3, rec.contract_ids[len(rec.contract_ids)-1].id)]})
+
+    def update_pdf_view(self):
+        """Edits .xml so that the .pdf file is either expanded
+        or reduced in visualization"""
+        if self.pdf_view_status == 0:
+            self.pdf_view_status = 1
+        elif self.pdf_view_status == 1:
+            self.pdf_view_status = 0
+
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('renavan')
     def _validate_renavan(self):
@@ -139,11 +179,11 @@ class Patrimony(models.Model):
         and checks for non-numeric characters"""
         for rec in self:
             if rec.renavan and self.classification == 'vehicles':
-                if len(rec.renavan) != 9:
-                    raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto. "
-                                            "Precisa de 9 dígitos"))
+                if len(rec.renavan) != 11:
+                    raise ValidationError(_("O campo 'Renavan' está com o tamanho incorreto.\n "
+                                            "Precisa de 11 dígitos"))
                 if not (rec.renavan).isnumeric():
-                    raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos. "
+                    raise ValidationError(_("O campo 'Renavan' contém carácteres inválidos.\n "
                                             "O campo deve conter apenas números."))
 
     @api.constrains('id_patrimony')
@@ -152,7 +192,7 @@ class Patrimony(models.Model):
         for non-numeric characters"""
         for rec in self:
             if not (rec.id_patrimony).isnumeric():
-                raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
+                raise ValidationError(_("O campo 'ID' contém carácteres inválidos.\n "
                                             "O campo deve conter apenas números."))
 
     @api.constrains('patrimony_file')
@@ -166,13 +206,13 @@ class Patrimony(models.Model):
     def _validate_vehicle_plate(self):
         """Checks size of the 'vehicle_plate' variable to limit different lengths"""
         for rec in self:
-            if rec.vehicle_plate and self.classification == 'vehicles':
+            if rec.vehicle_plate and self.classification == 'veiculo':
                 if len(rec.vehicle_plate) != 7:
                     raise ValidationError(_("O campo 'Placa do Veículo' está com o tamanho"
                                             "incorreto. Precisa de 7 dígitos"))
                 if not (rec.vehicle_plate).isalnum():
                     raise ValidationError(_("O campo 'Placa do Veículo' contém caracteres"
-                                            " inválidos. "
+                                            " inválidos.\n "
                                             "O campo deve conter apenas letras e números."))
 
     @api.constrains('value')
@@ -180,11 +220,21 @@ class Patrimony(models.Model):
         """Checks if value field is a negative number or zero"""
         for rec in self:
             if rec.value <= 0:
-                raise ValidationError(_("O campo 'valor' precisa ser igual ou maior que zero"))
+                raise ValidationError(_("O campo 'valor' precisa ser maior que zero"))
+
+    @api.constrains('acquisition_date')
+    def _check_acquisition_date(self):
+        """Checks if 'validation_date' is not invalid"""
+        if self.acquisition_date:
+            if self.acquisition_date > self.current_date:
+                raise ValidationError(_("A 'Data de Aquisição' é inválida.\n "
+                                        "Ela não pode ser mais antiga que a data atual."))
 
     _sql_constraints = [
         ('id_patrimony_unique', 'UNIQUE(id_patrimony)',
-        'Já existe um \'Patrimônio\' com esse \'Código\'.')
+        'Já existe um \'Patrimônio\' com esse \'Código\'.'),
+        ('vehicle_plate_unique', 'UNIQUE(vehicle_plate)',
+         'Já existe um veículo com esta placa.')
     ]
 
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -194,8 +244,8 @@ class Patrimony(models.Model):
         this model"""
         for record in self:
             if record.classification == 'veiculo':
-                record.display_name = f"{record.vehicle_plate.upper()}"
-            if record.classification == 'pesado':
+                record.display_name = f"{record.vehicle_plate}"
+            elif record.classification == 'pesado':
                 record.display_name = f"{record.heavy_type}-{record.heavy_number}"
             else:
                 record.display_name = f"{record.id_patrimony}"

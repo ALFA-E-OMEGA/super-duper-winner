@@ -4,13 +4,18 @@ from odoo.exceptions import ValidationError
 
 class Service(models.Model):
     """Fields and functions for the service object"""
+
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     _name = "service"
-    _description = "Registro de Centro de Custo."
+    _description = "Registro de Serviço."
 
     id_service = fields.Char(string='Código', required=True)
     type = fields.Char(string='Tipo', required=False)
     name = fields.Char(string='Nome', required=True)
     about = fields.Text(string='Descrição', required=False)
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_service(self):
         """This is the custom function for saving an 'service' object"""
@@ -36,6 +41,8 @@ class Service(models.Model):
                 }
             },
         }
+
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('id_service')
     def _validate_id_service(self):

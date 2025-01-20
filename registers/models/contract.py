@@ -1,33 +1,57 @@
-# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long
+# pylint: disable=undefined-loop-variable, wrong-import-order, line-too-long, protected-access, super-with-arguments, no-else-raise, useless-return
 """This are the contract template and it's associated functions"""
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
-from datetime import datetime
-import pytz
+from odoo.exceptions import ValidationError, UserError
 
 class Contract(models.Model):
     """Fields and functions for the contract object"""
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
-        date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-        return date_today.date()
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
+
+    def _generate_installment_list(self, a):
+        installment_list = []
+
+        for r in range(1, a+1):
+            installment_list.append((str(r), str(r)))
+        return installment_list
+
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _name = "contract"
     _description = "Registro de Contrato."
+    _inherit = ["mail.thread"]
     _rec_name = "display_name"
 
     id_contract = fields.Char(string='Código', required=True)
-    register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    register_date = fields.Date(string='Data de Registro', default=_default_current_date)
     contract_date = fields.Date(string='Data do Contrato', required=True)
-    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')],
-                              string='Status', required=True)
+    installments = fields.Selection(selection=lambda self: self._generate_installment_list(48),
+                                   string='Parcela', required=True, default='1')
+    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo'),
+                               ('faturado', 'Faturado')],
+                              string='Status', required=True, tracking=True)
     display_name = fields.Char(compute='_compute_display_name')
     external_client_id = fields.Many2one(comodel_name='client', string='Cliente', required=True)
-    invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Contas Recebidas")
+    external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
+    invoice_ids = fields.One2many('invoice', 'external_contract_id',  string="Receitas")
+    bill_ids = fields.One2many('bill', 'external_contract_id',  string="Despesas")
     patrimony_ids = fields.Many2many('patrimony', 'contract_patrimony_rel_table',
                                      string='Patrimônios')
+    contract_type = fields.Char(string="Tipo de Contrato", required=False, compute="_compute_contract_type")
+
+# Onchange functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    @api.onchange('patrimony_ids')
+    def change_contract_type(self):
+        """Function to turn set contract_type while user is choosing"""
+        if len(self.patrimony_ids) > 0:
+            self.contract_type = self.patrimony_ids[0].classification
+        return
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_contract(self):
         """This is the custom function for saving an 'contract' object"""
@@ -35,9 +59,13 @@ class Contract(models.Model):
             'id_contract': self.id_contract,
             'register_date': self.register_date,
             'contract_date': self.contract_date,
+            'installments': self.installments,
             'status': self.status,
             'external_client_id': self.external_client_id,
+            'external_cost_center_id': self.external_cost_center_id,
             'invoice_ids': self.invoice_ids,
+            'bill_ids': self.bill_ids,
+            'contract_type': self.contract_type,
         }
 
         self.env['contract'].write(vals)
@@ -56,6 +84,19 @@ class Contract(models.Model):
             },
         }
 
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'contract' module"""
+        for rec in self:
+            if len(rec.invoice_ids) > 0:
+                raise UserError(_("Contratos com 1 ou mais parcelas não podem "
+                                "deletados"))
+            else:
+                return super(Contract, self).unlink()
+
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     @api.constrains('id_contract')
     def _validate_id_contract(self):
         """Checks size of the 'id_contract' variable
@@ -65,12 +106,33 @@ class Contract(models.Model):
                 raise ValidationError(_("O campo 'ID' contém carácteres inválidos. "
                                             "O campo deve conter apenas números."))
 
-    def _compute_display_name(self):
-        """Function to generate specific name for any given record from
-        this model"""
-        for record in self:
-            record.display_name = f"{record.id_contract}-{record.external_client_id.name}-{record.contract_date}"
+    @api.constrains('status')
+    def _validate_status(self):
+        """Checks if the contract is ready for 'faturado'
+        status"""
+        for rec in self:
+            if rec.status == 'faturado' and len(rec.invoice_ids) != int(rec.installments):
+                raise ValidationError(_("O contrato ainda não tem o número de "
+                                        "parcelas total.\n" +
+                                        str(len(rec.invoice_ids)) + "/" + rec.installments))
+
 
     _sql_constraints = [
         ('id_contract_unique', 'UNIQUE(id_contract)', 'Já existe um \'Contrato\' com esse \'ID\'.')
     ]
+
+# Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def _compute_display_name(self):
+        """Function to generate specific name for any given record from
+        this model"""
+        for record in self:
+            record.display_name = f"{record.id_contract} | {record.external_client_id.name} | {record.contract_date}"
+
+    def _compute_contract_type(self):
+        """Function to limit vehicle types shown"""
+        for rec in self:
+            if len(rec.patrimony_ids) > 0:
+                rec.contract_type = rec.patrimony_ids[0].classification
+            else:
+                rec.contract_type = False

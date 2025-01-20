@@ -23,7 +23,10 @@
 
                             <div class="container_field">
                                 <span>Receitas:</span>
-                                <field name="invoice_ids" widget="one2many" readonly="operation_status == '0'"/>
+                                <field name="invoice_ids" widget="many2many"
+                                options="{'unlink': False, 'create': False, 'edit': False}"
+                                domain="[('external_operation_id', '=', False)]"
+                                readonly="operation_status == '0'"/>
                             </div>
 
                             <div class="subgroup">
@@ -53,7 +56,10 @@
 
                             <div class="container_field">
                                 <span>Despesas:</span>
-                                <field name="bill_ids" widget="one2many" readonly="operation_status == '0'"/>
+                                <field name="bill_ids" widget="many2many"
+                                options="{'unlink': False, 'create': False, 'edit': False}"
+                                domain="[('external_operation_id', '=', False)]"
+                                readonly="operation_status == '0'"/>
                             </div>
 
                             <div class="subgroup">
@@ -70,6 +76,7 @@
                                 <div class="container_button">
                                     <button name="create_operation" class="btnSecondary mybutton"
                                     type="object" string="Salvar"
+                                    groups="registers.group_registers_operation_rw,registers.group_registers_superuser"
                                     confirm="Confimar dados de Operação de Caixa?"
                                     invisible="operation_status == '0'"/>
                                 </div>
@@ -108,9 +115,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem  id="menu_operation_register"
-        parent="menu_caixa"
-        action="action_register_operation"
-        name="Operação de Caixa"
-        sequence="1"/>
 </odoo>

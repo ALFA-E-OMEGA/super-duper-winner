@@ -1,30 +1,29 @@
+# pylint: disable=line-too-long, super-with-arguments, no-else-raise
 """This are the operation template and it's associated functions"""
-from datetime import datetime
 from odoo import models, fields, _
-from odoo.exceptions import ValidationError
-import pytz
+from odoo.exceptions import ValidationError, UserError
 
 class Operation(models.Model):
     """Fields and functions for the operation object"""
+
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
+
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     _name = "operation"
     _description = "Registro de Caixa."
     _rec_name = "operation_date"
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
-        date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-        return date_today.date()
-
-# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
-    operation_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    operation_date = fields.Date(string='Data de Registro', default=_default_current_date)
     operation_status = fields.Selection([('1', 'Aberto'), ('0', 'Fechado')],
                                        string="Status de Caixa", required=True,
                                        default='1')
     reopen_reason = fields.Text(string='Razão de Reabertura', required=False)
     is_editable = fields.Boolean(string='Editável', required=True, compute='_compute_is_editable',
-                                 default=True)
+                                 default=True, store=True)
     is_closed = fields.Boolean(string='Fechado', required=True, compute='_compute_is_closed',
                                  default=False)
     is_reopen = fields.Boolean(string='Foi Reaberto', required=False, default=False)
@@ -34,6 +33,8 @@ class Operation(models.Model):
     expenses_sum = fields.Float(string='Despesa Total', compute='_compute_expenses_sum')
     total_profit = fields.Float(string='Lucro Total', default=0.0)
     total_profit_positive = fields.Boolean(string='Lucro', defaut=True)
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_operation(self):
         """This is the custom function for saving an 'operation' object"""
@@ -77,6 +78,19 @@ class Operation(models.Model):
                 }
             },
         }
+
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'patrimony' module"""
+        for rec in self:
+            if len(rec.bill_ids) > 0 or len(rec.invoice_ids) > 0:
+                raise UserError(_("Caixas com despesas ou receitas "
+                                  "associados não podem ser excluídos."))
+            else:
+                return super(Operation, self).unlink()
+
+# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def close_operation(self):
         """This function closes the operation status and locks editing the file"""
@@ -140,7 +154,7 @@ class Operation(models.Model):
             },
         }
 
-# Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _sql_constraints = [
         ('operation_date_unique', 'UNIQUE(operation_date)',
@@ -151,7 +165,7 @@ class Operation(models.Model):
 
     def _compute_is_editable(self):
         """Function only allows altering the operation in it's current date"""
-        current_date = self._generate_register_date()
+        current_date = self._default_current_date()
         for rec in self:
             if rec.operation_date == current_date:
                 rec.is_editable = True
@@ -159,6 +173,7 @@ class Operation(models.Model):
                 rec.is_editable = False
 
     def _compute_revenues_sum(self):
+        """Function to calculate revenue and remove 'Provisória' invoices"""
         for rec in self:
             total_revenue = 0.0
             for invoice in rec.invoice_ids:
@@ -170,6 +185,7 @@ class Operation(models.Model):
             rec.revenues_sum = total_revenue
 
     def _compute_expenses_sum(self):
+        """Function to calculate revenue and remove 'Provisória' bills"""
         for rec in self:
             total_expense = 0.0
             for bill in rec.bill_ids:

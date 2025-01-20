@@ -1,18 +1,15 @@
-# pylint: disable=undefined-loop-variable, protected-access line-too-long, pointless-statement
+# pylint: disable=undefined-loop-variable, protected-access line-too-long, pointless-statement, super-with-arguments, no-else-raise
 """This are the invoice template and it's associated functions"""
-from datetime import datetime
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
-import pytz
+from odoo.exceptions import ValidationError, UserError
 
 class Invoice(models.Model):
     """Fields and functions for the invoice record"""
 
-    def _generate_register_date(self):
-        """Function to generate current date based on user timezone"""
-        user_tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
-        date_today = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-        return date_today.date()
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def _default_current_date(self):
+        return fields.Date.context_today(self)
 
     def _generate_installment_list(self, a):
         installment_list = []
@@ -25,7 +22,7 @@ class Invoice(models.Model):
 # Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     _name = "invoice"
-    _description = "Registro de Contas a Receber."
+    _description = "Registro de  a Receitas."
     _rec_name = "display_name"
 
     id_invoice = fields.Char(string='Código', required=False)
@@ -41,7 +38,7 @@ class Invoice(models.Model):
                                      ('devolucao-credito', 'Devolução de Crédito'),
                                      ('outro', 'Outro')],
                                      string='Tipo de Conta', required=True)
-    register_date = fields.Date(string='Data de Registro', default=_generate_register_date)
+    register_date = fields.Date(string='Data de Registro', default=_default_current_date)
     invoice_file = fields.Binary(string='PDF da Conta', attachment=True)
     description = fields.Text(string='Descrição', required=False)
     value = fields.Float(string='Valor', required=True)
@@ -50,7 +47,6 @@ class Invoice(models.Model):
                                default='outro')
     invoice_status = fields.Selection([('0', 'Provisória'), ('1', 'Autorizada'), ('2', 'Faturada'),
                                     ], string='Status da Conta', default='0')
-    status_value = fields.Char(string='Descrição de Status', compute='_compute_status_value')
     signature = fields.Binary(string='Assinatura', required=True)
     external_cost_center_id = fields.Many2one(comodel_name='cost_center', string='Centro de Custo')
     external_contract_id = fields.Many2one(comodel_name='contract', string='Contrato')
@@ -65,13 +61,7 @@ class Invoice(models.Model):
 
     pdf_view_status = fields.Integer(default=0)
 
-    def update_pdf_view(self):
-        """Edits .xml so that the .pdf file is either expanded
-        or reduced in visualization"""
-        if self.pdf_view_status == 0:
-            self.pdf_view_status = 1
-        elif self.pdf_view_status == 1:
-            self.pdf_view_status = 0
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_invoice(self):
         """This is the custom function for saving a 'invoice' record"""
@@ -83,7 +73,7 @@ class Invoice(models.Model):
             self.write({'external_employee_id': [(3, self.external_employee_id.id)]})
             self.write({'external_client_id': [(3, self.external_client_id.id)]})
 
-        if self.invoice_type != 'contract':
+        if self.invoice_type != 'fatura-contrato':
             self.write({'external_contract_id': [(3, self.external_contract_id.id)]})
 
         vals = {
@@ -123,6 +113,19 @@ class Invoice(models.Model):
             },
         }
 
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'invoice' module"""
+        for rec in self:
+            if rec.invoice_status == '2':
+                raise UserError(_("Receitas ja faturadas não podem "
+                                  "ser deletadas"))
+            else:
+                return super(Invoice, self).unlink()
+
+# Auxiliary functions - -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
     def update_invoice_status(self):
         """This function changes the invoice status and locks editing the file"""
         if self.invoice_status == '0':
@@ -134,13 +137,26 @@ class Invoice(models.Model):
             'params': {
                 'title': _("Sucesso"),
                 'type': 'success',
-                'message': _('Status atualizado para \'' + self.status_value + '\'!'),
+                'message': _('Conta foi autorizada!'),
                 'sticky': False,
                 'next': {
                     'type': 'ir.actions.act_window_close',
                 }
             },
         }
+
+    def update_pdf_view(self):
+        """Edits .xml so that the .pdf file is either expanded
+        or reduced in visualization"""
+        if self.pdf_view_status == 0:
+            self.pdf_view_status = 1
+        elif self.pdf_view_status == 1:
+            self.pdf_view_status = 0
+
+    def remove_external_operation_id(self):
+        """Function to remove association between patrimony and latest contract"""
+        for rec in self:
+            self.write({'external_operation_id': [(3, rec.external_operation_id.id)]})
 
 # Model constraints -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -178,18 +194,34 @@ class Invoice(models.Model):
             if str(self.filename.split(".")[1]) != 'pdf' :
                 raise ValidationError("O sistema aceita apenas arquivos '.pdf'.")
 
+    @api.constrains('external_operation_id')
     def _check_external_operation_id(self):
+        """Checks if the 'enxternal_operation_id' is valid."""
         for rec in self:
             if rec.external_operation_id:
-                if rec.external_operation_id.is_editable is not True:
+                if rec.external_operation_id.is_editable is False:
                     raise ValidationError(_("O caixa desta data não está editável."))
                 if rec.external_operation_id.operation_status == '0':
                     raise ValidationError(_("O caixa está fechado."))
 
+    @api.constrains('external_contract_id')
+    def _check_maximum_installment(self):
+        for rec in self:
+            if rec.external_contract_id:
+                if int(rec.installment) > int(rec.external_contract_id.installments):
+                    raise ValidationError (_("O contrato não possui tantas parcelas.\n"
+                                             "A parcela máxima é "
+                                             + rec.external_contract_id.installments + "."))
+                if rec.installment == '0':
+                    raise ValidationError(_("Contratos precisam de pelo menos 1 parcela."))
+
+
     _sql_constraints = [
         ('id_invoice_installment_unique', 'UNIQUE(id_invoice, installment)',
         'Já existe uma \'Conta a Receber\' com essa \'Parcela\' registrada ou'
-        'outra conta com esse código.')
+        'outra conta com esse código.'),
+        ('invoice_contract_installment_unique', 'UNIQUE(installment, external_contract_id)',
+         'Esta \'Parcela\' deste \'Contrato\' já esta associada.')
     ]
 
 # Computed functions -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -209,16 +241,9 @@ class Invoice(models.Model):
                 else:
                     record.display_name = f"{record.invoice_type}-{record.external_operation_id.display_name}"
 
-    def _compute_status_value(self):
-        for rec in self:
-            if rec.invoice_status == '0':
-                self.status_value = 'Provisória'
-            elif rec.invoice_status == '1':
-                self.status_value = 'Autorizada'
-            elif rec.invoice_status == '2':
-                self.status_value = 'Faturada.'
-
     def _compute_cpf(self):
+        """Generates 'CPF' based on external_'employee'_id or
+        external_'client'_id."""
         for rec in self:
             if rec.external_employee_id:
                 rec.cpf = rec.external_employee_id.cpf
@@ -228,6 +253,7 @@ class Invoice(models.Model):
                 rec.cpf = False
 
     def _compute_cnpj(self):
+        """Generates 'CNPJ' based on external_'client'_id."""
         for rec in self:
             if rec.external_client_id and rec.external_client_id.client_type == 'pessoa-juridica':
                 rec.cnpj = rec.external_client_id.cnpj
@@ -235,6 +261,7 @@ class Invoice(models.Model):
                 rec.cnpj = False
 
     def _compute_client_type(self):
+        """Is used showing diferent fields in the 'xml' file"""
         for rec in self:
             if rec.external_client_id:
                 if rec.external_client_id.client_type == 'pessoa-juridica':

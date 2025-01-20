@@ -1,13 +1,15 @@
 """This are the employee template and it's associated functions"""
 # pylint: skip-file
 from odoo import api, models, fields, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 import re
 
-regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
+regex_email = re.compile(r'([A-Za-z0-9]{1,24}+[.-_])*[A-Za-z0-9]{0,18}+@[A-Za-z0-9]+(\.[A-Z|a-z]{2,12})+')
 
 class Employee(models.Model):
     """Fields and functions for the employee object"""
+
+# Generative functions  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def _validate_cpf_digits(self, cpf_string):
         
@@ -24,21 +26,47 @@ class Employee(models.Model):
             return False
         
         return True
-    
+
+# Model variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+ 
     _name = "employee"
     _description = "Registro de funcionários."
+    _inherit = ["mail.thread"]
 
     name = fields.Char(string='Nome', required=True)
     email = fields.Char(string='Email', required=False)
-    tel_one = fields.Char(string='Telefone 1', required=True)
+    tel_one = fields.Char(string='Telefone 1', required=True,
+                          tracking=True)
     tel_two = fields.Char(string='Telefone 2', required=False)
     cpf = fields.Char(string='CPF', required=True)
-    address = fields.Char(string='Endereço', required=False)
+    address_state = fields.Selection(selection=[('acre', 'AC'), ('alagoas', 'AL'),
+                                                ('amapa', 'AP'), ('amazonas', 'AM'),
+                                                ('bahia', 'BA'), ('ceara', 'CE'),
+                                                ('espirito-santo', 'ES'), ('goias', 'GO'),
+                                                ('maranhao', 'MA'), ('mato-grosso', 'MT'),
+                                                ('mato-grosso-do-sul', 'MS'),
+                                                ('minas-gerais', 'MG'),
+                                                ('para', 'PA'), ('paraiba', 'PB'),
+                                                ('parana', 'PR'), ('pernambuco', 'PE'),
+                                                ('piaui', 'PI'), ('rio-de-janeiro', 'RJ'),
+                                                ('rio-grande-do-norte', 'RN'),
+                                                ('rio-grande-do-sul', 'RS'),
+                                                ('rondonia', 'RO'), ('roraima', 'RR'),
+                                                ('santa-catarina', 'SC'), ('sao-paulo', 'SO'),
+                                                ('sergipe', 'SE'), ('tocantins', 'TO'),
+                                                ('distrito-federal', 'DF')],
+                                                string='Estado do Endereço',
+                                                required=True, defaul='rio-de-janeiro')
+    address_city = fields.Char(string='Cidade do Endereço', required=True)
+    address_complement = fields.Char(string='Complemento do Endereço', required=False)
     cep = fields.Char(string='CEP', required=False)
     pis_pasep = fields.Char(string='PIS-PASEP', required=False)
     cart_trabalho = fields.Char(string='Carteira de Trabalho', required=False)
     rg = fields.Char(string='RG', required=True)
-    status = fields.Selection([('ativo', 'Ativo'), ('desligado', 'Desligado')], required=True)
+    status = fields.Selection([('ativo', 'Ativo'), ('inativo', 'Inativo')], required=True,
+                              tracking=True)
+
+# Main create function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     def create_employee(self):
         """This is the custom function for saving an 'employee' object"""
@@ -48,7 +76,9 @@ class Employee(models.Model):
             'tel_one': self.tel_one,
             'tel_two': self.tel_two,
             'cpf': self.cpf,
-            'address': self.address,
+            'address_state': self.address_state,
+            'address_city': self.address_city,
+            'address_complement': self.address_complement,
             'cep': self.cep,
             'status': self.status,
             'pis_pasep': self.pis_pasep,
@@ -71,6 +101,21 @@ class Employee(models.Model):
                 }
             },
         }
+
+# Main delete function  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    def unlink(self):
+        """Custom unlink function for 'employee' module"""
+        bill_count=self.env['bill'].search_count([('external_employee_id','=', self.id)])
+        invoice_count=self.env['invoice'].search_count([('external_employee_id','=', self.id)])
+        if bill_count > 0 or invoice_count > 0:
+            raise UserError(_("Esse \'Funcionário\' tem despesas, "
+                                "receitas ou contratos associados "
+                                "e não pode ser excluído."))
+        else:
+            return super(Employee, self).unlink()
+
+# Model constraints  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     @api.constrains('cpf')
     def _validate_cpf(self):
@@ -146,24 +191,28 @@ class Employee(models.Model):
         for rec in self:
             if rec.tel_one:
                 if len(rec.tel_one) != 11:
-                    raise ValidationError(_("O campo 'Telefone 1' está com o tamanho incorreto. "
-                                            "Precisa de 11 dígitos"))
+                    raise ValidationError(_("O campo 'Telefone 1' está com o tamanho "
+                                            "incorreto. Precisa de 11 dígitos."
+                                            "\n 2 dígitos do "
+                                            "DDD e 9 dígitos."))
                 if not (rec.tel_one).isnumeric():
                     raise ValidationError(_("O campo 'Telefone 1' contém carácteres inválidos. "
-                                            "O campo deve conter apenas números"))
+                                            "O campo deve conter apenas números."))
 
     @api.constrains('tel_two')
     def _validate_tel_two(self):
-        """Checks size of the PIS-PASEP variable to limit different lengths
+        """Checks size of the 'tel_two' variable to limit different lengths
         and checks for non-numeric characters"""
         for rec in self:
             if rec.tel_two:
                 if len(rec.tel_two) != 11:
-                    raise ValidationError(_("O campo 'Telefone 2' está com o tamanho incorreto."
-                                            "Precisa de 11 dígitos"))
+                    raise ValidationError(_("O campo 'Telefone 2' está com o tamanho "
+                                            "incorreto. Precisa de 11 dígitos."
+                                            "\n 2 dígitos do "
+                                            "DDD e 9 dígitos."))
                 if not (rec.tel_two).isnumeric():
-                    raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos."
-                                            "O campo deve conter apenas números"))
+                    raise ValidationError(_("O campo 'Telefone 2' contém carácteres inválidos. "
+                                            "O campo deve conter apenas números."))
     
     @api.constrains('email')
     def _validate_email(self):
@@ -172,7 +221,8 @@ class Employee(models.Model):
         for rec in self:
             if rec.email:
                 if re.fullmatch(regex_email, rec.email) == None:
-                    raise ValidationError(_("O formato do campo 'Email' é inválido."))
+                    raise ValidationError(_("O formato do campo 'Email' é inválido. " 
+                                            "O correto é \'email@provedor.terminação\'"))
 
     _sql_constraints = [
         ('cpf_employee_unique', 'UNIQUE(cpf)', 'Já existe um \'Funcionário\' com esse \'CPF\'.')

@@ -32,6 +32,7 @@
                             <div class="container_button">
                                 <button name="create_cost_center" class="btnSecondary mybutton"
                                 type="object" string="Salvar"
+                                groups="registers.group_registers_cost_center_rw,registers.group_registers_superuser"
                                 confirm="Confimar dados de Centro de Custo?"/>
                             </div>
 
@@ -64,9 +65,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem  id="menu_cost_center_register"
-        parent="menu_outros"
-        action="action_register_cost_center"
-        name="Centro de Custo"
-        sequence="1"/>
 </odoo>
