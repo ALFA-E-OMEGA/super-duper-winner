@@ -241,6 +241,14 @@ class Bill(models.Model):
                 if rec.external_operation_id.operation_status == '0':
                     raise ValidationError(_("O caixa está fechado."))
 
+    @api.constrains('external_contract_id')
+    def _check_patrimony_contract_link(self):
+        """Checks if the patrimony listed exists in the contract listed"""
+        for rec in self:
+            if rec.external_contract_id and rec.external_patrimony_id:
+                if rec.external_patrimony_id not in rec.external_contract_id.patrimony_ids:
+                    raise ValidationError(_("O patrimônio listado não está no contrato listado."))
+
     _sql_constraints = [
         ('id_bill_installment_unique', 'UNIQUE(id_bill, installment)',
         'Já existe uma \'Conta a Pagar\' com essa \'Parcela\' registrada ou'

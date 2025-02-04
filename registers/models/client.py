@@ -246,7 +246,7 @@ class Client(models.Model):
             if rec.address_country:
                 if rec.address_country.isalpha() is False:
                     raise ValidationError(_("O campo 'País do Endereço' aceita apenas "
-                                            "\nletras."))
+                                            "letras."))
 
     _sql_constraints = [
         ('cpf_client_unique', 'UNIQUE(cpf)', 'Já existe um \'Cliente\' com esse \'CPF\'.'),
