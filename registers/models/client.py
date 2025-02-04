@@ -1,4 +1,4 @@
-# pylint: disable=line-too-long, super-with-arguments, no-else-raise
+# pylint: disable=line-too-long, super-with-arguments, no-else-raise, too-many-instance-attributes
 """This are the client template and it's associated functions"""
 import re
 from odoo import models, fields, api, _
@@ -32,6 +32,7 @@ class Client(models.Model):
     _name = "client"
     _description = "Registro de Clientes."
 
+    sequence = fields.Integer(string='Sequência',  default=1)
     name = fields.Char(string='Nome do Cliente', required=True)
     client_type = fields.Selection(selection=[('pessoa-fisica', 'Pessoa Física'),
                                               ('pessoa-juridica', 'Pessoa Jurídica'),

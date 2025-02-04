@@ -26,10 +26,9 @@ class Patrimony(models.Model):
     _inherit = ["mail.thread"]
     _rec_name = "display_name"
 
+    sequence = fields.Integer(string='Sequência',  default=1)
     id_patrimony = fields.Char(string='Código', required=True)
-
     fuel_type = fields.Char(string='Combustível', required=False)
-
     vehicle_maker = fields.Char(string='Marca', required=False)
     vehicle_model = fields.Char(string='Modelo', required=False)
 

@@ -98,7 +98,7 @@
         <field name="name">operation.list</field>
         <field name="model">operation</field>
         <field name="arch" type="xml">
-            <list string="Operação de Caixa">
+            <list string="Operação de Caixa" default_order="operation_date desc">
                 <field class="test" name="operation_status"/>
                 <field class="test" name="operation_date"/>
                 <field class="test" name="total_profit"

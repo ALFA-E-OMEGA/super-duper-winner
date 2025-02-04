@@ -170,6 +170,7 @@
         <field name="model">client</field>
         <field name="arch" type="xml">
             <list string="Clientes">
+                <field class="test" name="sequence" widget="handle" />
                 <field class="test" name="name" />
                 <field class="test" name="client_type" />
                 <field class="test" name="tel_one" />
