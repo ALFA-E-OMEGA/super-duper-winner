@@ -25,6 +25,7 @@ class Contract(models.Model):
     _inherit = ["mail.thread"]
     _rec_name = "display_name"
 
+    sequence = fields.Integer(string="Sequência", default=1)
     id_contract = fields.Char(string='Código', required=True)
     register_date = fields.Date(string='Data de Registro', default=_default_current_date)
     contract_date = fields.Date(string='Data do Contrato', required=True)
