@@ -14,6 +14,7 @@ class Supplier(models.Model):
     _name = "supplier"
     _description = "Registro de Fornecedor."
 
+    sequence = fields.Integer(string='Sequência', default=1)
     supplier_area = fields.Char(string='Área de Fornecumento', required=False)
     name = fields.Char(string='Nome', required=True)
     cnpj = fields.Char(string='CNPJ', required=False)
