@@ -200,6 +200,9 @@
                 <field class="test" name="vehicle_maker" />
                 <field class="test" name="vehicle_model" />
                 <field class="test" name="value" />
+                <field class="test" name="status"
+                decoration-success="status == 'ativo'"
+                decoration-danger="status == 'inativo'"/>
             </list>
         </field>
     </record>

@@ -130,7 +130,7 @@
                 <field class="test" name="name" />
                 <field class="test" name="cpf" />
                 <field class="test" name="status" decoration-success="status == 'ativo'"
-                    decoration-danger="status == 'desligado'" />
+                    decoration-danger="status == 'inativo'" />
             </list>
         </field>
     </record>
