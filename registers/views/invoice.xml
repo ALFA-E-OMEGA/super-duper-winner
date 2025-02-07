@@ -127,10 +127,9 @@
                                 </div>
 
                                 <div class="container_field">
-                                    <span>Dia de Recebimento:</span>
-                                    <field class="field" name="external_operation_id"
-                                        widget="selection"
-                                        readonly="1" />
+                                    <span>Descrição:</span>
+                                    <field class="field" name="description"
+                                        readonly="invoice_status != '0'" />
                                 </div>
 
                             </div>
@@ -143,9 +142,10 @@
                                 </div>
 
                                 <div class="container_field">
-                                    <span>Descrição:</span>
-                                    <field class="field" name="description"
-                                        readonly="invoice_status != '0'" />
+                                    <span>Dia de Recebimento:</span>
+                                    <field class="field" name="external_operation_id"
+                                        widget="selection"
+                                        readonly="1" />
                                 </div>
 
                             </div>
@@ -213,7 +213,7 @@
         <field name="name">invoice.list</field>
         <field name="model">invoice</field>
         <field name="arch" type="xml">
-            <list string="Receitas">
+            <list string="Receitas" default_order="register_date desc">
                 <field class="test" name="id_invoice" />
                 <field class="test" name="value" />
                 <field class="test" name="invoice_status" decoration-info="invoice_status == '0'"

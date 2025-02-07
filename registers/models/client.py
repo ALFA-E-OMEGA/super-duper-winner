@@ -1,4 +1,4 @@
-# pylint: disable=line-too-long, super-with-arguments, no-else-raise
+# pylint: disable=line-too-long, super-with-arguments, no-else-raise, too-many-instance-attributes
 """This are the client template and it's associated functions"""
 import re
 from odoo import models, fields, api, _
@@ -32,6 +32,7 @@ class Client(models.Model):
     _name = "client"
     _description = "Registro de Clientes."
 
+    sequence = fields.Integer(string='Sequência',  default=1)
     name = fields.Char(string='Nome do Cliente', required=True)
     client_type = fields.Selection(selection=[('pessoa-fisica', 'Pessoa Física'),
                                               ('pessoa-juridica', 'Pessoa Jurídica'),
@@ -62,9 +63,10 @@ class Client(models.Model):
                                                 ('sergipe', 'SE'), ('tocantins', 'TO'),
                                                 ('distrito-federal', 'DF')],
                                                 string='Estado do Endereço',
-                                                required=True, defaul='rio-de-janeiro')
+                                                required=False, defaul='rio-de-janeiro')
     address_city = fields.Char(string='Cidade do Endereço', required=True)
     address_complement = fields.Char(string='Complemento do Endereço', required=False)
+    address_country = fields.Char(string='País do Endereço', required=False)
     cpf = fields.Char(string='CPF', required=False)
     rg = fields.Char(string='RG', required=False)
     cnpj = fields.Char(string='CNPJ', required=False)
@@ -91,8 +93,10 @@ class Client(models.Model):
         if self.pf_type:
             if self.pf_type == 'estrangeiro':
                 self.cpf = False
+                self.address_state = False
             elif self.pf_type == 'nacional':
                 self.foreign_doc = False
+                self.address_country = False
 
         vals = {
             'name': self.name,
@@ -235,6 +239,15 @@ class Client(models.Model):
                 if not (rec.cnpj).isnumeric():
                     raise ValidationError(_("O campo 'CNPJ' contém carácteres inválidos. "
                                                 "O campo deve conter apenas números."))
+
+    @api.constrains('address_country')
+    def _validate_address_countrt(self):
+        """Validates if 'address_country' has anything other than letters"""
+        for rec in self:
+            if rec.address_country:
+                if rec.address_country.isalpha() is False:
+                    raise ValidationError(_("O campo 'País do Endereço' aceita apenas "
+                                            "letras."))
 
     _sql_constraints = [
         ('cpf_client_unique', 'UNIQUE(cpf)', 'Já existe um \'Cliente\' com esse \'CPF\'.'),

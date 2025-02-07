@@ -271,7 +271,7 @@
         <field name="name">bill.list</field>
         <field name="model">bill</field>
         <field name="arch" type="xml">
-            <list string="Despesas">
+            <list string="Despesas" default_order="register_date desc">
                 <field class="test" name="id_bill" />
                 <field class="test" name="value" />
                 <field class="test" name="validation_date" />

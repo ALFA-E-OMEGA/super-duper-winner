@@ -26,9 +26,16 @@
                             </div>
 
                             <div class="subgroup">
-                                <div class="container_field">
+                                <div class="container_field" invisible="pf_type == 'estrangeiro'">
                                     <span>Estado:</span>
-                                    <field class="field" name="address_state" />
+                                    <field class="field" name="address_state"
+                                    required="pf_type != 'estrangeiro'" />
+                                </div>
+
+                                <div class="container_field" invisible="pf_type != 'estrangeiro'">
+                                    <span>País:</span>
+                                    <field class="field" name="address_country"
+                                    required="pf_type == 'estrangeiro'" />
                                 </div>
 
                                 <div class="container_field">
@@ -163,6 +170,7 @@
         <field name="model">client</field>
         <field name="arch" type="xml">
             <list string="Clientes">
+                <field class="test" name="sequence" widget="handle" />
                 <field class="test" name="name" />
                 <field class="test" name="client_type" />
                 <field class="test" name="tel_one" />

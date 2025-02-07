@@ -52,6 +52,7 @@
         <field name="model">cost_center</field>
         <field name="arch" type="xml">
             <list string="Centro de Custo">
+                <field class="test" name="sequence" widget="handle" />
                 <field class="test" name="id_cost_center"/>
                 <field class="test" name="name"/>
             </list>

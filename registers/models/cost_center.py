@@ -11,6 +11,7 @@ class CostCenter(models.Model):
     _name = "cost_center"
     _description = "Registro de Centro de Custo."
 
+    sequence = fields.Integer(string="Sequência", default=1)
     id_cost_center = fields.Char(string='Código', required=True)
     name = fields.Char(string='Nome', required=True)
     about = fields.Text(string='Descrição', required=False)
