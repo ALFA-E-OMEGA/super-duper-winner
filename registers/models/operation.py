@@ -23,7 +23,7 @@ class Operation(models.Model):
                                        default='1')
     reopen_reason = fields.Text(string='Razão de Reabertura', required=False)
     is_editable = fields.Boolean(string='Editável', required=True, compute='_compute_is_editable',
-                                 default=True, store=True)
+                                 default=True)
     is_closed = fields.Boolean(string='Fechado', required=True, compute='_compute_is_closed',
                                  default=False)
     is_reopen = fields.Boolean(string='Foi Reaberto', required=False, default=False)
