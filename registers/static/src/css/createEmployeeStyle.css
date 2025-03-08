@@ -103,3 +103,24 @@ option[value='"Pesado"']{
     transform: translateY(-10px);
     border: 1px solid black;
 }
+
+/* Removes the "Message" icon from the System Tray in the Navbar*/
+.o-mail-DiscussSystray-class {
+    display: none !important
+}
+
+/* Removes the items from the User icon drowdown menu except logout*/
+.o_popover
+span[data-menu="shortcuts"],
+span[data-menu="account"],
+span[data-menu="settings"],
+span[data-menu="web_tour.tour_enabled"],
+a[data-menu="support"],
+a[data-menu="documentation"] {
+    display: none !important;
+}
+
+/* Removes the "Activites" dropdown menu from System Tray in the navbar */
+.o_menu_systray > button:not(.o_user_menu button):not(.o_switch_company_menu button) {
+    display: none !important;
+}
