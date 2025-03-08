@@ -116,7 +116,8 @@ span[data-menu="account"],
 span[data-menu="settings"],
 span[data-menu="web_tour.tour_enabled"],
 a[data-menu="support"],
-a[data-menu="documentation"] {
+a[data-menu="documentation"],
+div[role="separator"] {
     display: none !important;
 }
 
